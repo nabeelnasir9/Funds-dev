@@ -6,6 +6,28 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  --white: #ffffff;
+  --black: #000000;
+  --primary: #ff0000;
+  --secondary: #00ff00;
+  --tertiary: #0000ff;
+  --quaternary: #ffff00;
+  --quinary: #00ffff;
+  --senary: #ff00ff;
+  --septenary: #ff8000;
+  --octonary: #ff0080;
+  --nonary: #80ff00;
+  --denary: #0080ff;
+  --elevenary: #8000ff;
+  --twelvary: #800000;
+  --thirteenary: #008000;
+  --fourteenary: #000080;
+  --fifteenary: #808000;
+  --sixteenary: #008080;
+  --seventeenary: #800080;
+  --eighteenary: #808080;
+  --nineteenary: #c0c0c0;
+  --twentyary: #ff0000;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,11 +45,6 @@ body {
       transparent,
       rgb(var(--background-end-rgb))
     )
-    rgb(var(--background-start-rgb));
+    rgb(var(--black));
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-}
