@@ -1,30 +1,33 @@
-"use client"
+"use client";
 
-import React, { useEffect } from 'react';
-import { useRouter,usePathname } from 'next/navigation';
-import './globals.css';
+import React, { useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import "./globals.css";
 
 interface RootLayoutProps {
   children: React.ReactNode;
 }
+import { QueryProvider } from "@/lib/config";
 
 const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   const router = useRouter();
-  const pathname = usePathname()
+  const pathname = usePathname();
 
-  useEffect(() => {
-    console.log(pathname)
-    const allowedPaths = ['/login', '/signup'];
-    const isTokenAvailable = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  // useEffect(() => {
+  //   console.log(pathname)
+  //   const allowedPaths = ['/login', '/signup'];
+  //   const isTokenAvailable = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
-    if (!isTokenAvailable && !allowedPaths.includes(pathname)) {
-      router.push('/login');
-    }
-  });
+  //   if (!isTokenAvailable && !allowedPaths.includes(pathname)) {
+  //     router.push('/login');
+  //   }
+  // });
 
   return (
     <html lang="en">
-      <body>{children}</body>
+      <QueryProvider>
+        <body>{children}</body>
+      </QueryProvider>
     </html>
   );
 };

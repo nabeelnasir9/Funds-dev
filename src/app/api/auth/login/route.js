@@ -8,6 +8,7 @@ import jwt from 'jsonwebtoken';
 export const POST = async (request) => {
     try {
       await dbConnect();
+      console.log("===================",request,"===============");
       const { email, password } = await request.json();
       const user = await User.findOne({ email }).select('+password');
   
@@ -21,7 +22,7 @@ export const POST = async (request) => {
         return NextResponse.json({ error: "Invalid credentials" });
       }
       console.log(passwordMatch, "password ");
-      const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '10h' });
       // Passwords match, login successful
       return NextResponse.json({ message: "success", data: user, token });
     } catch (error) {

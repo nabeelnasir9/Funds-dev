@@ -1,145 +1,159 @@
-"use client"
-
+"use client";
 
 import Link from "next/link";
 import axios from "axios";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
-
 export default function Page() {
-
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log({email, password});
+    console.log({ email, password });
 
     const data = {
       email,
-      password
-    }
-    const response = axios.post('/api/auth/login', data)
-      .then(response => response.data) // Assuming response.data contains the user data you want to use in success message
-      .catch(error => Promise.reject(error)); // Ensure errors are correctly propagated
+      password,
+    };
+    const response = axios
+      .post("/api/auth/login", data)
+      .then(async(response) => {
+        response.data,
+          console.log(response.data, "user"),
+        await  localStorage.setItem("token", response.data.token);
+      }) // Assuming response.data contains the user data you want to use in success message
+      .catch((error) => Promise.reject(error)); // Ensure errors are correctly propagated
 
     // Use toast.promise to handle the loading, success, and error states
     toast.promise(
       response,
       {
-        loading: 'Loading',
+        loading: "Loading",
         success: (data) => `Successfully Login`, // Adjust according to the actual data structure
         error: (err) => `This just happened: ${err.toString()}`,
       },
       {
         style: {
-          minWidth: '250px',
+          minWidth: "250px",
         },
         success: {
           duration: 5000,
-          icon: '✅',
+          icon: "✅",
         },
       }
     );
+  };
+  return (
+    <>
+      <div className="flex h-[100vh] flex-1 ">
+        <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+          <div className="mx-auto w-full max-w-sm lg:w-96">
+            <div>
+              <h2 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-gray-900">
+                Sign in to your account
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-gray-500">
+                Not a member?{" "}
+                <Link
+                  href="/signup"
+                  className="font-semibold text-indigo-600 hover:text-indigo-500"
+                >
+                  Signup
+                </Link>
+              </p>
+            </div>
 
-
-
-  }
-    return (
-      <>
-       
-        <div className="flex h-[100vh] flex-1 ">
-          <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
-            <div className="mx-auto w-full max-w-sm lg:w-96">
+            <div className="mt-10">
               <div>
-                
-                <h2 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                  Sign in to your account
-                </h2>
-                <p className="mt-2 text-sm leading-6 text-gray-500">
-                  Not a member?{' '}
-                  <Link href="/signup" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                    Signup
-                  </Link>
-                </p>
-              </div>
-  
-              <div className="mt-10">
-                <div>
-                  <form action="#" method="POST" className="space-y-6" onSubmit={handleSubmit}>
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-                        Email address
-                      </label>
-                      <div className="mt-2">
-                        <input
-                          id="email"
-                          name="email"
-                          type="email"
-                          autoComplete="email"
-                          required
-                          onChange={(e) => setEmail(e.target.value)}
-                          value={email}
-                          className="block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        />
-                      </div>
+                <form
+                  action="#"
+                  method="POST"
+                  className="space-y-6"
+                  onSubmit={handleSubmit}
+                >
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium leading-6 text-gray-900"
+                    >
+                      Email address
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        autoComplete="email"
+                        required
+                        onChange={(e) => setEmail(e.target.value)}
+                        value={email}
+                        className="block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      />
                     </div>
-  
-                    <div>
-                      <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
-                        Password
-                      </label>
-                      <div className="mt-2">
-                        <input
-                          id="password"
-                          name="password"
-                          type="password"
-                          autoComplete="current-password"
-                          required
-                          onChange={(e) => setPassword(e.target.value)}
-                          value={password}
-                          className="block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        />
-                      </div>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="password"
+                      className="block text-sm font-medium leading-6 text-gray-900"
+                    >
+                      Password
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        autoComplete="current-password"
+                        required
+                        onChange={(e) => setPassword(e.target.value)}
+                        value={password}
+                        className="block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      />
                     </div>
-  
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <input
-                          id="remember-me"
-                          name="remember-me"
-                          type="checkbox"
-                          className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                        />
-                        <label htmlFor="remember-me" className="ml-3 block text-sm leading-6 text-gray-700">
-                          Remember me
-                        </label>
-                      </div>
-  
-                      <div className="text-sm leading-6">
-                        <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                          Forgot password?
-                        </a>
-                      </div>
-                    </div>
-  
-                    <div>
-                      <button
-                        type="submit"
-                        className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <input
+                        id="remember-me"
+                        name="remember-me"
+                        type="checkbox"
+                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                      />
+                      <label
+                        htmlFor="remember-me"
+                        className="ml-3 block text-sm leading-6 text-gray-700"
                       >
-                        Sign in
-                      </button>
+                        Remember me
+                      </label>
                     </div>
-                  </form>
-                  <Toaster
-  position="top-right"
-  reverseOrder={true}
-/>
-                </div>
-  
-                {/* <div className="mt-10">
+
+                    <div className="text-sm leading-6">
+                      <a
+                        href="#"
+                        className="font-semibold text-indigo-600 hover:text-indigo-500"
+                      >
+                        Forgot password?
+                      </a>
+                    </div>
+                  </div>
+
+                  <div>
+                    <button
+                      type="submit"
+                      className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    >
+                      Sign in
+                    </button>
+                  </div>
+                </form>
+                <Toaster position="top-right" reverseOrder={true} />
+              </div>
+
+              {/* <div className="mt-10">
                   <div className="relative">
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
                       <div className="w-full border-t border-gray-200" />
@@ -190,18 +204,17 @@ export default function Page() {
                     </a>
                   </div>
                 </div> */}
-              </div>
             </div>
           </div>
-          <div className="relative hidden w-0 flex-1 lg:block">
-            <img
-              className="absolute inset-0 h-full w-full object-cover"
-              src="https://images.unsplash.com/photo-1496917756835-20cb06e75b4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1908&q=80"
-              alt=""
-            />
-          </div>
         </div>
-      </>
-    )
-  }
-  
+        <div className="relative hidden w-0 flex-1 lg:block">
+          <img
+            className="absolute inset-0 h-full w-full object-cover"
+            src="https://images.unsplash.com/photo-1496917756835-20cb06e75b4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1908&q=80"
+            alt=""
+          />
+        </div>
+      </div>
+    </>
+  );
+}
