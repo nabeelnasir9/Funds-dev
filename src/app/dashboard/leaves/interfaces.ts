@@ -15,7 +15,7 @@ export class UserClass {
 		public isBanned: boolean = true,
 		public isCreator: boolean = true,
 		public isVerified: boolean = true,
-		public leave:""| "sick"|"casual" = "",
+		public leave:"Select type" | "sick" | "casual" = "Select type" ,
 		public access_level:
 			| 'read'
 			| 'create,read'

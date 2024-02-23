@@ -18,12 +18,17 @@ export const createUserLeaveForm: ExtendedForm<CreateUser> = [
         validation: z.string().min(1, 'name is required'),
       },
 
+
       {
-        label: "Leave",
-        key: "leave",
-        type: "select",
-        valueType: "normal",
-        values: [
+				label: 'Leave',
+				key: 'leave',
+				type: 'select',
+				valueType: 'normal',
+				values: [
+					{
+						label: '--------Select------',
+						value: NO_VALUE,
+					},
           {
             label: "Casual",
             value: "casual",
@@ -32,13 +37,13 @@ export const createUserLeaveForm: ExtendedForm<CreateUser> = [
             label: "Sick",
             value: "sick",
           },
-        ],
-        defaultValue: "",
-        placeholder: " select leave type",
-        validation: z
-          .enum(["casual", "sick"])
-          .transform((a) => (a === "casual" ? true : false)),
-      },
+				],
+				defaultValue: '',
+				placeholder: 'Select Role',
+				validation: z.enum(['sick', 'casual']),
+			},
+
+    
       {
         label: "Reason",
         key: "reason",
@@ -55,7 +60,7 @@ export const createUserLeaveForm: ExtendedForm<CreateUser> = [
         valueType: "normal",
         defaultValue: "",
         placeholder: "",
-        validation: z.string().min(1, 'reason is required'),
+        validation: z.string().min(1, 'Attatchment is required'),
       },
 
       {

@@ -7,7 +7,10 @@ export const apiUrls = {
 		update: 'api/auth/update_user',
 		upload: 'api/auth/upload',
 		deleteMultiple: 'api/auth/delete_users',
-		addCashRequest:"api/cash/addCashRequest"
+		addCashRequest:"api/cash/addCashRequest",
+		getCashRequest:"api/cash/getCashHistory",
+		addLeaveRequest:"api/leaves/addLeaveRequest",
+		getLeaveRequest:"api/leaves/getLeaves"
 	},
 	hotels: {
 		create: 'hotels/add_hotels',

@@ -5,18 +5,35 @@ import { GetUsersResponse, TableUser, CreateUser, User } from "./interfaces";
 import { LoginResponse } from "@/app/login/interfaces";
 import axios from "axios";
 
+// export function createCashRequest(data: CreateUser) {
+//   let userToken = localStorage.getItem("token");
+//   console.log(userToken, "=============", data);
+//   return http.post<LoginResponse>(apiUrls.users.addCashRequest, data, {
+//     headers: {
+//       "Content-Type": "multipart/form-data",
+//       Authorization: `Bearer ${userToken}`,
+//     },
+//   }
+//   );
+// }
+
 export function createCashRequest(data: CreateUser) {
   let userToken = localStorage.getItem("token");
-  
-  const bodyData={...data,token:userToken}
+
+  const bodyData = { ...data, token: userToken };
   console.log(userToken, "=============", bodyData);
 
-  return http.post<LoginResponse>(apiUrls.users.addCashRequest, bodyData  );
+  return http.post<LoginResponse>(apiUrls.users.addCashRequest, bodyData);
 }
 
-export function getUsers(searchParams?: string) {
-  return http.get<GetUsersResponse>(
-    `${apiUrls.users.getAll}${searchParams ? searchParams : ""}`
+export async function getCashRequest(searchParams?: string) {
+  let userToken = await localStorage.getItem("token");
+
+  const bodyData = { token: userToken };
+  console.log(userToken, "=============", bodyData);
+
+  return http.post<GetUsersResponse>(`${apiUrls.users.getCashRequest}`, 
+    bodyData,
   );
 }
 

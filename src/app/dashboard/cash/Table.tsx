@@ -15,17 +15,23 @@ import {
 import { type User, type CreateUser, UserClass } from "./interfaces";
 import {
   useCreateCashRequset,
-  useGetUsers,
+  useGetCashRequest,
   useUpdateUser,
   useDeleteUsers,
   useUploadUsers,
 } from "./mutations";
-import { createUserForm, updateUserForm, searchUserForm ,createCashRequestForm} from "./forms";
+import {
+  createUserForm,
+  updateUserForm,
+  searchUserForm,
+  createCashRequestForm,
+} from "./forms";
+import toast from "react-hot-toast";
 
 export function UsersTable({ className }: { className?: string }) {
   const searchQuery = useSearchQuery();
 
-  const users = useGetUsers(searchQuery.queryStr);
+  const userCashRequest = useGetCashRequest(searchQuery.queryStr);
   const createCashRequset = useCreateCashRequset();
   const updateUser = useUpdateUser();
   const uploadUsers = useUploadUsers();
@@ -34,12 +40,42 @@ export function UsersTable({ className }: { className?: string }) {
   const [formType, setFormType] = React.useState<"create" | "edit">("create");
   const formRef = React.useRef<React.ElementRef<"button">>(null);
   const detailsRef = React.useRef<React.ElementRef<"button">>(null);
+const [tableData,setTableData]=React.useState([])
+
+React.useEffect(()=>{
+  const getReq=async()=>{
+console.log("function called");
+
+    let res=  await userCashRequest.mutateAsync("ali");
+    console.log(res.data,"response data");
+    
+    setTableData(res.data)
+  }
+getReq()
+},[])
 
   const onSubmit = async (values: CreateUser) => {
-    console.log(values,"value from the form");
+    try {
+      console.log(values, "value from the form");
+      // toast.loading("adding cash request");
+    let res=  await createCashRequset.mutateAsync(values);
+    console.log(res.message,"response from the store");
     
-    await createCashRequset.mutateAsync(values);
-  }; 
+    if(res.message==="success"){
+      // toast.dismiss();
+      // toast.success("Successfully added request");
+      formRef.current?.click()
+    }
+      
+      else{
+        throw new Error("something went wrong")
+      }
+    } catch (error) {
+      console.log(error,"error");
+      // toast.dismiss();
+      // toast.error("some thing went wrong");
+    }
+  };
 
   const onUpdate = async (values: any) => {
     await updateUser.mutateAsync({ ...values, _id: detailUser?._id || "" });
@@ -72,6 +108,9 @@ export function UsersTable({ className }: { className?: string }) {
     (column) => column !== "_id"
   );
 
+console.log(columns,"===========columns===========");
+
+
   type CashRequestHeader = {
     id: number;
     columnDef: {
@@ -91,10 +130,13 @@ export function UsersTable({ className }: { className?: string }) {
     {
       id: 1,
       headers: [
-        { id: 1, columnDef: { header: "Tite" }, isPlaceholder: false },
+        { id: 0, columnDef: { header: "Sr." }, isPlaceholder: false },
+        { id: 1, columnDef: { header: "Title" }, isPlaceholder: false },
         { id: 2, columnDef: { header: "Amount" }, isPlaceholder: false },
-        { id: 3, columnDef: { header: "Advance/paid" }, isPlaceholder: false },
-        { id: 3, columnDef: { header: "Attachment" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        { id: 3, columnDef: { header: "Type" }, isPlaceholder: false },
+        { id: 4, columnDef: { header: "Status" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        { id: 5, columnDef: { header: "CreatedAt" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        { id: 6, columnDef: { header: "updatedAt" }, isPlaceholder: false }, // Fixed typo in "Attachment"
       ],
     },
   ];
@@ -105,7 +147,7 @@ export function UsersTable({ className }: { className?: string }) {
         { id: 1, columnDef: { header: "Tite" }, isPlaceholder: false },
         { id: 2, columnDef: { header: "Amount" }, isPlaceholder: false },
         { id: 3, columnDef: { header: "Date" }, isPlaceholder: false },
-        { id: 3, columnDef: { header: "Status" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        { id: 4, columnDef: { header: "Status" }, isPlaceholder: false }, // Fixed typo in "Attachment"
       ],
     },
   ];
@@ -142,8 +184,8 @@ export function UsersTable({ className }: { className?: string }) {
         tableKey="cash"
         columns={columns}
         hideRowActions={["create_invoice", "duplicate"]}
-        data={users?.data?.users || []}
-        loading={users?.isLoading}
+        data={tableData}
+        loading={userCashRequest?.isLoading}
         onCreate={() => {
           setFormType("create");
           formRef?.current?.click();
@@ -154,8 +196,10 @@ export function UsersTable({ className }: { className?: string }) {
         onDeleteMany={onDeleteUsers}
         page={searchQuery.pagination.page}
         limit={searchQuery.pagination.limit}
-        lastPage={users?.data?.pagination.last_page || 0}
-        totalDocuments={users?.data?.pagination.total_count || 0}
+        lastPage={0}
+        // lastPage={users?.data?.pagination.last_page || 0}
+        totalDocuments={ 0}
+        // totalDocuments={users?.data?.pagination.total_count || 0}
         setPage={searchQuery.setPage}
         setLimit={searchQuery.setLimit}
       />
@@ -165,7 +209,9 @@ export function UsersTable({ className }: { className?: string }) {
           defaultObj={detailUser}
           operationType={formType}
           closeModal={() => formRef.current?.click()}
-          extendedForm={formType === "create" ? createCashRequestForm : updateUserForm}
+          extendedForm={
+            formType === "create" ? createCashRequestForm : updateUserForm
+          }
           submitText={formType === "create" ? "Create" : "Update"}
           cancelText="Cancel"
           submitFunc={(values) =>
@@ -188,24 +234,24 @@ export function UsersTable({ className }: { className?: string }) {
 
       <h1 className="text-2xl font-bold text-center mt-[30px]"> Cash Hitory</h1>
 
-      <CommonTable
+      {/* <CommonTable
         cashRequest={cashHistory}
         tableKey="cash"
         columns={columns}
         hideRowActions={["create_invoice", "duplicate"]}
-        data={users?.data?.users || []}
-        loading={users?.isLoading}
+        data={userCashRequest?.data || []}
+        loading={userCashRequest?.isLoading}
         onEdit={onEditUser}
         // onUpload={onUploadUsers}
         onViewDetails={viewCustomerDetails}
         onDeleteMany={onDeleteUsers}
         page={searchQuery.pagination.page}
         limit={searchQuery.pagination.limit}
-        lastPage={users?.data?.pagination.last_page || 0}
-        totalDocuments={users?.data?.pagination.total_count || 0}
+        lastPage={ 0}
+        totalDocuments={ 0}
         setPage={searchQuery.setPage}
         setLimit={searchQuery.setLimit}
-      />
+      /> */}
     </div>
   );
 }
