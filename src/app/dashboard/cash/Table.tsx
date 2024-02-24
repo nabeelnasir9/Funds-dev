@@ -194,8 +194,8 @@ console.log(columns,"===========columns===========");
         onUpload={onUploadUsers}
         onViewDetails={viewCustomerDetails}
         onDeleteMany={onDeleteUsers}
-        page={searchQuery.pagination.page}
-        limit={searchQuery.pagination.limit}
+        page={1}
+        limit={10}
         lastPage={0}
         // lastPage={users?.data?.pagination.last_page || 0}
         totalDocuments={ 0}

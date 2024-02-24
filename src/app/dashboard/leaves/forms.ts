@@ -46,7 +46,7 @@ export const createUserLeaveForm: ExtendedForm<CreateUser> = [
     
       {
         label: "Reason",
-        key: "reason",
+        key: "reasons",
         type: "text",
         valueType: "normal",
         defaultValue: "",

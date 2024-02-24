@@ -14,8 +14,8 @@ import {
 } from "@/components";
 import { type User, type CreateUser, UserClass } from "./interfaces";
 import {
-  useCreateUser,
-  useGetUsers,
+  useCreatePassoutRequest,
+  userGetPassoutRequest,
   useUpdateUser,
   useDeleteUsers,
   useUploadUsers,
@@ -25,8 +25,8 @@ import { createUserForm, updateUserForm, searchUserForm } from "./forms";
 export function UsersTable({ className }: { className?: string }) {
   const searchQuery = useSearchQuery();
 
-  const users = useGetUsers(searchQuery.queryStr);
-  const createUser = useCreateUser();
+  const userPassoutRequest = userGetPassoutRequest(searchQuery.queryStr);
+  const createPassoutRequest = useCreatePassoutRequest();
   const updateUser = useUpdateUser();
   const uploadUsers = useUploadUsers();
   const deleteUsers = useDeleteUsers();
@@ -34,9 +34,39 @@ export function UsersTable({ className }: { className?: string }) {
   const [formType, setFormType] = React.useState<"create" | "edit">("create");
   const formRef = React.useRef<React.ElementRef<"button">>(null);
   const detailsRef = React.useRef<React.ElementRef<"button">>(null);
+  const [tableData, setTableData] = React.useState([]);
+
+  React.useEffect(() => {
+    const getReq = async () => {
+      console.log("function called");
+
+      let res = await userPassoutRequest.mutateAsync("ali");
+      console.log(res.data, "response data");
+
+      setTableData(res.data);
+    };
+    getReq();
+  }, []);
 
   const onSubmit = async (values: CreateUser) => {
-    await createUser.mutateAsync(values);
+    try {
+      console.log(values, "value from the form");
+      // toast.loading("adding cash request");
+      let res = await createPassoutRequest.mutateAsync(values);
+      console.log(res.message, "response from the store");
+
+      if (res.message === "success") {
+        // toast.dismiss();
+        // toast.success("Successfully added request");
+        formRef.current?.click();
+      } else {
+        throw new Error("something went wrong");
+      }
+    } catch (error) {
+      console.log(error, "error");
+      // toast.dismiss();
+      // toast.error("some thing went wrong");
+    }
   };
 
   const onUpdate = async (values: any) => {
@@ -77,24 +107,26 @@ export function UsersTable({ className }: { className?: string }) {
     };
     isPlaceholder: boolean;
   };
-  
+
   type CashRequestItem = {
     id: number;
     headers: CashRequestHeader[];
   };
-  
+
   type CashRequest = CashRequestItem[];
-  
+
   const cashRequest: CashRequest = [
     {
       id: 1,
       headers: [
+
+        { id: 0, columnDef: { header: "Sr." }, isPlaceholder: false },
         { id: 1, columnDef: { header: "Name" }, isPlaceholder: false },
-        { id: 2, columnDef: { header: "Time" }, isPlaceholder: false },
-        { id: 2, columnDef: { header: "Date" }, isPlaceholder: false },
-        { id: 3, columnDef: { header: "Sick/casual" }, isPlaceholder: false },
-        { id: 4, columnDef: { header: "Reason" }, isPlaceholder: false }, // Fixed typo in "Attachment"
-        { id: 5, columnDef: { header: "Status" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        { id: 2, columnDef: { header: "PassOut Time" }, isPlaceholder: false },
+        { id: 3, columnDef: { header: "Date" }, isPlaceholder: false },
+        // { id: 4, columnDef: { header: "Sick/casual" }, isPlaceholder: false },
+        { id: 5, columnDef: { header: "Reason" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        { id: 6, columnDef: { header: "Status" }, isPlaceholder: false }, // Fixed typo in "Attachment"
       ],
     },
   ];
@@ -102,10 +134,10 @@ export function UsersTable({ className }: { className?: string }) {
   return (
     <div className={cn("w-full", className)}>
       <div className="flex justify-between">
-      <h1 className="text-2xl font-bold "></h1>
+        <h1 className="text-2xl font-bold "></h1>
 
-      <h1 className="text-2xl font-bold text-center">Pass Outs </h1>
-      <h1 className="text-2xl font-bold text-center">Balance: {10}</h1>
+        <h1 className="text-2xl font-bold text-center">Pass Outs </h1>
+        <h1 className="text-2xl font-bold text-center">Balance: {10}</h1>
       </div>
       {/* <CommonAccordion
         accordions={[
@@ -134,11 +166,11 @@ export function UsersTable({ className }: { className?: string }) {
       <hr className="bg-gray-300 mt-[20px]" />
       <CommonTable
         cashRequest={cashRequest}
-        tableKey="cash"
+        tableKey="passout"
         columns={columns}
         hideRowActions={["create_invoice", "duplicate"]}
-        data={users?.data?.users || []}
-        loading={users?.isLoading}
+        data={tableData}
+        loading={userPassoutRequest?.isLoading}
         onCreate={() => {
           setFormType("create");
           formRef?.current?.click();
@@ -149,8 +181,10 @@ export function UsersTable({ className }: { className?: string }) {
         onDeleteMany={onDeleteUsers}
         page={searchQuery.pagination.page}
         limit={searchQuery.pagination.limit}
-        lastPage={users?.data?.pagination.last_page || 0}
-        totalDocuments={users?.data?.pagination.total_count || 0}
+        lastPage={0}
+        totalDocuments={10}
+        // lastPage={users?.data?.pagination.last_page || 0}
+        // totalDocuments={users?.data?.pagination.total_count || 0}
         setPage={searchQuery.setPage}
         setLimit={searchQuery.setLimit}
       />
@@ -178,7 +212,6 @@ export function UsersTable({ className }: { className?: string }) {
           close={() => detailsRef.current?.click()}
         />
       </CommonModal>
-    
     </div>
   );
 }

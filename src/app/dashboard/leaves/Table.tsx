@@ -125,12 +125,14 @@ export function UsersTable({ className }: { className?: string }) {
     {
       id: 1,
       headers: [
+        { id: 0, columnDef: { header: "Sr." }, isPlaceholder: false },
         { id: 1, columnDef: { header: "Name" }, isPlaceholder: false },
-        { id: 2, columnDef: { header: "Date" }, isPlaceholder: false },
-        { id: 3, columnDef: { header: "Sick/casual" }, isPlaceholder: false },
-        { id: 4, columnDef: { header: "Reason" }, isPlaceholder: false }, // Fixed typo in "Attachment"
-        { id: 3, columnDef: { header: "Attachment" }, isPlaceholder: false }, // Fixed typo in "Attachment"
-        { id: 5, columnDef: { header: "Status" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        { id: 2, columnDef: { header: "Sick/casual" }, isPlaceholder: false },
+        { id: 3, columnDef: { header: "Reason" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        { id: 4, columnDef: { header: "Date" }, isPlaceholder: false },
+        { id: 5, columnDef: { header: "Created At" }, isPlaceholder: false },
+        // { id: 5, columnDef: { header: "Attachment" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        { id: 6, columnDef: { header: "Status" }, isPlaceholder: false }, // Fixed typo in "Attachment"
       ],
     },
   ];
@@ -170,7 +172,7 @@ export function UsersTable({ className }: { className?: string }) {
       <hr className="bg-gray-300 mt-[20px]" />
       <CommonTable
         cashRequest={cashRequest}
-        tableKey="cash"
+        tableKey="leaves"
         columns={columns}
         hideRowActions={["create_invoice", "duplicate"]}
         data={tableData}

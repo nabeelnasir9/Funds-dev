@@ -113,6 +113,8 @@ export type CommonTableProps = {
 export type TableMeta = Pick<CommonTableProps, "onEdit">;
 
 export function CommonTable(props: CommonTableProps) {
+  console.log(props.columns,"====================columns");
+  
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -350,37 +352,38 @@ export function CommonTable(props: CommonTableProps) {
   });
 
  
-  const [isFirstRender, setIsFirstRender] = React.useState(true);
-  React.useEffect(() => {
-    if (!isFirstRender) {
-      localStorage.setItem(
-        `${props.tableKey}ColumnVisibility`,
-        JSON.stringify(columnVisibility)
-      );
-    } else {
-      const savedVisibleColumn = localStorage.getItem(
-        `${props.tableKey}ColumnVisibility`
-      );
 
-      if (savedVisibleColumn) {
-        setColumnVisibility(JSON.parse(savedVisibleColumn));
-      } else {
-        const initialVisibleColumns = () => {
-          let hiddenColumns: Record<string, boolean> = {};
-          for (let i = 0; i < props.columns.length; i++) {
-            if (i < 5) {
-              hiddenColumns[props.columns[i]] = true;
-            } else {
-              hiddenColumns[props.columns[i]] = false;
-            }
-          }
-          return hiddenColumns;
-        };
-        setColumnVisibility(initialVisibleColumns());
-      }
-      setIsFirstRender(false);
-    }
-  }, [columnVisibility, props.tableKey]);
+  // const [isFirstRender, setIsFirstRender] = React.useState(true);
+  // React.useEffect(() => {
+  //   if (!isFirstRender) {
+  //     localStorage.setItem(
+  //       `${props.tableKey}ColumnVisibility`,
+  //       JSON.stringify(columnVisibility)
+  //     );
+  //   } else {
+  //     const savedVisibleColumn = localStorage.getItem(
+  //       `${props.tableKey}ColumnVisibility`
+  //     );
+
+  //     if (savedVisibleColumn) {
+  //       setColumnVisibility(JSON.parse(savedVisibleColumn));
+  //     } else {
+  //       const initialVisibleColumns = () => {
+  //         let hiddenColumns: Record<string, boolean> = {};
+  //         for (let i = 0; i < props.columns.length; i++) {
+  //           if (i < 5) {
+  //             hiddenColumns[props.columns[i]] = true;
+  //           } else {
+  //             hiddenColumns[props.columns[i]] = false;
+  //           }
+  //         }
+  //         return hiddenColumns;
+  //       };
+  //       setColumnVisibility(initialVisibleColumns());
+  //     }
+  //     setIsFirstRender(false);
+  //   }
+  // }, [columnVisibility, props.tableKey]);
 
   return (
     <>
@@ -565,21 +568,26 @@ export function CommonTable(props: CommonTableProps) {
                 </TableCell>
               </TableRow>
             ) : table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+              table.getRowModel().rows.map((row) =>{
+                console.log(row,"table row",table.getRowModel().rows)
+                return  (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                  // data-state={row.getIsSelected() && "selected"}
                 >
-                  {row.getVisibleCells().map((cell) => (
+                  {row.getVisibleCells().map((cell) => {
+                    console.log(cell,"cell==========");
+                    
+                    return(
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
                       )}
                     </TableCell>
-                  ))}
+                  )})}
                 </TableRow>
-              ))
+              )})
             ) : (
               <TableRow>
                 <TableCell
@@ -603,7 +611,7 @@ export function CommonTable(props: CommonTableProps) {
           ) : (
             <>
               Showing {(props.page - 1) * props.limit + 1}-
-              {(props.page - 1) * props.limit + props.data.length} of{" "}
+              {(props.page - 1) * props.limit + props?.data?.length} of{" "}
               {props.totalDocuments} Documents
             </>
           )}
