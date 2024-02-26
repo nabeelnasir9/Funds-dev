@@ -462,7 +462,7 @@ export function CommonTable(props: CommonTableProps) {
               return null;
             }
           })()}
-          {props?.onUpload && <UploadData onSubmit={props.onUpload} />}
+          {/* {props?.onUpload && <UploadData onSubmit={props.onUpload} />}
           <DropdownMenu></DropdownMenu>
           {props?.actions &&
             props?.actions.map((action, i) => {
@@ -471,7 +471,7 @@ export function CommonTable(props: CommonTableProps) {
                   {action.label}
                 </Button>
               );
-            })}
+            })} */}
 
           {props.onCreate && (
             <Button variant={"outline"} onClick={props.onCreate}>

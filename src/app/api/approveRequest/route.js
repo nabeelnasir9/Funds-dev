@@ -30,7 +30,7 @@ export const POST = async (request) => {
 
     let requester = await User.findById(userId);
     console.log(requester, "request role");
-    if (requester.role === userRole) {
+    if (requester.role === userRole && requester.role !="employee") {
       switch (requestType) {
         case "cash": {
           let cashDoc = await Cash.findById(docId);
