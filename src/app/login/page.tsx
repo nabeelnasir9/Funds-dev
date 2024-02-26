@@ -4,8 +4,9 @@ import Link from "next/link";
 import axios from "axios";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-
+import { useRouter } from "next/navigation";
 export default function Page() {
+  const router=useRouter()
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
@@ -23,6 +24,8 @@ export default function Page() {
         response.data,
           console.log(response.data, "user"),
         await  localStorage.setItem("token", response.data.token);
+        await localStorage.setItem("role", response.data.data.role)
+        router.push("/dashboard")
       }) // Assuming response.data contains the user data you want to use in success message
       .catch((error) => Promise.reject(error)); // Ensure errors are correctly propagated
 

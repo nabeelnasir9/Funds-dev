@@ -57,7 +57,10 @@ import {
 import { Button } from "@/components/ui/button";
 import UploadData from "./UploadData";
 import { CommonAccordion } from ".";
-
+import axios from "axios";
+import { http } from "@/lib/config";
+import { apiUrls } from "@/lib/apis";
+import { usePathname } from "next/navigation";
 const commonTableRowActions = [
   "view_details",
   "copy_details",
@@ -84,7 +87,7 @@ type CashRequest = CashRequestItem[];
 export type CommonTableProps = {
   tableKey: string;
   data: any;
-  cashRequest:any[],
+  cashRequest: any[];
   columns: string[];
   hideRowActions?: (typeof commonTableRowActions)[number][];
   onCreate?: () => void;
@@ -113,8 +116,11 @@ export type CommonTableProps = {
 export type TableMeta = Pick<CommonTableProps, "onEdit">;
 
 export function CommonTable(props: CommonTableProps) {
-  console.log(props.columns,"====================columns");
-  
+  const pathname = usePathname();
+  let pathName = pathname.split("/");
+
+  console.log(pathname, "pathname===================", pathName[2]);
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -132,8 +138,42 @@ export function CommonTable(props: CommonTableProps) {
   // }, [])
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
+  const handleApprove = async (id, status) => {
+    try {
+      toast.loading("loading");
+      let userToken = await localStorage.getItem("token");
+      let role = await localStorage.getItem("role");
+      let bodyData = {
+        token: userToken,
+        userRole: role,
+        requestType: pathName[2],
+        status,
+        docId: id,
+      };
+      console.log("response", bodyData);
+      let res = await http.post(apiUrls.users.approveRequest, bodyData);
+      console.log(res, "-------------------------");
+
+      if (res.message === "success") {
+        toast.dismiss();
+        toast.success("    Success");
+      } else {
+        toast.dismiss();
+
+        toast.error(res.message);
+      }
+    } catch (error) {}
+  };
   const [rowSelection, setRowSelection] = React.useState({});
+
+  React.useEffect(() => {
+    let r = localStorage.getItem("role");
+    setRole(r);
+  }, []);
+  const [role, setRole] = React.useState("employee");
+
   const tableColums = React.useMemo(() => {
+    const isMangerOrHr = role !== "employee"; // Check if the role is admin
     return [
       {
         id: "select",
@@ -257,73 +297,56 @@ export function CommonTable(props: CommonTableProps) {
           );
         },
       })),
-      {
-        id: "actions",
-        enableHiding: false,
-        cell: ({ row, table }) => {
-          const index = row.index;
-          const meta = table.options.meta;
-
-          return (
-            <>
-              {!props?.hideActions && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                      <span className="sr-only">Open menu</span>
-                      <DotsHorizontalIcon className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <ActionDropdown
-                      row={row}
-                      hideRowActions={props.hideRowActions}
-                      onViewDetails={props.onViewDetails}
-                      tableKey={props.tableKey}
-                      onDuplicate={props.onDuplicate}
-                      fieldsToCopy={props.fieldsToCopy}
-                    />
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
+      isMangerOrHr
+        ? {
+            id: "Reject",
+            header: ({ table }) => (
+              <Checkbox
+                checked={table.getIsAllPageRowsSelected()}
+                onCheckedChange={(value) =>
+                  table.toggleAllPageRowsSelected(!!value)
+                }
+                aria-label="Select all"
+              />
+            ),
+            cell: ({ row }) => (
               <Button
-                variant="ghost"
-                className="h-8 w-8 p-0"
-                // Not using props.onEdit directly due to memoization
-                onClick={() => {
-                  if (meta?.onEdit) {
-                    meta.onEdit(index);
-                  }
-                }}
+                onClick={() => handleApprove(row.original._id, "reject")}
+                style={{ backgroundColor: "#ce3535", color: "white" }}
               >
-                <span className="sr-only">Edit</span>
-                <FileEdit className="h-4 w-4 text-green-500" />
+                Reject
               </Button>
-              {props?.onDeleteOne && (
-                <Button
-                  variant="ghost"
-                  className="h-8 w-8 p-0"
-                  // Not using props.onEdit directly due to memoization
-                  onClick={() => {
-                    if (props?.onDeleteOne) {
-                      props?.onDeleteOne({
-                        main_account_id: row.original.main_account_id,
-                      });
-                    }
-                  }}
-                >
-                  <span className="sr-only">Delete</span>
-                  <Trash2 className="h-4 w-4 text-red-500" />
-                </Button>
-              )}
-            </>
-          );
-        },
-      },
-    ] as ColumnDef<any>[];
-  }, []);
+            ),
+            enableSorting: false,
+            enableHiding: false,
+          }
+        : null,
+      isMangerOrHr
+        ? {
+            id: "Approve",
+            header: ({ table }) => (
+              <Checkbox
+                checked={table.getIsAllPageRowsSelected()}
+                onCheckedChange={(value) =>
+                  table.toggleAllPageRowsSelected(!!value)
+                }
+                aria-label="Select all"
+              />
+            ),
+            cell: ({ row }) => (
+              <Button
+                style={{ backgroundColor: "#488c3f", color: "white" }}
+                onClick={() => handleApprove(row.original._id, "accept")}
+              >
+                Approve
+              </Button>
+            ),
+            enableSorting: false,
+            enableHiding: false,
+          }
+        : null,
+    ].filter(Boolean) as ColumnDef<any>[];
+  }, [props.columns, props.accordion, role]);
 
   const table = useReactTable({
     data: props.data,
@@ -350,40 +373,6 @@ export function CommonTable(props: CommonTableProps) {
       },
     },
   });
-
- 
-
-  // const [isFirstRender, setIsFirstRender] = React.useState(true);
-  // React.useEffect(() => {
-  //   if (!isFirstRender) {
-  //     localStorage.setItem(
-  //       `${props.tableKey}ColumnVisibility`,
-  //       JSON.stringify(columnVisibility)
-  //     );
-  //   } else {
-  //     const savedVisibleColumn = localStorage.getItem(
-  //       `${props.tableKey}ColumnVisibility`
-  //     );
-
-  //     if (savedVisibleColumn) {
-  //       setColumnVisibility(JSON.parse(savedVisibleColumn));
-  //     } else {
-  //       const initialVisibleColumns = () => {
-  //         let hiddenColumns: Record<string, boolean> = {};
-  //         for (let i = 0; i < props.columns.length; i++) {
-  //           if (i < 5) {
-  //             hiddenColumns[props.columns[i]] = true;
-  //           } else {
-  //             hiddenColumns[props.columns[i]] = false;
-  //           }
-  //         }
-  //         return hiddenColumns;
-  //       };
-  //       setColumnVisibility(initialVisibleColumns());
-  //     }
-  //     setIsFirstRender(false);
-  //   }
-  // }, [columnVisibility, props.tableKey]);
 
   return (
     <>
@@ -474,32 +463,7 @@ export function CommonTable(props: CommonTableProps) {
             }
           })()}
           {props?.onUpload && <UploadData onSubmit={props.onUpload} />}
-          <DropdownMenu>
-            {/* <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger> */}
-            {/* <DropdownMenuContent className="grid grid-cols-2">
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize text-black"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {snakeCaseToNormal(column.id)}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
-            </DropdownMenuContent> */}
-          </DropdownMenu>
+          <DropdownMenu></DropdownMenu>
           {props?.actions &&
             props?.actions.map((action, i) => {
               return (
@@ -568,26 +532,28 @@ export function CommonTable(props: CommonTableProps) {
                 </TableCell>
               </TableRow>
             ) : table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) =>{
-                console.log(row,"table row",table.getRowModel().rows)
-                return  (
-                <TableRow
-                  key={row.id}
-                  // data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => {
-                    console.log(cell,"cell==========");
-                    
-                    return(
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  )})}
-                </TableRow>
-              )})
+              table.getRowModel().rows.map((row) => {
+                console.log(row, "table row", table.getRowModel().rows);
+                return (
+                  <TableRow
+                    key={row.id}
+                    // data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => {
+                      console.log(cell, "cell==========");
+
+                      return (
+                        <TableCell key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })
             ) : (
               <TableRow>
                 <TableCell

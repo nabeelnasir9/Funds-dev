@@ -68,7 +68,7 @@ export const POST = async (request) => {
       { userId: savedUser._id }, // Payload: Include any additional data you want to encode
       process.env.JWT_SECRET,   // Secret key for signing the token
       { expiresIn: "10h" }       // Expiration time for the token
-    );
+    ); 
 
     return NextResponse.json({ message: "success", token :token,savedUser:savedUser});
   } catch (error) {

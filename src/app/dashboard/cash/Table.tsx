@@ -41,6 +41,14 @@ export function UsersTable({ className }: { className?: string }) {
   const formRef = React.useRef<React.ElementRef<"button">>(null);
   const detailsRef = React.useRef<React.ElementRef<"button">>(null);
 const [tableData,setTableData]=React.useState([])
+const [role,setRole]=React.useState([])
+React.useEffect(() => {
+  async function setRoleFunc() {
+    let res = await localStorage.getItem("role").toUpperCase();
+    setRole(res);
+  }
+setRoleFunc()
+}, []);
 
 React.useEffect(()=>{
   const getReq=async()=>{
@@ -134,12 +142,17 @@ console.log(columns,"===========columns===========");
         { id: 1, columnDef: { header: "Title" }, isPlaceholder: false },
         { id: 2, columnDef: { header: "Amount" }, isPlaceholder: false },
         { id: 3, columnDef: { header: "Type" }, isPlaceholder: false },
-        { id: 4, columnDef: { header: "Status" }, isPlaceholder: false }, // Fixed typo in "Attachment"
-        { id: 5, columnDef: { header: "CreatedAt" }, isPlaceholder: false }, // Fixed typo in "Attachment"
-        { id: 6, columnDef: { header: "updatedAt" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        { id: 4, columnDef: { header: "Status" }, isPlaceholder: false }, 
+        { id: 5, columnDef: { header: "CreatedAt" }, isPlaceholder: false }, 
+        { id: 6, columnDef: { header: "updatedAt" }, isPlaceholder: false }, 
+        // ...(role !== "employee" ? [
+        //   { id: 7, columnDef: { header: "Reject" }, isPlaceholder: false },
+        //   { id: 8, columnDef: { header: "Approve" }, isPlaceholder: false }
+        // ] : [])
       ],
     },
   ];
+  
   const cashHistory: any = [
     {
       id: 1,

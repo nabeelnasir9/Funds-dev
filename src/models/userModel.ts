@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema({
     minlength: 6,
     select: false, // Do not return the password by default
   },
+  role:{type:String,default:"employee"},
   leavesBalance:{type:Object,default:{sick:10,casual:10}},
   createdAt: {
     type: Date,
