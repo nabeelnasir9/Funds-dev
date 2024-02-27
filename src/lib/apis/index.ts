@@ -2,8 +2,8 @@ export const apiUrls = {
   users: {
     login: "api/auth/login",
     create: "api/auth/create_user",
-    me: "api/auth/get_me",
-    getAll: "api/auth/get_users",
+    me: "api/users/getUser",
+    getAll: "api/users/getAllUser",
     update: "api/auth/update_user",
     upload: "api/auth/upload",
     deleteMultiple: "api/auth/delete_users",
@@ -14,6 +14,6 @@ export const apiUrls = {
     addPassoutRequest: "api/passout/addPassoutRequest",
     getPassoutRequest: "api/passout/getPassoutRequest",
 
-    approveRequest:"api/approveRequest"
-  }
-}
+    approveRequest: "api/approveRequest",
+  },
+};

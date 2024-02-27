@@ -14,7 +14,7 @@ export const POST = async (request) => {
     const userId = await authMiddleware(token);
 
     // Fetch cash requests for the authenticated user
-    let leavesRequests = await Leave.find({ userId });
+    let leavesRequests = await Leave.find();
 
     // Convert createdAt and updatedAt dates to local string format
 

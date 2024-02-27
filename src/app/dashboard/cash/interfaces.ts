@@ -9,6 +9,9 @@ export class UserClass {
 		public status: string = '',
 		public createdAt: string = '',
 		public updatedAt: string = '',
+		public hrApprove: string = '',
+		public mangerApprove: string = '',
+
 		// public user_name: string = '',
 		// public email: string = '',
 	

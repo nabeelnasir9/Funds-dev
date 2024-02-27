@@ -12,6 +12,8 @@ import {
   CommonModal,
   ShowDetails,
 } from "@/components";
+import { http } from "@/lib/config";
+import { apiUrls } from "@/lib/apis";
 import { type User, type CreateUser, UserClass } from "./interfaces";
 import {
   useCreatePassoutRequest,
@@ -37,23 +39,21 @@ export function UsersTable({ className }: { className?: string }) {
   const [tableData, setTableData] = React.useState([]);
 
   React.useEffect(() => {
-    const getReq = async () => {
-      console.log("function called");
-      let roleFormDb = await localStorage.getItem("role");
+    const getAllUser = async () => {
+      try {
+        let userToken = localStorage.getItem("token");
 
-      let res = await userPassoutRequest.mutateAsync("ali");
-      console.log(res.data, "response data");
-      let newRes=res?.data.filter((req)=>req.status==="pending")
-      if (roleFormDb == "hr") {
-        let finalReq = newRes.filter(
-          (item, i) => item.mangerApprove === "accept"
-        );
-        setTableData(finalReq);
-        return;
+        const bodyData = { token: userToken };
+        console.log(userToken, "=============", bodyData);
+        let res = await http.post(apiUrls.users.getAll, bodyData);
+        console.log(res.data, "---------------------------");
+        let users = res?.data.filter((user, i) => user.status === "pending");
+        setTableData(users);
+      } catch (error) {
+        console.log(error);
       }
-      setTableData(newRes);
     };
-    getReq();
+    getAllUser();
   }, []);
 
   const onSubmit = async (values: CreateUser) => {
@@ -127,16 +127,13 @@ export function UsersTable({ className }: { className?: string }) {
     {
       id: 1,
       headers: [
-
         { id: 0, columnDef: { header: "Sr." }, isPlaceholder: false },
         { id: 1, columnDef: { header: "Name" }, isPlaceholder: false },
-        { id: 2, columnDef: { header: "PassOut Time" }, isPlaceholder: false },
-        { id: 3, columnDef: { header: "Date" }, isPlaceholder: false },
+        { id: 2, columnDef: { header: "Email" }, isPlaceholder: false },
+        { id: 5, columnDef: { header: "CreatedAt" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        { id: 4, columnDef: { header: "Role" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        { id: 3, columnDef: { header: "Status" }, isPlaceholder: false },
         // { id: 4, columnDef: { header: "Sick/casual" }, isPlaceholder: false },
-        { id: 5, columnDef: { header: "Reason" }, isPlaceholder: false }, // Fixed typo in "Attachment"
-        { id: 6, columnDef: { header: "Status" }, isPlaceholder: false }, // Fixed typo in "Attachment"
-        { id: 7, columnDef: { header: "HR" }, isPlaceholder: false }, 
-        { id: 8, columnDef: { header: "Manager" }, isPlaceholder: false }, 
       ],
     },
   ];
@@ -146,8 +143,8 @@ export function UsersTable({ className }: { className?: string }) {
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold "></h1>
 
-        <h1 className="text-2xl font-bold text-center">Pass Outs </h1>
-        <h1 className="text-2xl font-bold text-center">Balance: {10}</h1>
+        <h1 className="text-2xl font-bold text-center">User Requests </h1>
+        <h1 className="text-2xl font-bold "></h1>
       </div>
       {/* <CommonAccordion
         accordions={[
@@ -181,10 +178,10 @@ export function UsersTable({ className }: { className?: string }) {
         hideRowActions={["create_invoice", "duplicate"]}
         data={tableData}
         loading={userPassoutRequest?.isLoading}
-        onCreate={() => {
-          setFormType("create");
-          formRef?.current?.click();
-        }}
+        // onCreate={() => {
+        //   setFormType("create");
+        //   formRef?.current?.click();
+        // }}
         onEdit={onEditUser}
         onUpload={onUploadUsers}
         onViewDetails={viewCustomerDetails}

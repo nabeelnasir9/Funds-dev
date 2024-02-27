@@ -40,46 +40,53 @@ export function UsersTable({ className }: { className?: string }) {
   const [formType, setFormType] = React.useState<"create" | "edit">("create");
   const formRef = React.useRef<React.ElementRef<"button">>(null);
   const detailsRef = React.useRef<React.ElementRef<"button">>(null);
-const [tableData,setTableData]=React.useState([])
-const [role,setRole]=React.useState([])
-React.useEffect(() => {
-  async function setRoleFunc() {
-    let res = await localStorage.getItem("role").toUpperCase();
-    setRole(res);
-  }
-setRoleFunc()
-}, []);
+  const [tableData, setTableData] = React.useState([]);
+  const [role, setRole] = React.useState([]);
+  // React.useEffect(() => {
+  //   async function setRoleFunc() {
+  //     let res = await localStorage.getItem("role").toUpperCase();
+  //     setRole(res);
+  //   }
+  // setRoleFunc()
+  // }, []);
 
-React.useEffect(()=>{
-  const getReq=async()=>{
-console.log("function called");
+  React.useEffect(() => {
+    const getReq = async () => {
+      let roleFormDb = await localStorage.getItem("role").toUpperCase();
+      setRole(roleFormDb);
+      console.log("function called");
 
-    let res=  await userCashRequest.mutateAsync("ali");
-    console.log(res.data,"response data");
-    
-    setTableData(res.data)
-  }
-getReq()
-},[])
+      let res = await userCashRequest.mutateAsync("ali");
+      console.log(res.data, "response data");
+      let newRes = res?.data.filter((req) => req.status === "pending");
+      if (roleFormDb.toLowerCase() == "hr") {
+        let finalReq = newRes.filter(
+          (item, i) => item.mangerApprove === "accept"
+        );
+        setTableData(finalReq);
+        return;
+      }
+      setTableData(newRes);
+    };
+    getReq();
+  }, []);
 
   const onSubmit = async (values: CreateUser) => {
     try {
       console.log(values, "value from the form");
       // toast.loading("adding cash request");
-    let res=  await createCashRequset.mutateAsync(values);
-    console.log(res.message,"response from the store");
-    
-    if(res.message==="success"){
-      // toast.dismiss();
-      // toast.success("Successfully added request");
-      formRef.current?.click()
-    }
-      
-      else{
-        throw new Error("something went wrong")
+      let res = await createCashRequset.mutateAsync(values);
+      console.log(res.message, "response from the store");
+
+      if (res.message === "success") {
+        // toast.dismiss();
+        // toast.success("Successfully added request");
+        formRef.current?.click();
+      } else {
+        throw new Error("something went wrong");
       }
     } catch (error) {
-      console.log(error,"error");
+      console.log(error, "error");
       // toast.dismiss();
       // toast.error("some thing went wrong");
     }
@@ -116,8 +123,7 @@ getReq()
     (column) => column !== "_id"
   );
 
-console.log(columns,"===========columns===========");
-
+  console.log(columns, "===========columns===========");
 
   type CashRequestHeader = {
     id: number;
@@ -142,9 +148,11 @@ console.log(columns,"===========columns===========");
         { id: 1, columnDef: { header: "Title" }, isPlaceholder: false },
         { id: 2, columnDef: { header: "Amount" }, isPlaceholder: false },
         { id: 3, columnDef: { header: "Type" }, isPlaceholder: false },
-        { id: 4, columnDef: { header: "Status" }, isPlaceholder: false }, 
-        { id: 5, columnDef: { header: "CreatedAt" }, isPlaceholder: false }, 
-        { id: 6, columnDef: { header: "updatedAt" }, isPlaceholder: false }, 
+        { id: 4, columnDef: { header: "Status" }, isPlaceholder: false },
+        { id: 5, columnDef: { header: "CreatedAt" }, isPlaceholder: false },
+        { id: 6, columnDef: { header: "updatedAt" }, isPlaceholder: false },
+        { id: 7, columnDef: { header: "HR" }, isPlaceholder: false },
+        { id: 8, columnDef: { header: "Manager" }, isPlaceholder: false },
         // ...(role !== "employee" ? [
         //   { id: 7, columnDef: { header: "Reject" }, isPlaceholder: false },
         //   { id: 8, columnDef: { header: "Approve" }, isPlaceholder: false }
@@ -152,7 +160,7 @@ console.log(columns,"===========columns===========");
       ],
     },
   ];
-  
+
   const cashHistory: any = [
     {
       id: 1,
@@ -211,7 +219,7 @@ console.log(columns,"===========columns===========");
         limit={10}
         lastPage={0}
         // lastPage={users?.data?.pagination.last_page || 0}
-        totalDocuments={ 0}
+        totalDocuments={0}
         // totalDocuments={users?.data?.pagination.total_count || 0}
         setPage={searchQuery.setPage}
         setLimit={searchQuery.setLimit}

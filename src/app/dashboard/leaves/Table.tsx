@@ -45,11 +45,18 @@ export function UsersTable({ className }: { className?: string }) {
   React.useEffect(() => {
     const getReq = async () => {
       console.log("function called");
-
+      let roleFormDb = await localStorage.getItem("role");
       let res = await userLeaveRequest.mutateAsync("ali");
       console.log(res.data, "response data");
-
-      setTableData(res.data);
+      let newRes=res?.data.filter((req)=>req.status==="pending")
+      if (roleFormDb == "hr") {
+        let finalReq = newRes.filter(
+          (item, i) => item.mangerApprove === "accept"
+        );
+        setTableData(finalReq);
+        return;
+      }
+      setTableData(newRes);
     };
     getReq();
   }, []);
@@ -133,6 +140,8 @@ export function UsersTable({ className }: { className?: string }) {
         { id: 5, columnDef: { header: "Created At" }, isPlaceholder: false },
         // { id: 5, columnDef: { header: "Attachment" }, isPlaceholder: false }, // Fixed typo in "Attachment"
         { id: 6, columnDef: { header: "Status" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        { id: 7, columnDef: { header: "HR" }, isPlaceholder: false }, 
+        { id: 8, columnDef: { header: "Manager" }, isPlaceholder: false }, 
       ],
     },
   ];

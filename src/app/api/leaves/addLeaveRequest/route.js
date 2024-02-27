@@ -8,8 +8,8 @@ import { NextResponse } from "next/server";
 export const POST = async (request) => {
   try {
     await dbConnect();
-    const { reason, name, leave, token, date } = await request.json();
-    console.log(token, "====================", name, leave, date, reason);
+    const { reasons, name, leave, token, date } = await request.json();
+    console.log(token, "====================", name, leave, date, reasons);
     // const authorization = headers().get("Authorization");
     // console.log(authorization)
     let userId = await authMiddleware(token);
@@ -19,7 +19,7 @@ export const POST = async (request) => {
     const newLeave = new Leave({
       userId: userId,
       title: name,
-      reason,
+      reason:reasons,
 
       leaveType: leave,
       leaveDate: date,

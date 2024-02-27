@@ -14,7 +14,7 @@ export const POST = async (request) => {
     const userId = await authMiddleware(token);
 
     // Fetch cash requests for the authenticated user
-    let passoutRequests = await Passout.find({ userId });
+    let passoutRequests = await Passout.find();
 
     // Convert createdAt and updatedAt dates to local string format
 

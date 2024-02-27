@@ -30,15 +30,19 @@ export const POST = async (request) => {
 
     let requester = await User.findById(userId);
     console.log(requester, "request role");
-    if (requester.role === userRole && requester.role !="employee") {
+    if (requester.role === userRole && requester.role != "employee") {
       switch (requestType) {
         case "cash": {
           let cashDoc = await Cash.findById(docId);
           console.log(cashDoc, "doc found");
           if (userRole === "manager") {
-            cashDoc.mangerApprove = { status: status, checked: true };
+            cashDoc.mangerApprove = status;
+            if (status === "reject") {
+              cashDoc.status = status;
+            }
           } else {
-            cashDoc.hrApprove = { status: status, checked: true };
+            cashDoc.hrApprove = status;
+            cashDoc.status = status;
           }
           let savedDoc = await cashDoc.save();
           return NextResponse.json({ message: "success", data: savedDoc });
@@ -50,9 +54,13 @@ export const POST = async (request) => {
           let leaveDoc = await Leave.findById(docId);
           console.log(leaveDoc, "doc found");
           if (userRole === "manager") {
-            leaveDoc.mangerApprove = { status: status, checked: true };
+            leaveDoc.mangerApprove = status;
+            if (status === "reject") {
+              leaveDoc.status = status;
+            }
           } else {
-            leaveDoc.hrApprove = { status: status, checked: true };
+            leaveDoc.hrApprove = status;
+            leaveDoc.status = status;
           }
           let savedDoc = await leaveDoc.save();
           return NextResponse.json({ message: "success", data: savedDoc });
@@ -64,11 +72,24 @@ export const POST = async (request) => {
           let passOutDoc = await PassOut.findById(docId);
           console.log(passOutDoc, "doc found");
           if (userRole === "manager") {
-            passOutDoc.mangerApprove = { status: status, checked: true };
+            passOutDoc.mangerApprove = status;
+            if (status === "reject") {
+              passOutDoc.status = status;
+            }
           } else {
-            passOutDoc.hrApprove = { status: status, checked: true };
+            passOutDoc.hrApprove = status;
+            passOutDoc.status = status;
           }
           let savedDoc = await passOutDoc.save();
+          return NextResponse.json({ message: "success", data: savedDoc });
+
+          break;
+        }
+        case "users": {
+          let user = await User.findById(docId);
+          console.log(user, "doc found");
+          user.status = status;
+          let savedDoc = await user.save();
           return NextResponse.json({ message: "success", data: savedDoc });
 
           break;

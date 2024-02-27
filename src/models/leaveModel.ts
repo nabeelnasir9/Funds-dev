@@ -12,7 +12,6 @@ const userSchema = new mongoose.Schema({
   },
   reason: {
     type: String,
-    required: [true, "Please add an amount"],
   },
   status: {
     type: String,
@@ -24,12 +23,11 @@ const userSchema = new mongoose.Schema({
     required: [true, "Please add a type"],
   },
   mangerApprove: {
-    type: Object,
-    default: { checked: false, status: "pending" },
+    type: String,default:"pending"
+
   },
   hrApprove: {
-    type: Object,
-    default: { checked: false, status: "pending" },
+    type: String,default:"pending"
   },
   createdAt: {
     type: Date,

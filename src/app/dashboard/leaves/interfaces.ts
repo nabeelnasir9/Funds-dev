@@ -9,20 +9,22 @@ export class UserClass {
     public leaveDate: string = "",
     public createdAt: string = "",
     public status: string = "",
+    public hrApprove: string = '',
+		public mangerApprove: string = '',
     // public email: string = '',
 
-    public name: string = "",
-    public date: string = "",
+    // public name: string = "",
+    // public date: string = "",
     public attachment: any = "",
 
-    public reasons: string = "",
+    // public reasons: string = "",
 
     // public phone: string = '',
     // public current_balance: number = 123,
     // public isBanned: boolean = true,
     // public isCreator: boolean = true,
     // public isVerified: boolean = true,
-    public leave: "Select type" | "sick" | "casual" = "Select type",
+    // public leave: "Select type" | "sick" | "casual" = "Select type",
     // public access_level:
     // 	| 'read'
     // 	| 'create,read'
@@ -30,8 +32,8 @@ export class UserClass {
     // 	| 'create,read,update,delete' = 'read',
     // public role: 'user' | 'admin' = 'user',
     // public transactionIds: string[] = [],
-    public created_at: string = "",
-    public updated_at: string = ""
+    // public created_at: string = "",
+    // public updated_at: string = ""
   ) {}
 }
 

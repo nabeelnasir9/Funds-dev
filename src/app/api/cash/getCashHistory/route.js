@@ -14,13 +14,13 @@ export const POST = async (request) => {
     const userId = await authMiddleware(token);
 
     // Fetch cash requests for the authenticated user
-    let cashRequests = await Cash.find({ userId });
+    let cashRequests = await Cash.find();
 
     // Convert createdAt and updatedAt dates to local string format
     cashRequests = cashRequests.map(cashRequest => ({
       ...cashRequest.toObject(), // Convert Mongoose document to plain JavaScript object
-      createdAt: new Date(cashRequest.createdAt).toLocaleString(),
-      updatedAt: new Date(cashRequest.updatedAt).toLocaleString(),
+      createdAt: new Date(cashRequest.createdAt).toDateString(),
+      updatedAt: new Date(cashRequest.updatedAt).toDateString(),
     }));
 
     return NextResponse.json({ message: "success", data: cashRequests });

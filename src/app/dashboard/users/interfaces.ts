@@ -4,17 +4,13 @@ export class UserClass {
   constructor(
     public _id: string = "",
     // public user_name: string = '',
-    public title: string = "",
-    public passOut: string = "",
-    public reason: string = "",
+    public username: string = "",
+    public email: string = "",
     public createdAt: string = "",
+    public role: string = "",
 
-    public status: string = "",
-    public hrApprove: string = '',
-		public mangerApprove: string = '',
-    public created_at: string = ""
-  ) // public email: string = '',
-  // public phone: string = '',
+    public status: string = "" // public email: string = '',
+  ) // public phone: string = '',
   // public date: string = '',
   // public time: string = '',
   // public current_balance: number = 123,

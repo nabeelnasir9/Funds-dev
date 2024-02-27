@@ -6,13 +6,13 @@ import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 export default function Page() {
-  const router=useRouter()
+  const router = useRouter();
   const [email, setEmail] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confrimPassword, setConfrimPassword] = useState<string>("");
-
-  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
+const [role,setRole]=useState("")
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log({ email, username, password, confrimPassword });
     if (password !== confrimPassword) {
@@ -24,13 +24,14 @@ export default function Page() {
       email,
       username,
       password,
+      role,
     };
     const response = axios
       .post("/api/auth/signup", data)
       .then((response) => {
         response.data;
-         localStorage.setItem("token", response.data.token);
-         localStorage.setItem("role", response.data.savedUser.role);
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("role", response.data.savedUser.role);
         router.push("/dashboard");
       }) // Assuming response.data contains the user data you want to use in success message
       .catch((error) => Promise.reject(error)); // Ensure errors are correctly propagated
@@ -85,6 +86,32 @@ export default function Page() {
                 >
                   <div>
                     <label
+                      htmlFor="username"
+                      className="block text-sm font-medium leading-6 text-gray-900"
+                    >
+                      User Name
+                    </label>
+                    <div className="mt-2 flex gap-4">
+                      <input
+                        id="username"
+                        name="username"
+                        type="text"
+                        autoComplete="username"
+                        required
+                        onChange={(e) => setUsername(e.target.value)}
+                        value={username}
+                        className="block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      />
+                      <select name="role" value={role} onChange={(e)=>setRole(e.target.value)} id="">
+                        <option value="">Select your role</option>
+                        <option value="hr">hr</option>
+                        <option value="manager">manager</option>
+                        <option value="employee">employee</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label
                       htmlFor="email"
                       className="block text-sm font-medium leading-6 text-gray-900"
                     >
@@ -99,26 +126,6 @@ export default function Page() {
                         required
                         onChange={(e) => setEmail(e.target.value)}
                         value={email}
-                        className="block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="username"
-                      className="block text-sm font-medium leading-6 text-gray-900"
-                    >
-                      User Name
-                    </label>
-                    <div className="mt-2">
-                      <input
-                        id="username"
-                        name="username"
-                        type="username"
-                        autoComplete="username"
-                        required
-                        onChange={(e) => setUsername(e.target.value)}
-                        value={username}
                         className="block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       />
                     </div>
