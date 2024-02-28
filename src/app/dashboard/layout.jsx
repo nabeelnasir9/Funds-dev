@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { http } from "@/lib/config";
 import { apiUrls } from "@/lib/apis";
 import axios from "axios";
-import { Audio, RotatingLines } from "react-loader-spinner";
+import { Audio, RotatingLines, Oval } from "react-loader-spinner";
 import {
   ChevronRight,
   LayoutDashboard,
@@ -40,6 +40,8 @@ export default function Layout({ children }) {
   const router = useRouter();
   const [sidebarToggle, setSidebarToggle] = useState(false);
   const [userStatus, setUserStatus] = useState("");
+  const [user, setUser] = useState();
+
   const [loading, setLoading] = useState(true);
   const store = useStore();
   // useEffect(() => {
@@ -110,6 +112,7 @@ export default function Layout({ children }) {
         let res = await http.post(apiUrls.users.me, bodyData);
         console.log(res, "---------------------------");
         setUserStatus(res?.data?.status);
+        setUser(res?.data);
         setLoading(false);
       } catch (error) {
         setLoading(false);
@@ -123,14 +126,13 @@ export default function Layout({ children }) {
   if (loading) {
     return (
       <div className="min-h-screen flex justify-center items-center">
-        <RotatingLines
+        <Oval
           visible={true}
-          height="96"
-          width="96"
-          color="grey"
-          strokeWidth="5"
-          animationDuration="0.75"
-          ariaLabel="rotating-lines-loading"
+          height="80"
+          width="80"
+          color="lightblue"
+          secondaryColor="whitesmoke"
+          ariaLabel="oval-loading"
           wrapperStyle={{}}
           wrapperClass=""
         />

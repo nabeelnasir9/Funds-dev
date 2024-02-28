@@ -10,14 +10,15 @@ export function useCreatePassoutRequest() {
 	return useMutation({
 	  mutationKey: ["createPassoutRequest"],
 	  mutationFn: async (params: CreateUser) => {
-		loadingToast = toast.loading("Adding Cash Request");
+
+		loadingToast = toast.loading("Adding User Request");
 		const res = await createPassoutRequest(params);
 		return res;
 	  },
 	  onSuccess: (response) => {
 		toast.dismiss(loadingToast);
 		if (response.message === "success") {
-		  toast.success("Cash request Added");
+		  toast.success("User request Added");
 		  // queryClient.invalidateQueries({ queryKey: ['get_users'] })
 		} else {
 		  toast.error(`Error: ${response.message}`);
@@ -35,16 +36,22 @@ export function userGetPassoutRequest(searchParams?: string) {
 	return useMutation({
 	  mutationKey: ["getLeaveRequest"],
 	  mutationFn: async (params: any) => {
-		loadingToast = toast.loading("getting Cash Request");
+		toast.dismiss()
+
+		loadingToast = toast.loading("Getting User Request");
 		const res = await getPassoutRequest(searchParams);
 		return res;
 	  },
 	  onSuccess: (response) => {
 		toast.dismiss(loadingToast);
 		if (response.message === "success") {
-		  toast.success("Getting Cash Request Success");
+		toast.dismiss()
+
+		  toast.success(" User Request Success");
 		  // queryClient.invalidateQueries({ queryKey: ['get_users'] })
 		} else {
+		toast.dismiss()
+
 		  toast.error(`Error: ${response.message}`);
 		}
 	  },

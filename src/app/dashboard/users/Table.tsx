@@ -23,6 +23,7 @@ import {
   useUploadUsers,
 } from "./mutations";
 import { createUserForm, updateUserForm, searchUserForm } from "./forms";
+import toast from "react-hot-toast";
 
 export function UsersTable({ className }: { className?: string }) {
   const searchQuery = useSearchQuery();
@@ -41,6 +42,8 @@ export function UsersTable({ className }: { className?: string }) {
   React.useEffect(() => {
     const getAllUser = async () => {
       try {
+        toast.dismiss()
+        toast.loading("Getting Users")
         let userToken = localStorage.getItem("token");
 
         const bodyData = { token: userToken };
@@ -49,7 +52,11 @@ export function UsersTable({ className }: { className?: string }) {
         console.log(res.data, "---------------------------");
         let users = res?.data.filter((user, i) => user.status === "pending");
         setTableData(users);
+        toast.dismiss()
+        toast.success("Users success")
       } catch (error) {
+        toast.dismiss()
+        toast.error(error.message)
         console.log(error);
       }
     };

@@ -16,16 +16,23 @@ export function useCreateLeaveRequest() {
   return useMutation({
     mutationKey: ["createLeaveRequest"],
     mutationFn: async (params: CreateUser) => {
-      loadingToast = toast.loading("Adding Cash Request");
+      toast.dismiss()
+
+      loadingToast = toast.loading("Adding Leave Request");
       const res = await createLeaveRequest(params);
       return res;
     },
     onSuccess: (response) => {
+
       toast.dismiss(loadingToast);
       if (response.message === "success") {
-        toast.success("Cash request Added");
+      toast.dismiss()
+
+        toast.success("Leave request Added");
         // queryClient.invalidateQueries({ queryKey: ['get_users'] })
       } else {
+      toast.dismiss()
+
         toast.error(`Error: ${response.message}`);
       }
     },
@@ -41,16 +48,22 @@ export function useGetLeaveRequest(searchParams?: string) {
   return useMutation({
     mutationKey: ["getLeaveRequest"],
     mutationFn: async (params: any) => {
-      loadingToast = toast.loading("getting Cash Request");
+      toast.dismiss();
+
+      loadingToast = toast.loading("Getting Leave Request");
       const res = await getLeaveRequest(searchParams);
       return res;
     },
     onSuccess: (response) => {
       toast.dismiss(loadingToast);
       if (response.message === "success") {
-        toast.success("Getting Cash Request Success");
+        toast.dismiss();
+
+        toast.success(" Leave Request Success");
         // queryClient.invalidateQueries({ queryKey: ['get_users'] })
       } else {
+        toast.dismiss();
+
         toast.error(`Error: ${response.message}`);
       }
     },

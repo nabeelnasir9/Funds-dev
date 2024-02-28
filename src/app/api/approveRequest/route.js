@@ -61,6 +61,22 @@ export const POST = async (request) => {
           } else {
             leaveDoc.hrApprove = status;
             leaveDoc.status = status;
+            if (status === "accept") {
+              let user = await User.findById(leaveDoc.userId);
+              console.log("user saved", user, "--------------");
+              if (leaveDoc.leaveType === "sick") {
+                user.leavesBalance.sick = user.leavesBalance.sick - 1;
+                console.log("user saved", user, "------after--------");
+
+                user.markModified("leavesBalance");
+                await user.save();
+              } else {
+                user.leavesBalance.casual = user.leavesBalance.casual - 1;
+                console.log("user saved", user, "------after--------");
+                user.markModified("leavesBalance");
+                await user.save();
+              }
+            }
           }
           let savedDoc = await leaveDoc.save();
           return NextResponse.json({ message: "success", data: savedDoc });

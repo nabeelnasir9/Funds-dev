@@ -7,15 +7,20 @@ import { NextResponse } from "next/server";
 export const POST = async (request) => {
   try {
     await dbConnect();
-    const { token } = await request.json();
+    const { token,employee } = await request.json();
 
     console.log(token, "==================token=========");
     // Authenticate user
     const userId = await authMiddleware(token);
 
     // Fetch cash requests for the authenticated user
-    let passoutRequests = await Passout.find();
+    let passoutRequests ;
 
+    if (employee) {
+      passoutRequests = await Passout.find({userId:userId});
+   } else {
+    passoutRequests = await Passout.find();
+   }
     // Convert createdAt and updatedAt dates to local string format
 
     return NextResponse.json({ message: "success", data: passoutRequests });

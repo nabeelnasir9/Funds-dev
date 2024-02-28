@@ -28,8 +28,13 @@ export function createCashRequest(data: CreateUser) {
 
 export async function getCashRequest(searchParams?: string) {
   let userToken = await localStorage.getItem("token");
-
-  const bodyData = { token: userToken };
+  let role = localStorage.getItem("role");
+  let bodyData;
+  if (role === "employee") {
+    bodyData = { token: userToken, employee: true };
+  } else {
+    bodyData = {  token: userToken };
+  }
   console.log(userToken, "=============", bodyData);
 
   return http.post<GetUsersResponse>(`${apiUrls.users.getCashRequest}`, 

@@ -251,7 +251,6 @@ export function UsersTable({ className }: { className?: string }) {
         />
       </CommonModal>
       {/* ////////////////Cash History/////////// */}
-      <hr className="bg-gray-300" />
 
       <h1 className="text-2xl font-bold text-center mt-[30px]"> Cash Hitory</h1>
 

@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { queryClient } from "@/lib/config";
 import {
-	getCashRequest,
+  getCashRequest,
   createCashRequest,
   updateUser,
   deleteUsers,
@@ -16,6 +16,8 @@ export function useCreateCashRequset() {
   return useMutation({
     mutationKey: ["createCashRequest"],
     mutationFn: async (params: CreateUser) => {
+      toast.dismiss();
+
       loadingToast = toast.loading("Adding Cash Request");
       const res = await createCashRequest(params);
       return res;
@@ -23,9 +25,13 @@ export function useCreateCashRequset() {
     onSuccess: (response) => {
       toast.dismiss(loadingToast);
       if (response.message === "success") {
+        toast.dismiss();
+
         toast.success("Cash request Added");
         // queryClient.invalidateQueries({ queryKey: ['get_users'] })
       } else {
+        toast.dismiss();
+
         toast.error(`Error: ${response.message}`);
       }
     },
@@ -37,33 +43,37 @@ export function useCreateCashRequset() {
 }
 
 export function useGetCashRequest(searchParams?: string) {
+  let loadingToast: any;
+  return useMutation({
+    mutationKey: ["getCashRequest"],
+    mutationFn: async (params: any) => {
+      toast.dismiss();
+      loadingToast = toast.loading("Getting Cash Request");
+      const res = await getCashRequest(searchParams);
+      return res;
+    },
+    onSuccess: (response) => {
+      toast.dismiss(loadingToast);
+      if (response.message === "success") {
+        toast.dismiss();
 
-	let loadingToast: any;
-	return useMutation({
-	  mutationKey: ["getCashRequest"],
-	  mutationFn: async (params: any) => {	
-		loadingToast = toast.loading("Getting Cash Request");
-		const res = await getCashRequest(searchParams);
-		return res;
-	  },
-	  onSuccess: (response) => {
-		toast.dismiss(loadingToast);
-		if (response.message === "success") {
-		  toast.success("Getting Cash Request ");
-		  // queryClient.invalidateQueries({ queryKey: ['get_users'] })
-		} else {
-		  toast.error(`Error: ${response.message}`);
-		}
-	  },
-	  onError: (e) => {
-		toast.dismiss(loadingToast);
-		toast.error(String(e));
-	  },
-	});
-//   return useQuery({
-//   	queryKey: ['get_cashRequest', searchParams],
-//   	queryFn: () => getCashRequest(searchParams),
-//   })
+        toast.success("Cash Request ");
+        // queryClient.invalidateQueries({ queryKey: ['get_users'] })
+      } else {
+        toast.dismiss();
+
+        toast.error(`Error: ${response.message}`);
+      }
+    },
+    onError: (e) => {
+      toast.dismiss(loadingToast);
+      toast.error(String(e));
+    },
+  });
+  //   return useQuery({
+  //   	queryKey: ['get_cashRequest', searchParams],
+  //   	queryFn: () => getCashRequest(searchParams),
+  //   })
 }
 
 export function useUpdateUser() {

@@ -173,6 +173,9 @@ export function CommonTable(props: CommonTableProps) {
   const [role, setRole] = React.useState("employee");
 
   const tableColums = React.useMemo(() => {
+    let lenth=props.data.length
+    let i=1
+    i=i+1
     const isMangerOrHr = role !== "employee"; // Check if the role is admin
     return [
       {
@@ -186,13 +189,10 @@ export function CommonTable(props: CommonTableProps) {
             aria-label="Select all"
           />
         ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={row.getIsSelected()}
-            onCheckedChange={(value) => row.toggleSelected(!!value)}
-            aria-label="Select row"
-          />
-        ),
+        cell: ({ row }) => {
+          console.log(row.id, "----------------------------------------------------------------------------------");
+          return <p>{+row.id + 1}</p>;
+        },
         enableSorting: false,
         enableHiding: false,
       },
@@ -377,13 +377,13 @@ export function CommonTable(props: CommonTableProps) {
   return (
     <>
       <div className="flex items-center justify-between py-4">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+        {/* <DropdownMenu> */}
+          {/* <DropdownMenuTrigger asChild> */}
             <Button variant="outline" className="">
-              Entries: {props.limit}
+              Entries: {props?.data?.length}
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          {/* </DropdownMenuTrigger> */}
+          {/* <DropdownMenuContent align="end">
             {PAGINATION_LIMIT.map((limit) => {
               return (
                 <DropdownMenuItem
@@ -395,9 +395,9 @@ export function CommonTable(props: CommonTableProps) {
               );
             })}
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu> */}
         <div className="flex flex-wrap gap-4">
-          {(() => {
+          {/* {(() => {
             const selectedRows = table.getFilteredSelectedRowModel().rows;
 
             if (selectedRows.length) {
@@ -461,7 +461,7 @@ export function CommonTable(props: CommonTableProps) {
             } else {
               return null;
             }
-          })()}
+          })()} */}
           {/* {props?.onUpload && <UploadData onSubmit={props.onUpload} />}
           <DropdownMenu></DropdownMenu>
           {props?.actions &&
@@ -567,7 +567,7 @@ export function CommonTable(props: CommonTableProps) {
           </TableBody>
         </Table>
       </div>
-      <div className="mt-auto flex items-center justify-end space-x-2 py-4">
+      {/* <div className="mt-auto flex items-center justify-end space-x-2 py-4">
         <div className="text-muted-foreground flex-1 text-sm">
           {table.getFilteredSelectedRowModel().rows.length ? (
             <>
@@ -620,7 +620,7 @@ export function CommonTable(props: CommonTableProps) {
             <ChevronsRight />
           </Button>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }

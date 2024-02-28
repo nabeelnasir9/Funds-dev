@@ -7,17 +7,22 @@ import { NextResponse } from "next/server";
 export const POST = async (request) => {
   try {
     await dbConnect();
-    const { token } = await request.json();
+    const { token, employee } = await request.json();
 
     console.log(token, "==================token=========");
     // Authenticate user
     const userId = await authMiddleware(token);
 
     // Fetch cash requests for the authenticated user
-    let cashRequests = await Cash.find();
+    let cashRequests;
+    if (employee) {
+       cashRequests = await Cash.find({userId:userId});
+    } else {
+       cashRequests = await Cash.find();
+    }
 
     // Convert createdAt and updatedAt dates to local string format
-    cashRequests = cashRequests.map(cashRequest => ({
+    cashRequests = cashRequests.map((cashRequest) => ({
       ...cashRequest.toObject(), // Convert Mongoose document to plain JavaScript object
       createdAt: new Date(cashRequest.createdAt).toDateString(),
       updatedAt: new Date(cashRequest.updatedAt).toDateString(),
@@ -28,7 +33,8 @@ export const POST = async (request) => {
     console.error(error);
     return NextResponse.json({
       error: error,
-      message: "Something went wrong in the server while fetching cash requests",
+      message:
+        "Something went wrong in the server while fetching cash requests",
     });
   }
 };

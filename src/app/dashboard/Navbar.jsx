@@ -3,7 +3,8 @@
 import { useRouter } from "next/navigation";
 import { LogOut, Settings, UserCircle2 } from "lucide-react";
 import { useEffect, useState } from "react";
-
+import { http } from "@/lib/config";
+import { apiUrls } from "@/lib/apis";
 // import useStore from '@/lib/store'
 // import { useLogout } from './mutations'
 import { cn } from "@/lib/utils";
@@ -18,9 +19,27 @@ import Link from "next/link";
 
 export function Navbar({ className }) {
   const [role, setRole] = useState("Employee");
+  const [user,setUser]=useState()
+  useEffect(() => {
+    const checkUserRole = async () => {
+      try {
+        let userToken = localStorage.getItem("token");
+
+        const bodyData = { token: userToken };
+        console.log(userToken, "=============", bodyData);
+        let res = await http.post(apiUrls.users.me, bodyData);
+        console.log(res, "---------------------------");
+        setUser(res.data)
+      } catch (error) {
+
+        console.log(error);
+      }
+    };
+    checkUserRole();
+  }, []);
   const router = useRouter();
   // const admin = useStore().admin
-  const admin = { user_name: "malik" };
+  // const admin = { user_name: "malik" };
 
   // const logout = useLogout()
 
@@ -29,7 +48,7 @@ export function Navbar({ className }) {
       let res = await localStorage.getItem("role").toUpperCase();
       setRole(res);
     }
-	setRoleFunc()
+    setRoleFunc();
   }, []);
 
   const onLogout = async () => {
@@ -57,7 +76,7 @@ export function Navbar({ className }) {
               <div className="flex cursor-pointer items-center">
                 <UserCircle2 className="mr-2 h-10 w-10" />
                 <span>
-                  {admin?.user_name ? admin?.user_name : "no_username"}
+                  {user?.username ? user?.username : "no_username"}
                 </span>
               </div>
             </DropdownMenuTrigger>
@@ -71,7 +90,11 @@ export function Navbar({ className }) {
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   className="cursor-pointer text-black hover:text-balck"
-                  // onClick={() => logout.mutate()}
+                  onClick={async () => {
+                    localStorage.removeItem("role"),
+                      localStorage.removeItem("token"),
+                      router.push("/login");
+                  }}
                 >
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Logout</span>

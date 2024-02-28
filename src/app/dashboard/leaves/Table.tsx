@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import { Filter } from "lucide-react";
-
+import { http } from "@/lib/config";
+import { apiUrls } from "@/lib/apis";
 import { useSearchQuery } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 import {
@@ -41,6 +42,23 @@ export function UsersTable({ className }: { className?: string }) {
   const formRef = React.useRef<React.ElementRef<"button">>(null);
   const detailsRef = React.useRef<React.ElementRef<"button">>(null);
   const [tableData, setTableData] = React.useState([]);
+  const [user, setUser] = React.useState();
+  React.useEffect(() => {
+    const getUser = async () => {
+      try {
+        let userToken = localStorage.getItem("token");
+
+        const bodyData = { token: userToken };
+        console.log(userToken, "=============", bodyData);
+        let res = await http.post(apiUrls.users.me, bodyData);
+        console.log(res, "---------------------------");
+        setUser(res?.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getUser();
+  }, []);
 
   React.useEffect(() => {
     const getReq = async () => {
@@ -48,7 +66,7 @@ export function UsersTable({ className }: { className?: string }) {
       let roleFormDb = await localStorage.getItem("role");
       let res = await userLeaveRequest.mutateAsync("ali");
       console.log(res.data, "response data");
-      let newRes=res?.data.filter((req)=>req.status==="pending")
+      let newRes = res?.data.filter((req) => req.status === "pending");
       if (roleFormDb == "hr") {
         let finalReq = newRes.filter(
           (item, i) => item.mangerApprove === "accept"
@@ -140,8 +158,8 @@ export function UsersTable({ className }: { className?: string }) {
         { id: 5, columnDef: { header: "Created At" }, isPlaceholder: false },
         // { id: 5, columnDef: { header: "Attachment" }, isPlaceholder: false }, // Fixed typo in "Attachment"
         { id: 6, columnDef: { header: "Status" }, isPlaceholder: false }, // Fixed typo in "Attachment"
-        { id: 7, columnDef: { header: "HR" }, isPlaceholder: false }, 
-        { id: 8, columnDef: { header: "Manager" }, isPlaceholder: false }, 
+        { id: 7, columnDef: { header: "HR" }, isPlaceholder: false },
+        { id: 8, columnDef: { header: "Manager" }, isPlaceholder: false },
       ],
     },
   ];
@@ -151,8 +169,20 @@ export function UsersTable({ className }: { className?: string }) {
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold "></h1>
 
-        <h1 className="text-2xl font-bold text-center">Leaves Request</h1>
-        <h1 className="text-2xl font-bold text-center">Balance: {10}</h1>
+        <h1 className={`text-2xl font-bold text-center ${user?.role==="employee"? "ml-[200px]":"ml-0"}`}>
+          Leaves Request
+        </h1>
+        {user?.role == "employee" && (
+          <div>
+            <h1 className="text-[16px] font-bold ">
+              Sick Leave Balance: {user?.leavesBalance?.sick}
+            </h1>
+            <h1 className="text-[16px] font-bold ">
+              Casual Leave Balance: {user?.leavesBalance?.casual}
+            </h1>
+          </div>
+        )}
+        {user?.role !== "employee" && <h1 className="text-2xl font-bold "></h1>}
       </div>
       {/* <CommonAccordion
         accordions={[

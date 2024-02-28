@@ -13,9 +13,14 @@ export async function createPassoutRequest(data: CreateUser) {
 
 export async function getPassoutRequest(searchParams?: string) {
   let userToken = await localStorage.getItem("token");
-
-  const bodyData = { token: userToken };
-  console.log(userToken, "=============", bodyData);
+  let role = localStorage.getItem("role");
+  let bodyData;
+  if (role === "employee") {
+    bodyData = { token: userToken, employee: true };
+  } else {
+    bodyData = { token: userToken };
+  }
+  console.log(userToken, "============---------------------=", role);
 
   return http.post<GetUsersResponse>(
     `${apiUrls.users.getPassoutRequest}`,
