@@ -17,22 +17,21 @@ import { type User, type CreateUser, UserClass } from "./interfaces";
 import {
   useCreateLeaveRequest,
   useGetLeaveRequest,
-  useGetUsers,
   useUpdateUser,
   useDeleteUsers,
   useUploadUsers,
 } from "./mutations";
 import {
-  createUserForm,
   updateUserForm,
   searchUserForm,
   createUserLeaveForm,
 } from "./forms";
+import { useGetUsers } from "../invoices/mutations";
 
 export function UsersTable({ className }: { className?: string }) {
   const searchQuery = useSearchQuery();
 
-  const userLeaveRequest = useGetLeaveRequest(searchQuery.queryStr);
+  const userLeaveRequest:any = useGetLeaveRequest(searchQuery.queryStr);
   const createLeaveRequest = useCreateLeaveRequest();
   const updateUser = useUpdateUser();
   const uploadUsers = useUploadUsers();
@@ -42,8 +41,8 @@ export function UsersTable({ className }: { className?: string }) {
   const formRef = React.useRef<React.ElementRef<"button">>(null);
   const detailsRef = React.useRef<React.ElementRef<"button">>(null);
   const [tableData, setTableData] = React.useState([]);
-  const [acceptedLeave, setAcceptedLeave] = React.useState([]);
-  const [user, setUser] = React.useState();
+  const [acceptedLeave, setAcceptedLeave] = React.useState<any>([]);
+  const [user, setUser] = React.useState<any>();
   React.useEffect(() => {
     const getUser = async () => {
       try {
@@ -51,7 +50,7 @@ export function UsersTable({ className }: { className?: string }) {
 
         const bodyData = { token: userToken };
         console.log(userToken, "=============", bodyData);
-        let res = await http.post(apiUrls.users.me, bodyData);
+        let res:any = await http.post(apiUrls.users.me, bodyData);
         console.log(res, "---------------------------");
         setUser(res?.data);
       } catch (error) {
@@ -65,21 +64,21 @@ export function UsersTable({ className }: { className?: string }) {
     const getReq = async () => {
       console.log("function called");
       let roleFormDb = await localStorage.getItem("role");
-      let res = await userLeaveRequest.mutateAsync("ali");
+      let res:any = await userLeaveRequest.mutateAsync("ali");
       console.log(res.data, "response data");
-      let newRes = res?.data.filter((req) => req.status === "pending");
-      let acceptCash = res?.data.filter((req) => req.status !== "pending");
+      let newRes = res?.data.filter((req:any) => req.status === "pending");
+      let acceptCash = res?.data.filter((req:any) => req.status !== "pending");
       setAcceptedLeave(acceptCash)
       if (roleFormDb == "hr") {
         let finalReq = newRes.filter(
-          (item, i) => item.mangerApprove === "accept"
+          (item:any, i:any) => item.mangerApprove === "accept"
         );
         setTableData(finalReq);
         return;
       }
-      if (roleFormDb.toLowerCase() == "manager") {
+      if (roleFormDb?.toLowerCase() == "manager") {
         let finalReq = newRes.filter(
-          (item, i) => item.mangerApprove === "pending"
+          (item:any, i:any) => item.mangerApprove === "pending"
         );
         setTableData(finalReq);
         return;
@@ -114,14 +113,18 @@ export function UsersTable({ className }: { className?: string }) {
     await updateUser.mutateAsync({ ...values, _id: detailUser?._id || "" });
   };
 
-  const viewCustomerDetails = (index: number) => {
+  const useViewCustomerDetails = (index: number) => {
+    const users: any = useGetUsers();
+
     if (userLeaveRequest?.data && userLeaveRequest?.data?.users[index]) {
       setDetailUser(users.data.users[index] as User);
       detailsRef.current?.click();
     }
   };
 
-  const onEditUser = (index: number) => {
+  const useOnEditUser = (index: number) => {
+    const users: any = useGetUsers();
+
     if (userLeaveRequest?.data && userLeaveRequest?.data.users[index]) {
       setFormType("edit");
       setDetailUser(users?.data.users[index] as User);
@@ -238,9 +241,9 @@ export function UsersTable({ className }: { className?: string }) {
         setTableDataFun={setTableData}
         historyData={acceptedLeave}
         setHistoryData={setAcceptedLeave}
-        onEdit={onEditUser}
+        onEdit={useOnEditUser}
         onUpload={onUploadUsers}
-        onViewDetails={viewCustomerDetails}
+        onViewDetails={useViewCustomerDetails}
         onDeleteMany={onDeleteUsers}
         page={searchQuery.pagination.page}
         limit={searchQuery.pagination.limit}
@@ -278,7 +281,7 @@ export function UsersTable({ className }: { className?: string }) {
 
       <h1 className="text-2xl font-bold text-center mt-[10px]">
         {" "}
-        Leave Hitory
+        Leave History
       </h1>
 
       <CommonTable
@@ -296,9 +299,9 @@ export function UsersTable({ className }: { className?: string }) {
         setTableDataFun={setTableData}
         historyData={acceptedLeave}
         setHistoryData={setAcceptedLeave}
-        onEdit={onEditUser}
+        onEdit={useOnEditUser}
         onUpload={onUploadUsers}
-        onViewDetails={viewCustomerDetails}
+        onViewDetails={useViewCustomerDetails}
         onDeleteMany={onDeleteUsers}
         page={1}
         limit={10}

@@ -326,7 +326,7 @@ export default function Layout({ children }) {
     <div className="min-h-screen flex justify-center items-center">
       <p className="text-[40px]">
         {" "}
-        Plx wait until the Admin accept your request
+        Please wait until the Admin accept your request
       </p>
     </div>
   );

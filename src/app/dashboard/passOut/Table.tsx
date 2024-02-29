@@ -15,17 +15,18 @@ import {
 import { type User, type CreateUser, UserClass } from "./interfaces";
 import {
   useCreatePassoutRequest,
-  userGetPassoutRequest,
+  useUserGetPassoutRequest,
   useUpdateUser,
   useDeleteUsers,
   useUploadUsers,
 } from "./mutations";
 import { createUserForm, updateUserForm, searchUserForm } from "./forms";
+import { useGetUsers } from "../invoices/mutations";
 
 export function UsersTable({ className }: { className?: string }) {
   const searchQuery = useSearchQuery();
 
-  const userPassoutRequest = userGetPassoutRequest(searchQuery.queryStr);
+  const userPassoutRequest:any = useUserGetPassoutRequest(searchQuery.queryStr);
   const createPassoutRequest = useCreatePassoutRequest();
   const updateUser = useUpdateUser();
   const uploadUsers = useUploadUsers();
@@ -35,21 +36,21 @@ export function UsersTable({ className }: { className?: string }) {
   const formRef = React.useRef<React.ElementRef<"button">>(null);
   const detailsRef = React.useRef<React.ElementRef<"button">>(null);
   const [tableData, setTableData] = React.useState([]);
-  const [acceptedPassOut, setAcceptedPassOut] = React.useState([]);
+  const [acceptedPassOut, setAcceptedPassOut] = React.useState<any>([]);
 
   React.useEffect(() => {
     const getReq = async () => {
       console.log("function called");
       let roleFormDb = await localStorage.getItem("role");
 
-      let res = await userPassoutRequest.mutateAsync("ali");
+      let res: any = await userPassoutRequest.mutateAsync("ali");
       console.log(res.data, "response data");
-      let newRes=res?.data.filter((req)=>req.status==="pending")
-      let acceptCash = res?.data.filter((req) => req.status !== "pending");
+      let newRes=res?.data.filter((req:any)=>req.status==="pending")
+      let acceptCash = res?.data.filter((req:any) => req.status !== "pending");
       setAcceptedPassOut(acceptCash)
       if (roleFormDb == "hr") {
         let finalReq = newRes.filter(
-          (item, i) => item.mangerApprove === "accept"
+          (item: any, i: any) => item.mangerApprove === "accept"
         );
         setTableData(finalReq);
         return;
@@ -84,14 +85,17 @@ export function UsersTable({ className }: { className?: string }) {
     await updateUser.mutateAsync({ ...values, _id: detailUser?._id || "" });
   };
 
-  const viewCustomerDetails = (index: number) => {
+  const useViewCustomerDetails = (index: number) => {
+    const users: any = useGetUsers();
     if (users?.data && users?.data?.users[index]) {
       setDetailUser(users.data.users[index] as User);
       detailsRef.current?.click();
     }
   };
 
-  const onEditUser = (index: number) => {
+  const useOnEditUser = (index: number) => {
+    const users: any = useGetUsers();
+
     if (users?.data && users?.data.users[index]) {
       setFormType("edit");
       setDetailUser(users?.data.users[index] as User);
@@ -193,9 +197,9 @@ export function UsersTable({ className }: { className?: string }) {
         setTableDataFun={setTableData}
         historyData={acceptedPassOut}
         setHistoryData={setAcceptedPassOut}
-        onEdit={onEditUser}
+        onEdit={useOnEditUser}
         onUpload={onUploadUsers}
-        onViewDetails={viewCustomerDetails}
+        onViewDetails={useViewCustomerDetails}
         onDeleteMany={onDeleteUsers}
         page={searchQuery.pagination.page}
         limit={searchQuery.pagination.limit}
@@ -233,7 +237,7 @@ export function UsersTable({ className }: { className?: string }) {
 
       <h1 className="text-2xl font-bold text-center mt-[10px]">
         {" "}
-        PassOut Hitory
+        PassOut History
       </h1>
       <CommonTable
         cashRequest={cashRequest}
@@ -246,9 +250,9 @@ export function UsersTable({ className }: { className?: string }) {
         setTableDataFun={setTableData}
         historyData={acceptedPassOut}
         setHistoryData={setAcceptedPassOut}
-        onEdit={onEditUser}
+        onEdit={useOnEditUser}
         onUpload={onUploadUsers}
-        onViewDetails={viewCustomerDetails}
+        onViewDetails={useViewCustomerDetails}
         onDeleteMany={onDeleteUsers}
         page={searchQuery.pagination.page}
         limit={searchQuery.pagination.limit}

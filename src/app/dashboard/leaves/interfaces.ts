@@ -37,10 +37,24 @@ export class UserClass {
   ) {}
 }
 
-export interface User extends UserClass {}
+export interface User extends UserClass {
+  email?: string;
+  user_name?: string;
+  role?: string;
+  access_level?: string;
+  isBanned?: string;
+  isCreator?: string;
+  isVerified?: string;
+
+}
 
 export interface CreateUser extends Omit<User, "_id"> {
   password: string;
+  name?: string;
+  leave?: string;
+  reasons?: string;
+  date?: string;
+  phone?: string;
 }
 
 export interface TableUser

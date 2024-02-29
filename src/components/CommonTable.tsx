@@ -112,10 +112,10 @@ export type CommonTableProps = {
   onDeleteCostCenter?: (data: any) => void;
   onDeleteOne?: (id: any) => void;
 
-  tableData: any;
-  setTableDataFun: (data: any) => void;
-  historyData: any;
-  setHistoryData: (data: any) => void;
+  tableData?: any;
+  setTableDataFun?: (data: any) => void;
+  historyData?: any;
+  setHistoryData?: (data: any) => void;
 };
 
 export type TableMeta = Pick<CommonTableProps, "onEdit">;

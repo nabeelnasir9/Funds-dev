@@ -31,7 +31,7 @@ export function useCreatePassoutRequest() {
 	});
 }
 
-export function userGetPassoutRequest(searchParams?: string) {
+export function useUserGetPassoutRequest(searchParams?: string) {
 	let loadingToast: any;
 	return useMutation({
 	  mutationKey: ["getLeaveRequest"],

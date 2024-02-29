@@ -11,6 +11,13 @@ export class UserClass {
 		public hrApprove: string = '',
 		public mangerApprove: string = '',
 		public status: string = '',
+		public email: string = '',
+		public user_name: string = '',
+		public role: string = '',
+		public access_level: string = '',
+		public isBanned: boolean = true,
+		public isCreator: boolean = true,
+		public isVerified: boolean = true,
 
 		// public user_name: string = '',
 		// public email: string = '',
@@ -34,6 +41,8 @@ export interface User extends UserClass {}
 
 export interface CreateUser extends Omit<User, '_id'> {
 	password: string
+	name?: string
+	phone?: string
 }
 
 export interface TableUser extends Omit<User, 'transactionIds' | 'updated_at' | '_id'> {}

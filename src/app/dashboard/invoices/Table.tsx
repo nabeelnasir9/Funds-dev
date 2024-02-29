@@ -21,6 +21,7 @@ import {
   useUploadUsers,
 } from "./mutations";
 import { createUserForm, updateUserForm, searchUserForm } from "./forms";
+import { getUsers } from "./apis";
 
 export function UsersTable({ className }: { className?: string }) {
   const searchQuery = useSearchQuery();
@@ -43,14 +44,16 @@ export function UsersTable({ className }: { className?: string }) {
     await updateUser.mutateAsync({ ...values, _id: detailUser?._id || "" });
   };
 
-  const viewCustomerDetails = (index: number) => {
+  const useViewCustomerDetails = (index: number) => {
+    const users:any = useGetUsers()
     if (users?.data && users?.data?.users[index]) {
       setDetailUser(users.data.users[index] as User);
       detailsRef.current?.click();
     }
   };
 
-  const onEditUser = (index: number) => {
+  const useOnEditUser = (index: number) => {
+    const users:any = useGetUsers()
     if (users?.data && users?.data.users[index]) {
       setFormType("edit");
       setDetailUser(users?.data.users[index] as User);
@@ -146,9 +149,9 @@ export function UsersTable({ className }: { className?: string }) {
           setFormType("create");
           formRef?.current?.click();
         }}
-        onEdit={onEditUser}
+        onEdit={useOnEditUser}
         onUpload={onUploadUsers}
-        onViewDetails={viewCustomerDetails}
+        onViewDetails={useViewCustomerDetails}
         onDeleteMany={onDeleteUsers}
         page={searchQuery.pagination.page}
         limit={searchQuery.pagination.limit}
