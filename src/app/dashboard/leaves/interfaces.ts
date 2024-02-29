@@ -8,9 +8,9 @@ export class UserClass {
     public reason: any = "",
     public leaveDate: string = "",
     public createdAt: string = "",
-    public status: string = "",
     public hrApprove: string = '',
 		public mangerApprove: string = '',
+    public status: string = "",
     // public email: string = '',
 
     // public name: string = "",

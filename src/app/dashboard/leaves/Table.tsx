@@ -42,6 +42,7 @@ export function UsersTable({ className }: { className?: string }) {
   const formRef = React.useRef<React.ElementRef<"button">>(null);
   const detailsRef = React.useRef<React.ElementRef<"button">>(null);
   const [tableData, setTableData] = React.useState([]);
+  const [acceptedLeave, setAcceptedLeave] = React.useState([]);
   const [user, setUser] = React.useState();
   React.useEffect(() => {
     const getUser = async () => {
@@ -67,9 +68,18 @@ export function UsersTable({ className }: { className?: string }) {
       let res = await userLeaveRequest.mutateAsync("ali");
       console.log(res.data, "response data");
       let newRes = res?.data.filter((req) => req.status === "pending");
+      let acceptCash = res?.data.filter((req) => req.status !== "pending");
+      setAcceptedLeave(acceptCash)
       if (roleFormDb == "hr") {
         let finalReq = newRes.filter(
           (item, i) => item.mangerApprove === "accept"
+        );
+        setTableData(finalReq);
+        return;
+      }
+      if (roleFormDb.toLowerCase() == "manager") {
+        let finalReq = newRes.filter(
+          (item, i) => item.mangerApprove === "pending"
         );
         setTableData(finalReq);
         return;
@@ -157,9 +167,9 @@ export function UsersTable({ className }: { className?: string }) {
         { id: 4, columnDef: { header: "Date" }, isPlaceholder: false },
         { id: 5, columnDef: { header: "Created At" }, isPlaceholder: false },
         // { id: 5, columnDef: { header: "Attachment" }, isPlaceholder: false }, // Fixed typo in "Attachment"
-        { id: 6, columnDef: { header: "Status" }, isPlaceholder: false }, // Fixed typo in "Attachment"
         { id: 7, columnDef: { header: "HR" }, isPlaceholder: false },
         { id: 8, columnDef: { header: "Manager" }, isPlaceholder: false },
+        { id: 6, columnDef: { header: "Status" }, isPlaceholder: false }, // Fixed typo in "Attachment"
       ],
     },
   ];
@@ -169,7 +179,11 @@ export function UsersTable({ className }: { className?: string }) {
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold "></h1>
 
-        <h1 className={`text-2xl font-bold text-center ${user?.role==="employee"? "ml-[200px]":"ml-0"}`}>
+        <h1
+          className={`text-2xl font-bold text-center ${
+            user?.role === "employee" ? "ml-[200px]" : "ml-0"
+          }`}
+        >
           Leaves Request
         </h1>
         {user?.role == "employee" && (
@@ -220,6 +234,10 @@ export function UsersTable({ className }: { className?: string }) {
           setFormType("create");
           formRef?.current?.click();
         }}
+        tableData={tableData}
+        setTableDataFun={setTableData}
+        historyData={acceptedLeave}
+        setHistoryData={setAcceptedLeave}
         onEdit={onEditUser}
         onUpload={onUploadUsers}
         onViewDetails={viewCustomerDetails}
@@ -257,6 +275,40 @@ export function UsersTable({ className }: { className?: string }) {
           close={() => detailsRef.current?.click()}
         />
       </CommonModal>
+
+      <h1 className="text-2xl font-bold text-center mt-[10px]">
+        {" "}
+        Leave Hitory
+      </h1>
+
+      <CommonTable
+        cashRequest={cashRequest}
+        tableKey="history"
+        columns={columns}
+        hideRowActions={["create_invoice", "duplicate"]}
+        data={acceptedLeave}
+        loading={acceptedLeave?.isLoading}
+        // onCreate={() => {
+        //   setFormType("create");
+        //   formRef?.current?.click();
+        // }}
+        tableData={tableData}
+        setTableDataFun={setTableData}
+        historyData={acceptedLeave}
+        setHistoryData={setAcceptedLeave}
+        onEdit={onEditUser}
+        onUpload={onUploadUsers}
+        onViewDetails={viewCustomerDetails}
+        onDeleteMany={onDeleteUsers}
+        page={1}
+        limit={10}
+        lastPage={0}
+        // lastPage={users?.data?.pagination.last_page || 0}
+        totalDocuments={0}
+        // totalDocuments={users?.data?.pagination.total_count || 0}
+        setPage={searchQuery.setPage}
+        setLimit={searchQuery.setLimit}
+      />
     </div>
   );
 }

@@ -9,11 +9,11 @@ export class UserClass {
     public reason: string = "",
     public createdAt: string = "",
 
-    public status: string = "",
     public hrApprove: string = '',
 		public mangerApprove: string = '',
-    public created_at: string = ""
-  ) // public email: string = '',
+    public status: string = "",
+    public created_at: string = "",
+    ) // public email: string = '',
   // public phone: string = '',
   // public date: string = '',
   // public time: string = '',

@@ -41,6 +41,7 @@ export function UsersTable({ className }: { className?: string }) {
   const formRef = React.useRef<React.ElementRef<"button">>(null);
   const detailsRef = React.useRef<React.ElementRef<"button">>(null);
   const [tableData, setTableData] = React.useState([]);
+  const [acceptedCash, setAcceptedCash] = React.useState([]);
   const [role, setRole] = React.useState([]);
   // React.useEffect(() => {
   //   async function setRoleFunc() {
@@ -59,9 +60,18 @@ export function UsersTable({ className }: { className?: string }) {
       let res = await userCashRequest.mutateAsync("ali");
       console.log(res.data, "response data");
       let newRes = res?.data.filter((req) => req.status === "pending");
+      let acceptCash = res?.data.filter((req) => req.status !== "pending");
+      setAcceptedCash(acceptCash)
       if (roleFormDb.toLowerCase() == "hr") {
         let finalReq = newRes.filter(
           (item, i) => item.mangerApprove === "accept"
+        );
+        setTableData(finalReq);
+        return;
+      }
+      if (roleFormDb.toLowerCase() == "manager") {
+        let finalReq = newRes.filter(
+          (item, i) => item.mangerApprove === "pending"
         );
         setTableData(finalReq);
         return;
@@ -148,11 +158,11 @@ export function UsersTable({ className }: { className?: string }) {
         { id: 1, columnDef: { header: "Title" }, isPlaceholder: false },
         { id: 2, columnDef: { header: "Amount" }, isPlaceholder: false },
         { id: 3, columnDef: { header: "Type" }, isPlaceholder: false },
-        { id: 4, columnDef: { header: "Status" }, isPlaceholder: false },
         { id: 5, columnDef: { header: "CreatedAt" }, isPlaceholder: false },
         { id: 6, columnDef: { header: "updatedAt" }, isPlaceholder: false },
         { id: 7, columnDef: { header: "HR" }, isPlaceholder: false },
         { id: 8, columnDef: { header: "Manager" }, isPlaceholder: false },
+        { id: 4, columnDef: { header: "Status" }, isPlaceholder: false },
         // ...(role !== "employee" ? [
         //   { id: 7, columnDef: { header: "Reject" }, isPlaceholder: false },
         //   { id: 8, columnDef: { header: "Approve" }, isPlaceholder: false }
@@ -211,6 +221,10 @@ export function UsersTable({ className }: { className?: string }) {
           setFormType("create");
           formRef?.current?.click();
         }}
+        tableData={tableData}
+        setTableDataFun={setTableData}
+        historyData={acceptedCash}
+        setHistoryData={setAcceptedCash}
         onEdit={onEditUser}
         onUpload={onUploadUsers}
         onViewDetails={viewCustomerDetails}
@@ -252,26 +266,36 @@ export function UsersTable({ className }: { className?: string }) {
       </CommonModal>
       {/* ////////////////Cash History/////////// */}
 
-      <h1 className="text-2xl font-bold text-center mt-[30px]"> Cash Hitory</h1>
+      <h1 className="text-2xl font-bold text-center mt-[10px]"> Cash Hitory</h1>
 
-      {/* <CommonTable
-        cashRequest={cashHistory}
-        tableKey="cash"
+      <CommonTable
+        cashRequest={cashRequest}
+        tableKey="history"
         columns={columns}
         hideRowActions={["create_invoice", "duplicate"]}
-        data={userCashRequest?.data || []}
+        data={acceptedCash}
         loading={userCashRequest?.isLoading}
+        // onCreate={() => {
+        //   setFormType("create");
+        //   formRef?.current?.click();
+        // }}
+        tableData={tableData}
+        setTableDataFun={setTableData}
+        historyData={acceptedCash}
+        setHistoryData={setAcceptedCash}
         onEdit={onEditUser}
-        // onUpload={onUploadUsers}
+        onUpload={onUploadUsers}
         onViewDetails={viewCustomerDetails}
         onDeleteMany={onDeleteUsers}
-        page={searchQuery.pagination.page}
-        limit={searchQuery.pagination.limit}
-        lastPage={ 0}
-        totalDocuments={ 0}
+        page={1}
+        limit={10}
+        lastPage={0}
+        // lastPage={users?.data?.pagination.last_page || 0}
+        totalDocuments={0}
+        // totalDocuments={users?.data?.pagination.total_count || 0}
         setPage={searchQuery.setPage}
         setLimit={searchQuery.setLimit}
-      /> */}
+      />
     </div>
   );
 }

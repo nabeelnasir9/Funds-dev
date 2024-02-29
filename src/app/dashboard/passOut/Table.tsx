@@ -35,6 +35,7 @@ export function UsersTable({ className }: { className?: string }) {
   const formRef = React.useRef<React.ElementRef<"button">>(null);
   const detailsRef = React.useRef<React.ElementRef<"button">>(null);
   const [tableData, setTableData] = React.useState([]);
+  const [acceptedPassOut, setAcceptedPassOut] = React.useState([]);
 
   React.useEffect(() => {
     const getReq = async () => {
@@ -44,6 +45,8 @@ export function UsersTable({ className }: { className?: string }) {
       let res = await userPassoutRequest.mutateAsync("ali");
       console.log(res.data, "response data");
       let newRes=res?.data.filter((req)=>req.status==="pending")
+      let acceptCash = res?.data.filter((req) => req.status !== "pending");
+      setAcceptedPassOut(acceptCash)
       if (roleFormDb == "hr") {
         let finalReq = newRes.filter(
           (item, i) => item.mangerApprove === "accept"
@@ -134,9 +137,9 @@ export function UsersTable({ className }: { className?: string }) {
         { id: 3, columnDef: { header: "Date" }, isPlaceholder: false },
         // { id: 4, columnDef: { header: "Sick/casual" }, isPlaceholder: false },
         { id: 5, columnDef: { header: "Reason" }, isPlaceholder: false }, // Fixed typo in "Attachment"
-        { id: 6, columnDef: { header: "Status" }, isPlaceholder: false }, // Fixed typo in "Attachment"
         { id: 7, columnDef: { header: "HR" }, isPlaceholder: false }, 
         { id: 8, columnDef: { header: "Manager" }, isPlaceholder: false }, 
+        { id: 6, columnDef: { header: "Status" }, isPlaceholder: false }, // Fixed typo in "Attachment"
       ],
     },
   ];
@@ -147,7 +150,8 @@ export function UsersTable({ className }: { className?: string }) {
         <h1 className="text-2xl font-bold "></h1>
 
         <h1 className="text-2xl font-bold text-center">Pass Outs </h1>
-        <h1 className="text-2xl font-bold text-center">Balance: {10}</h1>
+        <h1 className="text-2xl font-bold "></h1>
+
       </div>
       {/* <CommonAccordion
         accordions={[
@@ -185,6 +189,10 @@ export function UsersTable({ className }: { className?: string }) {
           setFormType("create");
           formRef?.current?.click();
         }}
+        tableData={tableData}
+        setTableDataFun={setTableData}
+        historyData={acceptedPassOut}
+        setHistoryData={setAcceptedPassOut}
         onEdit={onEditUser}
         onUpload={onUploadUsers}
         onViewDetails={viewCustomerDetails}
@@ -222,6 +230,35 @@ export function UsersTable({ className }: { className?: string }) {
           close={() => detailsRef.current?.click()}
         />
       </CommonModal>
+
+      <h1 className="text-2xl font-bold text-center mt-[10px]">
+        {" "}
+        PassOut Hitory
+      </h1>
+      <CommonTable
+        cashRequest={cashRequest}
+        tableKey="history"
+        columns={columns}
+        hideRowActions={["create_invoice", "duplicate"]}
+        data={acceptedPassOut}
+        loading={acceptedPassOut?.isLoading}
+        tableData={tableData}
+        setTableDataFun={setTableData}
+        historyData={acceptedPassOut}
+        setHistoryData={setAcceptedPassOut}
+        onEdit={onEditUser}
+        onUpload={onUploadUsers}
+        onViewDetails={viewCustomerDetails}
+        onDeleteMany={onDeleteUsers}
+        page={searchQuery.pagination.page}
+        limit={searchQuery.pagination.limit}
+        lastPage={0}
+        totalDocuments={10}
+        // lastPage={users?.data?.pagination.last_page || 0}
+        // totalDocuments={users?.data?.pagination.total_count || 0}
+        setPage={searchQuery.setPage}
+        setLimit={searchQuery.setLimit}
+      />
     </div>
   );
 }

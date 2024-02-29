@@ -111,6 +111,11 @@ export type CommonTableProps = {
   onDeleteSubAccount?: (data: any) => void;
   onDeleteCostCenter?: (data: any) => void;
   onDeleteOne?: (id: any) => void;
+
+  tableData: any;
+  setTableDataFun: (data: any) => void;
+  historyData: any;
+  setHistoryData: (data: any) => void;
 };
 
 export type TableMeta = Pick<CommonTableProps, "onEdit">;
@@ -150,11 +155,46 @@ export function CommonTable(props: CommonTableProps) {
         status,
         docId: id,
       };
-      console.log("response", bodyData);
       let res = await http.post(apiUrls.users.approveRequest, bodyData);
-      console.log(res, "-------------------------");
 
       if (res.message === "success") {
+        if (role === "hr") {
+          let approvedDoc;
+          let updatedTableDate = props.tableData.filter((item, i) => {
+            if (item._id !== id) {
+              return item;
+            } else {
+              approvedDoc = { ...item, hrApprove: status, status: status };
+            }
+          });
+
+          props.setTableDataFun(updatedTableDate);
+          props.setHistoryData([...props.historyData, approvedDoc]);
+        }
+        if (role === "manager") {
+          let approvedDoc;
+          let updatedTableDate = props.tableData.filter((item, i) => {
+            if (item._id !== id) {
+              return item;
+            } else {
+              if (status == "reject") {
+                approvedDoc = {
+                  ...item,
+                  mangerApprove: status,
+                  status: status,
+                };
+              } else {
+                approvedDoc = {
+                  ...item,
+                  mangerApprove: status,
+                };
+              }
+            }
+          });
+
+          props.setTableDataFun(updatedTableDate);
+          props.setHistoryData([...props.historyData, approvedDoc]);
+        }
         toast.dismiss();
         toast.success("    Success");
       } else {
@@ -173,9 +213,9 @@ export function CommonTable(props: CommonTableProps) {
   const [role, setRole] = React.useState("employee");
 
   const tableColums = React.useMemo(() => {
-    let lenth=props.data.length
-    let i=1
-    i=i+1
+    let lenth = props.data.length;
+    let i = 1;
+    i = i + 1;
     const isMangerOrHr = role !== "employee"; // Check if the role is admin
     return [
       {
@@ -190,7 +230,10 @@ export function CommonTable(props: CommonTableProps) {
           />
         ),
         cell: ({ row }) => {
-          console.log(row.id, "----------------------------------------------------------------------------------");
+          console.log(
+            row.id,
+            "----------------------------------------------------------------------------------"
+          );
           return <p>{+row.id + 1}</p>;
         },
         enableSorting: false,
@@ -297,7 +340,7 @@ export function CommonTable(props: CommonTableProps) {
           );
         },
       })),
-      isMangerOrHr
+      isMangerOrHr && props.tableKey !== "history"
         ? {
             id: "Reject",
             header: ({ table }) => (
@@ -321,7 +364,7 @@ export function CommonTable(props: CommonTableProps) {
             enableHiding: false,
           }
         : null,
-      isMangerOrHr
+      isMangerOrHr && props.tableKey !== "history"
         ? {
             id: "Approve",
             header: ({ table }) => (
@@ -378,12 +421,12 @@ export function CommonTable(props: CommonTableProps) {
     <>
       <div className="flex items-center justify-between py-4">
         {/* <DropdownMenu> */}
-          {/* <DropdownMenuTrigger asChild> */}
-            <Button variant="outline" className="">
-              Entries: {props?.data?.length}
-            </Button>
-          {/* </DropdownMenuTrigger> */}
-          {/* <DropdownMenuContent align="end">
+        {/* <DropdownMenuTrigger asChild> */}
+        <Button variant="outline" className="">
+          Entries: {props?.data?.length}
+        </Button>
+        {/* </DropdownMenuTrigger> */}
+        {/* <DropdownMenuContent align="end">
             {PAGINATION_LIMIT.map((limit) => {
               return (
                 <DropdownMenuItem
