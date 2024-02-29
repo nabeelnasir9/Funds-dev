@@ -21,8 +21,8 @@ import {
   useUploadUsers,
 } from "./mutations";
 import {
-  updateUserForm,
-  searchUserForm,
+  // updateUserForm,
+  // searchUserForm,
   createCashRequestForm,
 } from "./forms";
 import toast from "react-hot-toast";
@@ -247,7 +247,7 @@ export function UsersTable({ className }: { className?: string }) {
           operationType={formType}
           closeModal={() => formRef.current?.click()}
           extendedForm={
-            formType === "create" ? createCashRequestForm : updateUserForm
+            formType === "create" ? createCashRequestForm :createCashRequestForm
           }
           submitText={formType === "create" ? "Create" : "Update"}
           cancelText="Cancel"

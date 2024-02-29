@@ -34,7 +34,7 @@ import { PAGINATION_LIMIT, env } from "@/lib/config";
 import {
   snakeCaseToNormal,
   copyObjectToClipBoard,
-  exportJsonToExcel,
+  // exportJsonToExcel,
 } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -113,9 +113,9 @@ export type CommonTableProps = {
   onDeleteOne?: (id: any) => void;
 
   tableData?: any;
-  setTableDataFun?: (data: any) => void;
+  setTableDataFun?: any;
   historyData?: any;
-  setHistoryData?: (data: any) => void;
+  setHistoryData?: any
 };
 
 export type TableMeta = Pick<CommonTableProps, "onEdit">;
@@ -143,7 +143,7 @@ export function CommonTable(props: CommonTableProps) {
   // }, [])
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
-  const handleApprove = async (id, status) => {
+  const handleApprove = async (id: any, status: any) => {
     try {
       toast.loading("loading");
       let userToken = await localStorage.getItem("token");
@@ -160,7 +160,7 @@ export function CommonTable(props: CommonTableProps) {
       if (res.message === "success") {
         if (role === "hr") {
           let approvedDoc;
-          let updatedTableDate = props.tableData.filter((item, i) => {
+          let updatedTableDate = props.tableData.filter((item: any, i: any) => {
             if (item._id !== id) {
               return item;
             } else {
@@ -173,7 +173,7 @@ export function CommonTable(props: CommonTableProps) {
         }
         if (role === "manager") {
           let approvedDoc;
-          let updatedTableDate = props.tableData.filter((item, i) => {
+          let updatedTableDate:any = props.tableData.filter((item: any, i: any) => {
             if (item._id !== id) {
               return item;
             } else {
@@ -207,7 +207,7 @@ export function CommonTable(props: CommonTableProps) {
   const [rowSelection, setRowSelection] = React.useState({});
 
   React.useEffect(() => {
-    let r = localStorage.getItem("role");
+    let r: any = localStorage.getItem("role");
     setRole(r);
   }, []);
   const [role, setRole] = React.useState("employee");
@@ -220,7 +220,7 @@ export function CommonTable(props: CommonTableProps) {
     return [
       {
         id: "select",
-        header: ({ table }) => (
+        header: ({ table }:any) => (
           <Checkbox
             checked={table.getIsAllPageRowsSelected()}
             onCheckedChange={(value) =>
@@ -229,7 +229,7 @@ export function CommonTable(props: CommonTableProps) {
             aria-label="Select all"
           />
         ),
-        cell: ({ row }) => {
+        cell: ({ row }:any) => {
           console.log(
             row.id,
             "----------------------------------------------------------------------------------"
@@ -343,7 +343,7 @@ export function CommonTable(props: CommonTableProps) {
       isMangerOrHr && props.tableKey !== "history"
         ? {
             id: "Reject",
-            header: ({ table }) => (
+            header: ({ table }:any) => (
               <Checkbox
                 checked={table.getIsAllPageRowsSelected()}
                 onCheckedChange={(value) =>
@@ -352,7 +352,7 @@ export function CommonTable(props: CommonTableProps) {
                 aria-label="Select all"
               />
             ),
-            cell: ({ row }) => (
+            cell: ({ row }:any) => (
               <Button
                 onClick={() => handleApprove(row.original._id, "reject")}
                 style={{ backgroundColor: "#ce3535", color: "white" }}
@@ -367,7 +367,7 @@ export function CommonTable(props: CommonTableProps) {
       isMangerOrHr && props.tableKey !== "history"
         ? {
             id: "Approve",
-            header: ({ table }) => (
+            header: ({ table }:any) => (
               <Checkbox
                 checked={table.getIsAllPageRowsSelected()}
                 onCheckedChange={(value) =>
@@ -376,7 +376,7 @@ export function CommonTable(props: CommonTableProps) {
                 aria-label="Select all"
               />
             ),
-            cell: ({ row }) => (
+            cell: ({ row }:any) => (
               <Button
                 style={{ backgroundColor: "#488c3f", color: "white" }}
                 onClick={() => handleApprove(row.original._id, "accept")}
@@ -528,7 +528,7 @@ export function CommonTable(props: CommonTableProps) {
           <TableHeader>
             {props.cashRequest?.map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
+                {headerGroup.headers.map((header: any) => {
                   return (
                     <TableHead key={header.id} colSpan={header.colSpan}>
                       {header.isPlaceholder ? null : (

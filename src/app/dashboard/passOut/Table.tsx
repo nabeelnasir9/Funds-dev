@@ -20,7 +20,10 @@ import {
   useDeleteUsers,
   useUploadUsers,
 } from "./mutations";
-import { createUserForm, updateUserForm, searchUserForm } from "./forms";
+import { createUserForm, 
+  // updateUserForm,
+  //  searchUserForm 
+  } from "./forms";
 import { useGetUsers } from "../invoices/mutations";
 
 export function UsersTable({ className }: { className?: string }) {
@@ -45,8 +48,8 @@ export function UsersTable({ className }: { className?: string }) {
 
       let res: any = await userPassoutRequest.mutateAsync("ali");
       console.log(res.data, "response data");
-      let newRes=res?.data.filter((req:any)=>req.status==="pending")
-      let acceptCash = res?.data.filter((req:any) => req.status !== "pending");
+      let newRes:any=res?.data.filter((req:any)=>req.status==="pending")
+      let acceptCash:any = res?.data.filter((req:any) => req.status !== "pending");
       setAcceptedPassOut(acceptCash)
       if (roleFormDb == "hr") {
         let finalReq = newRes.filter(
@@ -216,7 +219,7 @@ export function UsersTable({ className }: { className?: string }) {
           defaultObj={detailUser}
           operationType={formType}
           closeModal={() => formRef.current?.click()}
-          extendedForm={formType === "create" ? createUserForm : updateUserForm}
+          extendedForm={formType === "create" ? createUserForm : createUserForm}
           submitText={formType === "create" ? "Create" : "Update"}
           cancelText="Cancel"
           submitFunc={(values) =>

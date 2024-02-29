@@ -21,9 +21,9 @@ type ISearchQuery = {
 
 export function useSearchQuery() {
 	const router = useRouter()
-	const store = useStore()
+	const store:any = useStore()
 
-	const { queryObj: existingQuery, queryStr: existingQueryStr } = parseSearchQueryStr(store.url)
+	const { queryObj: existingQuery, queryStr: existingQueryStr } = parseSearchQueryStr(store?.url)
 	const [state, setState] = useState<ISearchQuery>({
 		filter: existingQuery ? existingQuery.filter : {},
 		select: existingQuery ? existingQuery.select : [],

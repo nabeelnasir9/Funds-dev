@@ -22,13 +22,15 @@ import {
   useDeleteUsers,
   useUploadUsers,
 } from "./mutations";
-import { createUserForm, updateUserForm, searchUserForm } from "./forms";
+import { createUserForm,
+  //  updateUserForm, searchUserForm 
+  } from "./forms";
 import toast from "react-hot-toast";
 
 export function UsersTable({ className }: { className?: string }) {
   const searchQuery = useSearchQuery();
 
-  const userPassoutRequest = useUserGetPassoutRequest(searchQuery.queryStr);
+  const userPassoutRequest:any = useUserGetPassoutRequest(searchQuery.queryStr);
   const createPassoutRequest = useCreatePassoutRequest();
   const updateUser = useUpdateUser();
   const uploadUsers = useUploadUsers();
@@ -49,12 +51,11 @@ export function UsersTable({ className }: { className?: string }) {
         const bodyData = { token: userToken };
         console.log(userToken, "=============", bodyData);
         let res = await http.post(apiUrls.users.getAll, bodyData);
-        console.log(res.data, "---------------------------");
-        let users = res?.data.filter((user, i) => user.status === "pending");
+        let users = res?.data.filter((user:any, i:any) => user.status === "pending");
         setTableData(users);
         toast.dismiss()
         toast.success("Users success")
-      } catch (error) {
+      } catch (error:any) {
         toast.dismiss()
         toast.error(error.message)
         console.log(error);
@@ -84,32 +85,36 @@ export function UsersTable({ className }: { className?: string }) {
     }
   };
 
-  const onUpdate = async (values: any) => {
-    await updateUser.mutateAsync({ ...values, _id: detailUser?._id || "" });
-  };
+  const simpleFunc=()=>{
+    return null
+  }
 
-  const useViewCustomerDetails = (index: number) => {
-    if (users?.data && users?.data?.users[index]) {
-      setDetailUser(users.data.users[index] as User);
-      detailsRef.current?.click();
-    }
-  };
+  // const onUpdate = async (values: any) => {
+  //   await updateUser.mutateAsync({ ...values, _id: detailUser?._id || "" });
+  // };
 
-  const useOnEditUser = (index: number) => {
-    if (users?.data && users?.data.users[index]) {
-      setFormType("edit");
-      setDetailUser(users?.data.users[index] as User);
-      formRef.current?.click();
-    }
-  };
+  // const useViewCustomerDetails = (index: number) => {
+  //   if (users?.data && users?.data?.users[index]) {
+  //     setDetailUser(users.data.users[index] as User);
+  //     detailsRef.current?.click();
+  //   }
+  // };
 
-  const onUploadUsers = async (file: File) => {
-    await uploadUsers.mutateAsync(file);
-  };
+  // const useOnEditUser = (index: number) => {
+  //   if (users?.data && users?.data.users[index]) {
+  //     setFormType("edit");
+  //     setDetailUser(users?.data.users[index] as User);
+  //     formRef.current?.click();
+  //   }
+  // };
 
-  const onDeleteUsers = async (ids: string[]) => {
-    await deleteUsers.mutateAsync(ids);
-  };
+  // const onUploadUsers = async (file: File) => {
+  //   await uploadUsers.mutateAsync(file);
+  // };
+
+  // const onDeleteUsers = async (ids: string[]) => {
+  //   await deleteUsers.mutateAsync(ids);
+  // };
 
   const columns = Object.keys(new UserClass()).filter(
     (column) => column !== "_id"
@@ -189,10 +194,10 @@ export function UsersTable({ className }: { className?: string }) {
         //   setFormType("create");
         //   formRef?.current?.click();
         // }}
-        onEdit={useOnEditUser}
-        onUpload={onUploadUsers}
-        onViewDetails={useViewCustomerDetails}
-        onDeleteMany={onDeleteUsers}
+        onEdit={simpleFunc}
+        onUpload={simpleFunc}
+        onViewDetails={simpleFunc}
+        onDeleteMany={simpleFunc}
         page={searchQuery.pagination.page}
         limit={searchQuery.pagination.limit}
         lastPage={0}
@@ -208,13 +213,13 @@ export function UsersTable({ className }: { className?: string }) {
           defaultObj={detailUser}
           operationType={formType}
           closeModal={() => formRef.current?.click()}
-          extendedForm={formType === "create" ? createUserForm : updateUserForm}
+          extendedForm={formType === "create" ? createUserForm : createUserForm}
           submitText={formType === "create" ? "Create" : "Update"}
           cancelText="Cancel"
           submitFunc={(values) =>
             formType === "create"
               ? onSubmit(values as CreateUser)
-              : onUpdate(values as any)
+              : onSubmit(values as any)
           }
           onDuplicate={() => {}}
         />

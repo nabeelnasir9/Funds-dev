@@ -11,19 +11,19 @@ export class UserClass {
 		public hrApprove: string = '',
 		public mangerApprove: string = '',
 		public status: string = '',
-		public email: string = '',
-		public user_name: string = '',
-		public role: string = '',
-		public access_level: string = '',
-		public isBanned: boolean = true,
-		public isCreator: boolean = true,
-		public isVerified: boolean = true,
+		// public email: string = '',
+		// public user_name: string = '',
+		// public role: string = '',
+		// public access_level: string = '',
+		// public isBanned: boolean = true,
+		// public isCreator: boolean = true,
+		// public isVerified: boolean = true,
 
 		// public user_name: string = '',
 		// public email: string = '',
 	
 		// public phone: string = '',
-		public current_balance: number = 123,
+		// public current_balance: number = 123,
 		// public isBanned: boolean = true,
 		// public isCreator: boolean = true,
 		// public isVerified: boolean = true,
@@ -33,7 +33,7 @@ export class UserClass {
 		// 	| 'create,read,update'
 		// 	| 'create,read,update,delete' = 'read',
 		// public role: 'user' | 'admin' = 'user',
-		public transactionIds: string[] = [],
+		// public transactionIds: string[] = [],
 	) {}
 }
 

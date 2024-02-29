@@ -22,8 +22,8 @@ import {
   useUploadUsers,
 } from "./mutations";
 import {
-  updateUserForm,
-  searchUserForm,
+  // updateUserForm,
+  // searchUserForm,
   createUserLeaveForm,
 } from "./forms";
 import { useGetUsers } from "../invoices/mutations";
@@ -259,7 +259,7 @@ export function UsersTable({ className }: { className?: string }) {
           operationType={formType}
           closeModal={() => formRef.current?.click()}
           extendedForm={
-            formType === "create" ? createUserLeaveForm : updateUserForm
+            formType === "create" ? createUserLeaveForm : createUserLeaveForm
           }
           submitText={formType === "create" ? "Create" : "Update"}
           cancelText="Cancel"

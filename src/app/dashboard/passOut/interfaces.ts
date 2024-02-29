@@ -3,7 +3,7 @@ import { HttpCommonResponse, CommonGetAllResponse } from "@/lib/interfaces";
 export class UserClass {
   constructor(
     public _id: string = "",
-    // public user_name: string = '',
+    public name: string = '',
     public title: string = "",
     public passOut: string = "",
     public reason: string = "",

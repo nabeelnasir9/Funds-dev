@@ -1,4 +1,5 @@
 export interface HttpError {
+  data: any
 	status: number
 	message: string
 }
