@@ -1,6 +1,3 @@
-
-
-
 import dbConnect from "../../../../utils/dbConnect";
 import Users from "../../../../models/userModel";
 import bcrypt from "bcryptjs";
@@ -11,16 +8,20 @@ import { NextResponse } from "next/server";
 export const POST = async (request) => {
   try {
     await dbConnect();
-    const { username, email, password,role } = await request.json();
+    const { username, email, password } = await request.json();
 
     const hashedPassword = await bcrypt.hash(password, 10);
     console.log("in api calling", "hash", username, email, password);
+
+    const hrs = await Users.find({ role: "hr" });
+    const managers = await Users.find({ role: "manager" });
 
     const newUser = new Users({
       username,
       email,
       password: hashedPassword,
-      role
+      hrs,
+      managers,
     });
 
     const savedUser = await newUser.save();
@@ -29,11 +30,15 @@ export const POST = async (request) => {
     // Generate a JWT token
     const token = jwt.sign(
       { userId: savedUser._id }, // Payload: Include any additional data you want to encode
-      process.env.JWT_SECRET,   // Secret key for signing the token
-      { expiresIn: "10h" }       // Expiration time for the token
-    ); 
+      process.env.JWT_SECRET, // Secret key for signing the token
+      { expiresIn: "10h" } // Expiration time for the token
+    );
 
-    return NextResponse.json({ message: "success", token :token,savedUser:savedUser});
+    return NextResponse.json({
+      message: "success",
+      token: token,
+      savedUser: savedUser,
+    });
   } catch (error) {
     console.error(error, "error");
     return NextResponse.json({

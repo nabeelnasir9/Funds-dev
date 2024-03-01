@@ -42,7 +42,7 @@ export function UsersTable({ className }: { className?: string }) {
   const detailsRef = React.useRef<React.ElementRef<"button">>(null);
   const [tableData, setTableData] = React.useState([]);
   const [acceptedCash, setAcceptedCash] = React.useState([]);
-  const [role, setRole] = React.useState([]);
+  const [role, setRole] = React.useState();
   // React.useEffect(() => {
   //   async function setRoleFunc() {
   //     let res = await localStorage.getItem("role").toUpperCase();
@@ -55,7 +55,7 @@ export function UsersTable({ className }: { className?: string }) {
     const getReq = async () => {
       let roleFormDb:any = (await localStorage.getItem("role"))?.toUpperCase() ?? "employee";
       setRole(roleFormDb);
-      console.log("function called");
+      console.log("function called----------------", roleFormDb);
 
       let res:any = await userCashRequest.mutateAsync("ali");
       console.log(res.data, "response data");
@@ -186,33 +186,35 @@ export function UsersTable({ className }: { className?: string }) {
   ];
   return (
     <div className={cn("w-full", className)}>
-      <h1 className="text-2xl font-bold text-center">New Cash Request</h1>
       {/* <CommonAccordion
         accordions={[
           {
             label: (
               <div className="flex gap-2">
-                <Filter className="h-6 w-6" />
+              <Filter className="h-6 w-6" />
                 Filters
               </div>
             ),
             content: (
               <CommonForm
-                type="form"
-                defaultObj={searchQuery.filterObj}
-                operationType="edit"
-                extendedForm={searchUserForm}
-                submitText="Search"
-                cancelText="Cancel"
-                submitFunc={searchQuery.setQuery}
-                onDuplicate={() => {}}
+              type="form"
+              defaultObj={searchQuery.filterObj}
+              operationType="edit"
+              extendedForm={searchUserForm}
+              submitText="Search"
+              cancelText="Cancel"
+              submitFunc={searchQuery.setQuery}
+              onDuplicate={() => {}}
               />
-            ),
-          },
-        ]}
-      /> */}
-      <hr className="bg-gray-300 mt-[20px]" />
-      <CommonTable
+              ),
+            },
+          ]}
+        /> */}
+      {(localStorage.getItem("role")) === "superAdmin" ? null : (
+        <>
+        <h1 className="text-2xl font-bold text-center">New Cash Request</h1>
+        <hr className="bg-gray-300 mt-[20px]" />
+        <CommonTable
         cashRequest={cashRequest}
         tableKey="cash"
         columns={columns}
@@ -240,6 +242,9 @@ export function UsersTable({ className }: { className?: string }) {
         setPage={searchQuery.setPage}
         setLimit={searchQuery.setLimit}
       />
+        </>
+      
+      )}
       <CommonModal ref={formRef} className="sm:min-w-[510px] lg:min-w-[800px]">
         <CommonForm
           type="modal"
@@ -269,6 +274,7 @@ export function UsersTable({ className }: { className?: string }) {
       {/* ////////////////Cash History/////////// */}
 
       <h1 className="text-2xl font-bold text-center mt-[10px]"> Cash History</h1>
+      <hr className="bg-gray-300 mt-[20px]" />
 
       <CommonTable
         cashRequest={cashRequest}

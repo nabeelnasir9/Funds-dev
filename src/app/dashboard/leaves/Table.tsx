@@ -31,7 +31,7 @@ import { useGetUsers } from "../invoices/mutations";
 export function UsersTable({ className }: { className?: string }) {
   const searchQuery = useSearchQuery();
 
-  const userLeaveRequest:any = useGetLeaveRequest(searchQuery.queryStr);
+  const userLeaveRequest: any = useGetLeaveRequest(searchQuery.queryStr);
   const createLeaveRequest = useCreateLeaveRequest();
   const updateUser = useUpdateUser();
   const uploadUsers = useUploadUsers();
@@ -43,6 +43,7 @@ export function UsersTable({ className }: { className?: string }) {
   const [tableData, setTableData] = React.useState([]);
   const [acceptedLeave, setAcceptedLeave] = React.useState<any>([]);
   const [user, setUser] = React.useState<any>();
+  const [role, setRole] = React.useState<any>();
   React.useEffect(() => {
     const getUser = async () => {
       try {
@@ -50,7 +51,7 @@ export function UsersTable({ className }: { className?: string }) {
 
         const bodyData = { token: userToken };
         console.log(userToken, "=============", bodyData);
-        let res:any = await http.post(apiUrls.users.me, bodyData);
+        let res: any = await http.post(apiUrls.users.me, bodyData);
         console.log(res, "---------------------------");
         setUser(res?.data);
       } catch (error) {
@@ -64,21 +65,22 @@ export function UsersTable({ className }: { className?: string }) {
     const getReq = async () => {
       console.log("function called");
       let roleFormDb = await localStorage.getItem("role");
-      let res:any = await userLeaveRequest.mutateAsync("ali");
+      setRole(roleFormDb?.toLowerCase());
+      let res: any = await userLeaveRequest.mutateAsync("ali");
       console.log(res.data, "response data");
-      let newRes = res?.data.filter((req:any) => req.status === "pending");
-      let acceptCash = res?.data.filter((req:any) => req.status !== "pending");
-      setAcceptedLeave(acceptCash)
+      let newRes = res?.data.filter((req: any) => req.status === "pending");
+      let acceptCash = res?.data.filter((req: any) => req.status !== "pending");
+      setAcceptedLeave(acceptCash);
       if (roleFormDb == "hr") {
         let finalReq = newRes.filter(
-          (item:any, i:any) => item.mangerApprove === "accept"
+          (item: any, i: any) => item.mangerApprove === "accept"
         );
         setTableData(finalReq);
         return;
       }
       if (roleFormDb?.toLowerCase() == "manager") {
         let finalReq = newRes.filter(
-          (item:any, i:any) => item.mangerApprove === "pending"
+          (item: any, i: any) => item.mangerApprove === "pending"
         );
         setTableData(finalReq);
         return;
@@ -179,6 +181,8 @@ export function UsersTable({ className }: { className?: string }) {
 
   return (
     <div className={cn("w-full", className)}>
+      {localStorage.getItem("role") === "superAdmin" ? null : (
+        <>
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold "></h1>
 
@@ -201,7 +205,7 @@ export function UsersTable({ className }: { className?: string }) {
         )}
         {user?.role !== "employee" && <h1 className="text-2xl font-bold "></h1>}
       </div>
-      {/* <CommonAccordion
+          {/* <CommonAccordion
         accordions={[
           {
             label: (
@@ -225,33 +229,36 @@ export function UsersTable({ className }: { className?: string }) {
           },
         ]}
       /> */}
-      <hr className="bg-gray-300 mt-[20px]" />
-      <CommonTable
-        cashRequest={cashRequest}
-        tableKey="leaves"
-        columns={columns}
-        hideRowActions={["create_invoice", "duplicate"]}
-        data={tableData}
-        loading={userLeaveRequest?.isLoading}
-        onCreate={() => {
-          setFormType("create");
-          formRef?.current?.click();
-        }}
-        tableData={tableData}
-        setTableDataFun={setTableData}
-        historyData={acceptedLeave}
-        setHistoryData={setAcceptedLeave}
-        onEdit={useOnEditUser}
-        onUpload={onUploadUsers}
-        onViewDetails={useViewCustomerDetails}
-        onDeleteMany={onDeleteUsers}
-        page={searchQuery.pagination.page}
-        limit={searchQuery.pagination.limit}
-        lastPage={0}
-        totalDocuments={0}
-        setPage={searchQuery.setPage}
-        setLimit={searchQuery.setLimit}
-      />
+          <hr className="bg-gray-300 mt-[20px]" />
+
+          <CommonTable
+            cashRequest={cashRequest}
+            tableKey="leaves"
+            columns={columns}
+            hideRowActions={["create_invoice", "duplicate"]}
+            data={tableData}
+            loading={userLeaveRequest?.isLoading}
+            onCreate={() => {
+              setFormType("create");
+              formRef?.current?.click();
+            }}
+            tableData={tableData}
+            setTableDataFun={setTableData}
+            historyData={acceptedLeave}
+            setHistoryData={setAcceptedLeave}
+            onEdit={useOnEditUser}
+            onUpload={onUploadUsers}
+            onViewDetails={useViewCustomerDetails}
+            onDeleteMany={onDeleteUsers}
+            page={searchQuery.pagination.page}
+            limit={searchQuery.pagination.limit}
+            lastPage={0}
+            totalDocuments={0}
+            setPage={searchQuery.setPage}
+            setLimit={searchQuery.setLimit}
+          />
+        </>
+      )}
       <CommonModal ref={formRef} className="sm:min-w-[510px] lg:min-w-[800px]">
         <CommonForm
           type="modal"
@@ -283,6 +290,7 @@ export function UsersTable({ className }: { className?: string }) {
         {" "}
         Leave History
       </h1>
+      <hr className="bg-gray-300 mt-[20px]" />
 
       <CommonTable
         cashRequest={cashRequest}

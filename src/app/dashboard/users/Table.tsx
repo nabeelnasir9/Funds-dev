@@ -143,8 +143,11 @@ export function UsersTable({ className }: { className?: string }) {
         { id: 1, columnDef: { header: "Name" }, isPlaceholder: false },
         { id: 2, columnDef: { header: "Email" }, isPlaceholder: false },
         { id: 5, columnDef: { header: "CreatedAt" }, isPlaceholder: false }, // Fixed typo in "Attachment"
-        { id: 4, columnDef: { header: "Role" }, isPlaceholder: false }, // Fixed typo in "Attachment"
         { id: 3, columnDef: { header: "Status" }, isPlaceholder: false },
+        { id: 4, columnDef: { header: "Role" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        { id: 4, columnDef: { header: "Set Role" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        { id: 6, columnDef: { header: "Set HR" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        { id: 7, columnDef: { header: "Set Manager" }, isPlaceholder: false }, // Fixed typo in "Attachment"
         // { id: 4, columnDef: { header: "Sick/casual" }, isPlaceholder: false },
       ],
     },
@@ -185,7 +188,7 @@ export function UsersTable({ className }: { className?: string }) {
       <hr className="bg-gray-300 mt-[20px]" />
       <CommonTable
         cashRequest={cashRequest}
-        tableKey="passout"
+        tableKey="users"
         columns={columns}
         hideRowActions={["create_invoice", "duplicate"]}
         data={tableData}

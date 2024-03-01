@@ -20,16 +20,19 @@ import {
   useDeleteUsers,
   useUploadUsers,
 } from "./mutations";
-import { createUserForm, 
+import {
+  createUserForm,
   // updateUserForm,
-  //  searchUserForm 
-  } from "./forms";
+  //  searchUserForm
+} from "./forms";
 import { useGetUsers } from "../invoices/mutations";
 
 export function UsersTable({ className }: { className?: string }) {
   const searchQuery = useSearchQuery();
 
-  const userPassoutRequest:any = useUserGetPassoutRequest(searchQuery.queryStr);
+  const userPassoutRequest: any = useUserGetPassoutRequest(
+    searchQuery.queryStr
+  );
   const createPassoutRequest = useCreatePassoutRequest();
   const updateUser = useUpdateUser();
   const uploadUsers = useUploadUsers();
@@ -40,17 +43,22 @@ export function UsersTable({ className }: { className?: string }) {
   const detailsRef = React.useRef<React.ElementRef<"button">>(null);
   const [tableData, setTableData] = React.useState([]);
   const [acceptedPassOut, setAcceptedPassOut] = React.useState<any>([]);
+  const [role, setRole] = React.useState<any>();
 
   React.useEffect(() => {
     const getReq = async () => {
       console.log("function called");
       let roleFormDb = await localStorage.getItem("role");
-
+      setRole(roleFormDb?.toLowerCase());
       let res: any = await userPassoutRequest.mutateAsync("ali");
       console.log(res.data, "response data");
-      let newRes:any=res?.data.filter((req:any)=>req.status==="pending")
-      let acceptCash:any = res?.data.filter((req:any) => req.status !== "pending");
-      setAcceptedPassOut(acceptCash)
+      let newRes: any = res?.data.filter(
+        (req: any) => req.status === "pending"
+      );
+      let acceptCash: any = res?.data.filter(
+        (req: any) => req.status !== "pending"
+      );
+      setAcceptedPassOut(acceptCash);
       if (roleFormDb == "hr") {
         let finalReq = newRes.filter(
           (item: any, i: any) => item.mangerApprove === "accept"
@@ -137,15 +145,14 @@ export function UsersTable({ className }: { className?: string }) {
     {
       id: 1,
       headers: [
-
         { id: 0, columnDef: { header: "Sr." }, isPlaceholder: false },
         { id: 1, columnDef: { header: "Name" }, isPlaceholder: false },
         { id: 2, columnDef: { header: "PassOut Time" }, isPlaceholder: false },
         { id: 3, columnDef: { header: "Date" }, isPlaceholder: false },
         // { id: 4, columnDef: { header: "Sick/casual" }, isPlaceholder: false },
         { id: 5, columnDef: { header: "Reason" }, isPlaceholder: false }, // Fixed typo in "Attachment"
-        { id: 7, columnDef: { header: "HR" }, isPlaceholder: false }, 
-        { id: 8, columnDef: { header: "Manager" }, isPlaceholder: false }, 
+        { id: 7, columnDef: { header: "HR" }, isPlaceholder: false },
+        { id: 8, columnDef: { header: "Manager" }, isPlaceholder: false },
         { id: 6, columnDef: { header: "Status" }, isPlaceholder: false }, // Fixed typo in "Attachment"
       ],
     },
@@ -153,13 +160,6 @@ export function UsersTable({ className }: { className?: string }) {
 
   return (
     <div className={cn("w-full", className)}>
-      <div className="flex justify-between">
-        <h1 className="text-2xl font-bold "></h1>
-
-        <h1 className="text-2xl font-bold text-center">Pass Outs </h1>
-        <h1 className="text-2xl font-bold "></h1>
-
-      </div>
       {/* <CommonAccordion
         accordions={[
           {
@@ -184,35 +184,45 @@ export function UsersTable({ className }: { className?: string }) {
           },
         ]}
       /> */}
-      <hr className="bg-gray-300 mt-[20px]" />
-      <CommonTable
-        cashRequest={cashRequest}
-        tableKey="passout"
-        columns={columns}
-        hideRowActions={["create_invoice", "duplicate"]}
-        data={tableData}
-        loading={userPassoutRequest?.isLoading}
-        onCreate={() => {
-          setFormType("create");
-          formRef?.current?.click();
-        }}
-        tableData={tableData}
-        setTableDataFun={setTableData}
-        historyData={acceptedPassOut}
-        setHistoryData={setAcceptedPassOut}
-        onEdit={useOnEditUser}
-        onUpload={onUploadUsers}
-        onViewDetails={useViewCustomerDetails}
-        onDeleteMany={onDeleteUsers}
-        page={searchQuery.pagination.page}
-        limit={searchQuery.pagination.limit}
-        lastPage={0}
-        totalDocuments={10}
-        // lastPage={users?.data?.pagination.last_page || 0}
-        // totalDocuments={users?.data?.pagination.total_count || 0}
-        setPage={searchQuery.setPage}
-        setLimit={searchQuery.setLimit}
-      />
+      {localStorage.getItem("role") === "superAdmin" ? null : (
+        <>
+          <div className="flex justify-between">
+            <h1 className="text-2xl font-bold "></h1>
+
+            <h1 className="text-2xl font-bold text-center">Pass Outs </h1>
+            <h1 className="text-2xl font-bold "></h1>
+          </div>
+          <hr className="bg-gray-300 mt-[20px]" />
+          <CommonTable
+            cashRequest={cashRequest}
+            tableKey="passout"
+            columns={columns}
+            hideRowActions={["create_invoice", "duplicate"]}
+            data={tableData}
+            loading={userPassoutRequest?.isLoading}
+            onCreate={() => {
+              setFormType("create");
+              formRef?.current?.click();
+            }}
+            tableData={tableData}
+            setTableDataFun={setTableData}
+            historyData={acceptedPassOut}
+            setHistoryData={setAcceptedPassOut}
+            onEdit={useOnEditUser}
+            onUpload={onUploadUsers}
+            onViewDetails={useViewCustomerDetails}
+            onDeleteMany={onDeleteUsers}
+            page={searchQuery.pagination.page}
+            limit={searchQuery.pagination.limit}
+            lastPage={0}
+            totalDocuments={10}
+            // lastPage={users?.data?.pagination.last_page || 0}
+            // totalDocuments={users?.data?.pagination.total_count || 0}
+            setPage={searchQuery.setPage}
+            setLimit={searchQuery.setLimit}
+          />
+        </>
+      )}
       <CommonModal ref={formRef} className="sm:min-w-[510px] lg:min-w-[800px]">
         <CommonForm
           type="modal"
@@ -242,6 +252,8 @@ export function UsersTable({ className }: { className?: string }) {
         {" "}
         PassOut History
       </h1>
+      <hr className="bg-gray-300 mt-[20px]" />
+
       <CommonTable
         cashRequest={cashRequest}
         tableKey="history"

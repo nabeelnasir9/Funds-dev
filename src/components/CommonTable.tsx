@@ -115,7 +115,7 @@ export type CommonTableProps = {
   tableData?: any;
   setTableDataFun?: any;
   historyData?: any;
-  setHistoryData?: any
+  setHistoryData?: any;
 };
 
 export type TableMeta = Pick<CommonTableProps, "onEdit">;
@@ -173,24 +173,26 @@ export function CommonTable(props: CommonTableProps) {
         }
         if (role === "manager") {
           let approvedDoc;
-          let updatedTableDate:any = props.tableData.filter((item: any, i: any) => {
-            if (item._id !== id) {
-              return item;
-            } else {
-              if (status == "reject") {
-                approvedDoc = {
-                  ...item,
-                  mangerApprove: status,
-                  status: status,
-                };
+          let updatedTableDate: any = props.tableData.filter(
+            (item: any, i: any) => {
+              if (item._id !== id) {
+                return item;
               } else {
-                approvedDoc = {
-                  ...item,
-                  mangerApprove: status,
-                };
+                if (status == "reject") {
+                  approvedDoc = {
+                    ...item,
+                    mangerApprove: status,
+                    status: status,
+                  };
+                } else {
+                  approvedDoc = {
+                    ...item,
+                    mangerApprove: status,
+                  };
+                }
               }
             }
-          });
+          );
 
           props.setTableDataFun(updatedTableDate);
           props.setHistoryData([...props.historyData, approvedDoc]);
@@ -220,7 +222,7 @@ export function CommonTable(props: CommonTableProps) {
     return [
       {
         id: "select",
-        header: ({ table }:any) => (
+        header: ({ table }: any) => (
           <Checkbox
             checked={table.getIsAllPageRowsSelected()}
             onCheckedChange={(value) =>
@@ -229,7 +231,7 @@ export function CommonTable(props: CommonTableProps) {
             aria-label="Select all"
           />
         ),
-        cell: ({ row }:any) => {
+        cell: ({ row }: any) => {
           console.log(
             row.id,
             "----------------------------------------------------------------------------------"
@@ -322,9 +324,29 @@ export function CommonTable(props: CommonTableProps) {
                   )}
                 </p>
               ) : typeof value === "object" && value && value[0] ? (
-                <p className="flex-1 overflow-ellipsis break-words">
-                  {(value as Array<any>).join(", ")}
-                </p>
+                <>
+                  {console.log(
+                    value,
+                    "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[value"
+                  )}
+                  <p className="flex-1 overflow-ellipsis break-words">
+                    {/* {(value as Array<any>).join(", ")} */}
+                    <select
+                      name="role"
+                      value={role}
+                      onChange={(e) => setRole(e.target.value)}
+                      id=""
+                    >
+                      <option value="">Select</option>
+
+                      {value.map((item, index) => (
+                        <option key={index} value={typeof item === "object" ? item.username : item}>
+                        {typeof item === "object" ? item.username : item}
+                      </option>
+                      ))}
+                    </select>
+                  </p>
+                </>
               ) : (
                 <p
                   className="flex-1 overflow-ellipsis break-words"
@@ -343,7 +365,7 @@ export function CommonTable(props: CommonTableProps) {
       isMangerOrHr && props.tableKey !== "history"
         ? {
             id: "Reject",
-            header: ({ table }:any) => (
+            header: ({ table }: any) => (
               <Checkbox
                 checked={table.getIsAllPageRowsSelected()}
                 onCheckedChange={(value) =>
@@ -352,7 +374,7 @@ export function CommonTable(props: CommonTableProps) {
                 aria-label="Select all"
               />
             ),
-            cell: ({ row }:any) => (
+            cell: ({ row }: any) => (
               <Button
                 onClick={() => handleApprove(row.original._id, "reject")}
                 style={{ backgroundColor: "#ce3535", color: "white" }}
@@ -367,7 +389,7 @@ export function CommonTable(props: CommonTableProps) {
       isMangerOrHr && props.tableKey !== "history"
         ? {
             id: "Approve",
-            header: ({ table }:any) => (
+            header: ({ table }: any) => (
               <Checkbox
                 checked={table.getIsAllPageRowsSelected()}
                 onCheckedChange={(value) =>
@@ -376,7 +398,7 @@ export function CommonTable(props: CommonTableProps) {
                 aria-label="Select all"
               />
             ),
-            cell: ({ row }:any) => (
+            cell: ({ row }: any) => (
               <Button
                 style={{ backgroundColor: "#488c3f", color: "white" }}
                 onClick={() => handleApprove(row.original._id, "accept")}
