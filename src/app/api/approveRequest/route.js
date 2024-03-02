@@ -10,7 +10,7 @@ import { NextResponse } from "next/server";
 export const POST = async (request) => {
   try {
     await dbConnect();
-    const { token, userRole, requestType, docId, status } =
+    const { token, userRole, requestType, docId, status,approveUserData } =
       await request.json();
 
     console.log(
@@ -23,7 +23,8 @@ export const POST = async (request) => {
       docId,
       "requestType",
       status,
-      "status"
+      "status",
+      approveUserData
     );
     // Authenticate user
     const userId = await authMiddleware(token);
@@ -103,8 +104,10 @@ export const POST = async (request) => {
         }
         case "users": {
           let user = await User.findById(docId);
-          console.log(user, "doc found");
-          user.status = status;
+          if(status==="accept"){
+
+          }else{
+          user.status = status;}
           let savedDoc = await user.save();
           return NextResponse.json({ message: "success", data: savedDoc });
 

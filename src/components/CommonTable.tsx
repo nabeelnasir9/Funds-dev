@@ -124,12 +124,23 @@ export function CommonTable(props: CommonTableProps) {
   const pathname = usePathname();
   let pathName = pathname.split("/");
 
-  console.log(pathname, "pathname===================", pathName[2]);
-
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
+  const [roles, setRoles] = React.useState<any>(Array(3).fill("")); // Array of role states
+  const handleChange = async (index: any, value: any) => {
+    console.log(index, "------------sent in func", value);
+    setRoles((prevArray) => {
+      const newArray = [...prevArray];
+      newArray[index] = value; // Update the first element
+      console.log(newArray, "-------------÷÷----------noew role before");
+      return newArray;
+    });
+  };
+
+ 
+
   // const initialVisibleColumns = React.useMemo(() => {
   // 	let hiddenColumns: Record<string, boolean> = {}
   // 	for (let i = 0; i < props.columns.length; i++) {
@@ -154,6 +165,7 @@ export function CommonTable(props: CommonTableProps) {
         requestType: pathName[2],
         status,
         docId: id,
+        approveUserData: roles,
       };
       let res = await http.post(apiUrls.users.approveRequest, bodyData);
 
@@ -241,127 +253,135 @@ export function CommonTable(props: CommonTableProps) {
         enableSorting: false,
         enableHiding: false,
       },
-      ...[...props.columns, ...(props?.accordion ?? [])].map((column) => ({
-        accessorKey: column,
-        header: <p className="capitalize">{snakeCaseToNormal(column)}</p>,
+      ...[...props.columns, ...(props?.accordion ?? [])].map(
+        (column, columnIndex) => ({
+          accessorKey: column,
+          header: <p className="capitalize">{snakeCaseToNormal(column)}</p>,
 
-        // @ts-ignore
-        cell: ({ row }) => {
-          const value = row.getValue(column);
-          return (
-            <div className="flex flex-col" key={column}>
-              {props?.accordion?.includes(column) ? (
-                <div>
-                  {(value as any)?.map((item: any, i: number) => {
-                    return (
-                      <CommonAccordion
-                        key={i}
-                        accordions={[
-                          {
-                            label: (
-                              <div className="flex justify-between gap-8 w-full">
-                                <p>{item?.cost_center}</p>
-                                <div
-                                  onClick={() => {
-                                    if (props?.onDeleteCostCenter) {
-                                      props?.onDeleteCostCenter({
-                                        main_account_id:
-                                          row?.original?.main_account_id,
-                                        cost_center_id: item?.cost_center_id,
-                                      });
-                                    }
-                                  }}
-                                >
-                                  <Trash2 color="red" height={16} />
+          // @ts-ignore
+          cell: ({ row }) => {
+            const value = row.getValue(column);
+            return (
+              <div className="flex flex-col" key={column}>
+                {props?.accordion?.includes(column) ? (
+                  <div>
+                    {(value as any)?.map((item: any, i: number) => {
+                      return (
+                        <CommonAccordion
+                          key={i}
+                          accordions={[
+                            {
+                              label: (
+                                <div className="flex justify-between gap-8 w-full">
+                                  <p>{item?.cost_center}</p>
+                                  <div
+                                    onClick={() => {
+                                      if (props?.onDeleteCostCenter) {
+                                        props?.onDeleteCostCenter({
+                                          main_account_id:
+                                            row?.original?.main_account_id,
+                                          cost_center_id: item?.cost_center_id,
+                                        });
+                                      }
+                                    }}
+                                  >
+                                    <Trash2 color="red" height={16} />
+                                  </div>
                                 </div>
-                              </div>
-                            ),
-                            content: (
-                              <div>
-                                {item?.sub_account?.map(
-                                  (subAccount: any, i: number) => {
-                                    return (
-                                      <div
-                                        key={i}
-                                        className="flex justify-between gap-8 w-full"
-                                      >
-                                        <p>{subAccount?.sub_account}</p>
+                              ),
+                              content: (
+                                <div>
+                                  {item?.sub_account?.map(
+                                    (subAccount: any, i: number) => {
+                                      return (
                                         <div
-                                          onClick={() => {
-                                            if (props?.onDeleteSubAccount) {
-                                              props?.onDeleteSubAccount({
-                                                main_account_id:
-                                                  row?.original
-                                                    ?.main_account_id,
-                                                cost_center_id:
-                                                  item?.cost_center_id,
-                                                sub_account_id:
-                                                  subAccount?.sub_account_id,
-                                              });
-                                            }
-                                          }}
+                                          key={i}
+                                          className="flex justify-between gap-8 w-full"
                                         >
-                                          <Trash2 color="red" height={16} />
+                                          <p>{subAccount?.sub_account}</p>
+                                          <div
+                                            onClick={() => {
+                                              if (props?.onDeleteSubAccount) {
+                                                props?.onDeleteSubAccount({
+                                                  main_account_id:
+                                                    row?.original
+                                                      ?.main_account_id,
+                                                  cost_center_id:
+                                                    item?.cost_center_id,
+                                                  sub_account_id:
+                                                    subAccount?.sub_account_id,
+                                                });
+                                              }
+                                            }}
+                                          >
+                                            <Trash2 color="red" height={16} />
+                                          </div>
                                         </div>
-                                      </div>
-                                    );
-                                  }
-                                )}
-                              </div>
-                            ),
-                          },
-                        ]}
-                      />
-                    );
-                  })}
-                </div>
-              ) : typeof value === "boolean" ? (
-                <p className="flex-1">
-                  {value ? (
-                    <CheckCircle2 className="h-4 w-4 text-green-500" />
-                  ) : (
-                    <XCircle className="h-4 w-4 text-red-500" />
-                  )}
-                </p>
-              ) : typeof value === "object" && value && value[0] ? (
-                <>
-                  {console.log(
-                    value,
-                    "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[value"
-                  )}
-                  <p className="flex-1 overflow-ellipsis break-words">
-                    {/* {(value as Array<any>).join(", ")} */}
-                    <select
-                      name="role"
-                      value={role}
-                      onChange={(e) => setRole(e.target.value)}
-                      id=""
-                    >
-                      <option value="">Select</option>
-
-                      {value.map((item, index) => (
-                        <option key={index} value={typeof item === "object" ? item.username : item}>
-                        {typeof item === "object" ? item.username : item}
-                      </option>
-                      ))}
-                    </select>
+                                      );
+                                    }
+                                  )}
+                                </div>
+                              ),
+                            },
+                          ]}
+                        />
+                      );
+                    })}
+                  </div>
+                ) : typeof value === "boolean" ? (
+                  <p className="flex-1">
+                    {value ? (
+                      <CheckCircle2 className="h-4 w-4 text-green-500" />
+                    ) : (
+                      <XCircle className="h-4 w-4 text-red-500" />
+                    )}
                   </p>
-                </>
-              ) : (
-                <p
-                  className="flex-1 overflow-ellipsis break-words"
-                  onClick={() => {
-                    navigator.clipboard.writeText(value);
-                    toast.success("Copied");
-                  }}
-                >
-                  {value}
-                </p>
-              )}
-            </div>
-          );
-        },
-      })),
+                ) : typeof value === "object" && value && value[0] ? (
+                  <>
+                   
+                    <p className="flex-1 overflow-ellipsis break-words">
+                      {/* {(value as Array<any>).join(", ")} */}
+                      <select
+                        name="role"
+                        // value={roles[columnIndex - 5]}
+                        onChange={(e) =>
+                          handleChange(
+                            columnIndex - 5,
+                            value[e.target.selectedIndex-1]
+                          )
+                        }
+                        id=""
+                      >
+                        <option value="">Select</option>
+                        {value.map((item: any, index: any) => (
+                          <option
+                            key={index}
+                            value={
+                              typeof item === "object" ? item.username : item
+                            }
+                          >
+                            {typeof item === "object" ? item.username : item}
+                          </option>
+                        ))}
+                      </select>
+                    </p>
+                  </>
+                ) : (
+                  <p
+                    className="flex-1 overflow-ellipsis break-words"
+                    onClick={() => {
+                      navigator.clipboard.writeText(value);
+                      toast.success("Copied");
+                    }}
+                  >
+                    {value}
+                  </p>
+                )}
+              </div>
+            );
+          },
+        })
+      ),
       isMangerOrHr && props.tableKey !== "history"
         ? {
             id: "Reject",
@@ -376,7 +396,8 @@ export function CommonTable(props: CommonTableProps) {
             ),
             cell: ({ row }: any) => (
               <Button
-                onClick={() => handleApprove(row.original._id, "reject")}
+                // onClick={() => handleApprove(row.original._id, "reject")}
+                onClick={()=>{console.log(roles,"roles----------")}}
                 style={{ backgroundColor: "#ce3535", color: "white" }}
               >
                 Reject
@@ -462,82 +483,6 @@ export function CommonTable(props: CommonTableProps) {
           </DropdownMenuContent>
         </DropdownMenu> */}
         <div className="flex flex-wrap gap-4">
-          {/* {(() => {
-            const selectedRows = table.getFilteredSelectedRowModel().rows;
-
-            if (selectedRows.length) {
-              return (
-                <>
-                  <Button
-                    variant={"destructive"}
-                    onClick={() => {
-                      // console.log(table.getRowModel().rows, columnVisibility)
-                      const newArray = selectedRows?.map((row) => {
-                        const newRow: any = {};
-                        props.columns.forEach((column) => {
-                          if (columnVisibility[column]) {
-                            // let words = column.split(' ')
-
-                            // Capitalize the first letter of each word and join them with an underscore
-                            // const result: string = words
-                            // 	.map(
-                            // 		(word) =>
-                            // 			word.charAt(0).toUpperCase() +
-                            // 			word.slice(1),
-                            // 	)
-                            // 	.join(' ')
-
-                            let newWords = column.split("_");
-                            const newResult: string = newWords
-                              .map(
-                                (word) =>
-                                  word.charAt(0).toUpperCase() + word.slice(1)
-                              )
-                              .join(" ");
-                            newRow[newResult] = row.original[column];
-                            console.log(column);
-                          }
-                        });
-                        return newRow;
-                      });
-                      exportJsonToExcel(newArray);
-                      // The newArray now contains the transformed data based on your code snippet
-                    }}
-                  >
-                    Export to XL ({selectedRows.length})
-                  </Button>
-                  <Button
-                    variant={"destructive"}
-                    onClick={() => {
-                      props.onDeleteMany(
-                        selectedRows.map((row) => row.original._id)
-                      );
-                      setRowSelection({});
-                    }}
-                  >
-                    Delete ({selectedRows.length})
-                  </Button>
-                  {props?.customActionsComponents &&
-                    props?.customActionsComponents(
-                      selectedRows.map((row) => row.original._id)
-                    )}
-                </>
-              );
-            } else {
-              return null;
-            }
-          })()} */}
-          {/* {props?.onUpload && <UploadData onSubmit={props.onUpload} />}
-          <DropdownMenu></DropdownMenu>
-          {props?.actions &&
-            props?.actions.map((action, i) => {
-              return (
-                <Button variant={"outline"} onClick={action.onClick} key={i}>
-                  {action.label}
-                </Button>
-              );
-            })} */}
-
           {props.onCreate && (
             <Button variant={"outline"} onClick={props.onCreate}>
               Create
@@ -554,25 +499,7 @@ export function CommonTable(props: CommonTableProps) {
                   return (
                     <TableHead key={header.id} colSpan={header.colSpan}>
                       {header.isPlaceholder ? null : (
-                        <div
-                        // {...{
-                        //   className: header.column.getCanSort()
-                        //     ? "cursor-pointer select-none flex items-center gap-1"
-                        //     : "",
-                        //   // onClick: header.column.getToggleSortingHandler(),
-                        // }}
-                        >
-                          {header.columnDef.header}
-
-                          {/* {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )} */}
-                          {/* {{
-                            asc: <ChevronUp width={20} />,
-                            desc: <ChevronDown width={20} />,
-                          }[header.column.getIsSorted() as string] ?? null} */}
-                        </div>
+                        <div>{header.columnDef.header}</div>
                       )}
                     </TableHead>
                   );
@@ -632,60 +559,6 @@ export function CommonTable(props: CommonTableProps) {
           </TableBody>
         </Table>
       </div>
-      {/* <div className="mt-auto flex items-center justify-end space-x-2 py-4">
-        <div className="text-muted-foreground flex-1 text-sm">
-          {table.getFilteredSelectedRowModel().rows.length ? (
-            <>
-              {table.getFilteredSelectedRowModel().rows.length} of{" "}
-              {table.getFilteredRowModel().rows.length} row(s) selected.
-            </>
-          ) : (
-            <>
-              Showing {(props.page - 1) * props.limit + 1}-
-              {(props.page - 1) * props.limit + props?.data?.length} of{" "}
-              {props.totalDocuments} Documents
-            </>
-          )}
-        </div>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => props.setPage(1)}
-            disabled={props.page === 1}
-            title="First Page"
-          >
-            <ChevronsLeft />
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => props.setPage(props.page - 1)}
-            disabled={props.page === 1}
-            title="Previous Page"
-          >
-            <ChevronLeft />
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => props.setPage(props.page + 1)}
-            disabled={props.page === props.lastPage}
-            title="Next Page"
-          >
-            <ChevronRight />
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => props.setPage(props.lastPage)}
-            disabled={props.page === props.lastPage}
-            title="Last Page"
-          >
-            <ChevronsRight />
-          </Button>
-        </div>
-      </div> */}
     </>
   );
 }
