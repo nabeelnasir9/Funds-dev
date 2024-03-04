@@ -5,13 +5,14 @@ import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import emailjs from "emailjs-com";
 export default function Page() {
   const router = useRouter();
   const [email, setEmail] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confrimPassword, setConfrimPassword] = useState<string>("");
-const [role,setRole]=useState("")
+  const [role, setRole] = useState("");
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log({ email, username, password, confrimPassword });
@@ -33,6 +34,19 @@ const [role,setRole]=useState("")
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("role", response.data.savedUser.role);
         router.push("/dashboard");
+
+        emailjs.send(
+          "service_d1tavgc",
+          "template_3acifqo",
+          {
+            from_email: "mudusargg@yopmail.com",
+            to_email: "mudusar@yopmail.com",
+
+            subject: "Registration Successful",
+          message: `Dear ${username}, \n\nCongratulations! You have successfully registered on our platform.`,
+          },
+          "LNMFdRwrNcrpfT7pJ"
+        );
       }) // Assuming response.data contains the user data you want to use in success message
       .catch((error) => Promise.reject(error)); // Ensure errors are correctly propagated
 

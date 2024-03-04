@@ -130,7 +130,7 @@ export function CommonTable(props: CommonTableProps) {
   );
   const [roles, setRoles] = React.useState<any>(Array(3).fill("")); // Array of role states
   const handleChange = async (index: any, value: any) => {
-    let valuesFromStorage = await localStorage.getItem("rolesArray");
+    let valuesFromStorage:any = await localStorage.getItem("rolesArray");
     let val = JSON.parse(valuesFromStorage);
     console.log(val, "-------valueas", index);
 
