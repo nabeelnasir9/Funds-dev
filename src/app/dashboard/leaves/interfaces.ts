@@ -15,7 +15,7 @@ export class UserClass {
 
     // public name: string = "",
     // public date: string = "",
-    public attachment: any = "",
+    // public attachment: any = "",
 
     // public reasons: string = "",
 

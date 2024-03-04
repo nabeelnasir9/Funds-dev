@@ -1,5 +1,6 @@
 import dbConnect from "../../../../utils/dbConnect";
 import Cash from "../../../../models/cashModel";
+import User from "../../../../models/userModel";
 import authMiddleware from "../../../../utils/authMiddleware";
 import { NextResponse } from "next/server";
 
@@ -9,16 +10,28 @@ export const POST = async (request) => {
     await dbConnect();
     const { token, employee } = await request.json();
 
-    console.log(token, "==================token=========");
+    // console.log(token, "==================token=========");
     // Authenticate user
     const userId = await authMiddleware(token);
 
     // Fetch cash requests for the authenticated user
     let cashRequests;
     if (employee) {
-       cashRequests = await Cash.find({userId:userId});
+      cashRequests = await Cash.find({ userId: userId });
     } else {
-       cashRequests = await Cash.find();
+      let cashReq = await Cash.find();
+      cashRequests = await Promise.all(
+        cashReq.map(async (req) => {
+          let reqUser = await User.findById(req.userId);
+
+          if (reqUser.hr == userId || reqUser.manager == userId) {
+            return req;
+          } else {
+            return null;
+          }
+        })
+      );
+      cashRequests = cashRequests.filter((req) => req !== null); // Remove null entries
     }
 
     // Convert createdAt and updatedAt dates to local string format

@@ -130,8 +130,19 @@ export function CommonTable(props: CommonTableProps) {
   );
   const [roles, setRoles] = React.useState<any>(Array(3).fill("")); // Array of role states
   const handleChange = async (index: any, value: any) => {
+    let valuesFromStorage = await localStorage.getItem("rolesArray");
+    let val = JSON.parse(valuesFromStorage);
+    console.log(val, "-------valueas", index);
+
+    if ((val[0] === "hr" || val[0] === "manager") && index != 0) {
+      toast.success("no need of HR or Manager");
+      setSelectDisable(true);
+      await localStorage.setItem("rolesArray",JSON.stringify(roles));
+
+      return;
+    }
     console.log(index, "------------sent in func", value);
-    setRoles((prevArray) => {
+    setRoles((prevArray: any) => {
       const newArray = [...prevArray];
       newArray[index] = value; // Update the first element
       console.log(newArray, "-------------÷÷----------noew role before");
@@ -139,7 +150,13 @@ export function CommonTable(props: CommonTableProps) {
     });
   };
 
- 
+  const [selectDisable, setSelectDisable] = React.useState(false);
+
+  React.useEffect(() => {
+    console.log(roles, "roles ki array set ");
+    const rolesArray = JSON.stringify(roles);
+    localStorage.setItem("rolesArray", rolesArray);
+  }, [roles]);
 
   // const initialVisibleColumns = React.useMemo(() => {
   // 	let hiddenColumns: Record<string, boolean> = {}
@@ -159,13 +176,19 @@ export function CommonTable(props: CommonTableProps) {
       toast.loading("loading");
       let userToken = await localStorage.getItem("token");
       let role = await localStorage.getItem("role");
+      let rolesArray: any = await localStorage.getItem("rolesArray");
+      let val=JSON.parse(rolesArray)
+      if (val[0] === "hr" || val[0] === "manager") {
+        val[1]="",
+        val[2]=""
+      }
       let bodyData = {
         token: userToken,
         userRole: role,
         requestType: pathName[2],
         status,
         docId: id,
-        approveUserData: roles,
+        approveUserData: val,
       };
       let res = await http.post(apiUrls.users.approveRequest, bodyData);
 
@@ -338,21 +361,22 @@ export function CommonTable(props: CommonTableProps) {
                   </p>
                 ) : typeof value === "object" && value && value[0] ? (
                   <>
-                   
                     <p className="flex-1 overflow-ellipsis break-words">
                       {/* {(value as Array<any>).join(", ")} */}
                       <select
+                        className="rounded-[12px] p-1"
                         name="role"
-                        // value={roles[columnIndex - 5]}
+                        disabled={selectDisable}
+                        // value={roles[0]==="employee"?columnIndex -5:"ddd"}
                         onChange={(e) =>
                           handleChange(
                             columnIndex - 5,
-                            value[e.target.selectedIndex-1]
+                            value[e.target.selectedIndex - 1]
                           )
                         }
                         id=""
                       >
-                        <option value="">Select</option>
+                        <option  value="null">Select</option>
                         {value.map((item: any, index: any) => (
                           <option
                             key={index}
@@ -396,8 +420,7 @@ export function CommonTable(props: CommonTableProps) {
             ),
             cell: ({ row }: any) => (
               <Button
-                // onClick={() => handleApprove(row.original._id, "reject")}
-                onClick={()=>{console.log(roles,"roles----------")}}
+                onClick={() => handleApprove(row.original._id, "reject")}
                 style={{ backgroundColor: "#ce3535", color: "white" }}
               >
                 Reject

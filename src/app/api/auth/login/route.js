@@ -8,7 +8,6 @@ import jwt from 'jsonwebtoken';
 export const POST = async (request) => {
     try {
       await dbConnect();
-      console.log("===================",request,"===============");
       const { email, password } = await request.json();
       const user = await User.findOne({ email }).select('+password');
   

@@ -10,7 +10,7 @@ import { NextResponse } from "next/server";
 export const POST = async (request) => {
   try {
     await dbConnect();
-    const { token, userRole, requestType, docId, status,approveUserData } =
+    const { token, userRole, requestType, docId, status, approveUserData } =
       await request.json();
 
     console.log(
@@ -35,79 +35,114 @@ export const POST = async (request) => {
       switch (requestType) {
         case "cash": {
           let cashDoc = await Cash.findById(docId);
-          console.log(cashDoc, "doc found");
-          if (userRole === "manager") {
-            cashDoc.mangerApprove = status;
-            if (status === "reject") {
+          let applicationUser = await User.findById(cashDoc.userId);
+          if (
+            applicationUser.hr === userId ||
+            applicationUser.manager === userId
+          ) {
+            console.log(cashDoc, "doc found");
+            if (userRole === "manager") {
+              cashDoc.mangerApprove = status;
+              if (status === "reject") {
+                cashDoc.status = status;
+              }
+            } else {
+              cashDoc.hrApprove = status;
               cashDoc.status = status;
             }
+            let savedDoc = await cashDoc.save();
+            return NextResponse.json({ message: "success", data: savedDoc });
           } else {
-            cashDoc.hrApprove = status;
-            cashDoc.status = status;
+            return NextResponse.json({
+              message: "auth error",
+              data: "hr or manager id does not match",
+            });
           }
-          let savedDoc = await cashDoc.save();
-          return NextResponse.json({ message: "success", data: savedDoc });
 
           break;
         }
 
         case "leaves": {
           let leaveDoc = await Leave.findById(docId);
-          console.log(leaveDoc, "doc found");
-          if (userRole === "manager") {
-            leaveDoc.mangerApprove = status;
-            if (status === "reject") {
+          let applicationUser = await User.findById(leaveDoc.userId);
+          if (
+            applicationUser.hr === userId ||
+            applicationUser.manager === userId
+          ) {
+            console.log(leaveDoc, "doc found");
+            if (userRole === "manager") {
+              leaveDoc.mangerApprove = status;
+              if (status === "reject") {
+                leaveDoc.status = status;
+              }
+            } else {
+              leaveDoc.hrApprove = status;
               leaveDoc.status = status;
-            }
-          } else {
-            leaveDoc.hrApprove = status;
-            leaveDoc.status = status;
-            if (status === "accept") {
-              let user = await User.findById(leaveDoc.userId);
-              console.log("user saved", user, "--------------");
-              if (leaveDoc.leaveType === "sick") {
-                user.leavesBalance.sick = user.leavesBalance.sick - 1;
-                console.log("user saved", user, "------after--------");
+              if (status === "accept") {
+                let user = await User.findById(leaveDoc.userId);
+                console.log("user saved", user, "--------------");
+                if (leaveDoc.leaveType === "sick") {
+                  user.leavesBalance.sick = user.leavesBalance.sick - 1;
+                  console.log("user saved", user, "------after--------");
 
-                user.markModified("leavesBalance");
-                await user.save();
-              } else {
-                user.leavesBalance.casual = user.leavesBalance.casual - 1;
-                console.log("user saved", user, "------after--------");
-                user.markModified("leavesBalance");
-                await user.save();
+                  user.markModified("leavesBalance");
+                  await user.save();
+                } else {
+                  user.leavesBalance.casual = user.leavesBalance.casual - 1;
+                  console.log("user saved", user, "------after--------");
+                  user.markModified("leavesBalance");
+                  await user.save();
+                }
               }
             }
+            let savedDoc = await leaveDoc.save();
+            return NextResponse.json({ message: "success", data: savedDoc });
+          } else {
+            return NextResponse.json({
+              message: "auth error",
+              data: "hr or manager id does not match",
+            });
           }
-          let savedDoc = await leaveDoc.save();
-          return NextResponse.json({ message: "success", data: savedDoc });
-
           break;
         }
 
         case "passOut": {
           let passOutDoc = await PassOut.findById(docId);
-          console.log(passOutDoc, "doc found");
-          if (userRole === "manager") {
-            passOutDoc.mangerApprove = status;
-            if (status === "reject") {
+          let applicationUser = await User.findById(passOutDoc.userId);
+          if (
+            applicationUser.hr === userId ||
+            applicationUser.manager === userId
+          ) {
+            console.log(passOutDoc, "doc found");
+            if (userRole === "manager") {
+              passOutDoc.mangerApprove = status;
+              if (status === "reject") {
+                passOutDoc.status = status;
+              }
+            } else {
+              passOutDoc.hrApprove = status;
               passOutDoc.status = status;
             }
+            let savedDoc = await passOutDoc.save();
+            return NextResponse.json({ message: "success", data: savedDoc });
           } else {
-            passOutDoc.hrApprove = status;
-            passOutDoc.status = status;
+            return NextResponse.json({
+              message: "auth error",
+              data: "hr or manager id does not match",
+            });
           }
-          let savedDoc = await passOutDoc.save();
-          return NextResponse.json({ message: "success", data: savedDoc });
-
           break;
         }
         case "users": {
           let user = await User.findById(docId);
-          if(status==="accept"){
-
-          }else{
-          user.status = status;}
+          if (status === "accept") {
+            (user.role = approveUserData[0]),
+              (user.hr = approveUserData[1]._id),
+              (user.manager = approveUserData[2]._id);
+            user.status = status;
+          } else {
+            user.status = status;
+          }
           let savedDoc = await user.save();
           return NextResponse.json({ message: "success", data: savedDoc });
 

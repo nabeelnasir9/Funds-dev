@@ -53,15 +53,15 @@ export const createUserLeaveForm: ExtendedForm<CreateUser> = [
         placeholder: "",
         validation: z.string().min(1, 'reason is required'),
       },
-	  {
-        label: "Attachment",
-        key: "attachment",
-        type: "file",
-        valueType: "normal",
-        defaultValue: "",
-        placeholder: "",
-        validation: z.string().min(1, 'Attatchment is required'),
-      },
+	  // {
+    //     label: "Attachment",
+    //     key: "attachment",
+    //     type: "file",
+    //     valueType: "normal",
+    //     defaultValue: "",
+    //     placeholder: "",
+    //     validation: z.string().min(1, 'Attatchment is required'),
+    //   },
 
       {
         label: "Date",
