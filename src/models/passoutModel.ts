@@ -28,6 +28,9 @@ const userSchema = new mongoose.Schema({
   hrApprove: {
     type: String,default:"pending"
   },
+  passOutTotalHours:{
+    type:Number,default:0
+  },
   createdAt: {
     type: Date,
     default: Date.now,

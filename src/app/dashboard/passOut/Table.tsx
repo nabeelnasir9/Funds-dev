@@ -44,6 +44,7 @@ export function UsersTable({ className }: { className?: string }) {
   const [tableData, setTableData] = React.useState([]);
   const [acceptedPassOut, setAcceptedPassOut] = React.useState<any>([]);
   const [role, setRole] = React.useState<any>();
+  const [requestMade, setRequestMade] = React.useState(false);
 
   React.useEffect(() => {
     const getReq = async () => {
@@ -69,7 +70,7 @@ export function UsersTable({ className }: { className?: string }) {
       setTableData(newRes);
     };
     getReq();
-  }, []);
+  }, [requestMade]);
 
   const onSubmit = async (values: CreateUser) => {
     try {
@@ -80,6 +81,7 @@ export function UsersTable({ className }: { className?: string }) {
 
       if (res.message === "success") {
         // toast.dismiss();
+        setRequestMade(true)
         // toast.success("Successfully added request");
         formRef.current?.click();
       } else {
@@ -148,9 +150,9 @@ export function UsersTable({ className }: { className?: string }) {
         { id: 0, columnDef: { header: "Sr." }, isPlaceholder: false },
         { id: 1, columnDef: { header: "Name" }, isPlaceholder: false },
         { id: 2, columnDef: { header: "PassOut Time" }, isPlaceholder: false },
-        { id: 3, columnDef: { header: "Date" }, isPlaceholder: false },
         // { id: 4, columnDef: { header: "Sick/casual" }, isPlaceholder: false },
         { id: 5, columnDef: { header: "Reason" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        { id: 3, columnDef: { header: "Date" }, isPlaceholder: false },
         { id: 7, columnDef: { header: "HR" }, isPlaceholder: false },
         { id: 8, columnDef: { header: "Manager" }, isPlaceholder: false },
         { id: 6, columnDef: { header: "Status" }, isPlaceholder: false }, // Fixed typo in "Attachment"

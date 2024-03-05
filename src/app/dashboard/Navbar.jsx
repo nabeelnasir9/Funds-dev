@@ -18,20 +18,25 @@ import {
 import Link from "next/link";
 
 export function Navbar({ className }) {
-  const [role, setRole] = useState("Employee");
-  const [user,setUser]=useState()
+  const [role, setRole] = useState("");
+  const [user, setUser] = useState();
   useEffect(() => {
     const checkUserRole = async () => {
       try {
         let userToken = localStorage.getItem("token");
-
         const bodyData = { token: userToken };
         console.log(userToken, "=============", bodyData);
         let res = await http.post(apiUrls.users.me, bodyData);
         console.log(res, "---------------------------");
-        setUser(res.data)
-      } catch (error) {
+        if (res.data) {
+          await localStorage.setItem("role", res.data.role);
+          setRole(res?.data?.role.toUpperCase());
 
+          setUser(res.data);
+        } else {
+          router.push("/login");
+        }
+      } catch (error) {
         console.log(error);
       }
     };
@@ -43,13 +48,13 @@ export function Navbar({ className }) {
 
   // const logout = useLogout()
 
-  useEffect(() => {
-    async function setRoleFunc() {
-      let res = await localStorage.getItem("role").toUpperCase();
-      setRole(res);
-    }
-    setRoleFunc();
-  }, []);
+  // useEffect(() => {
+  //   async function setRoleFunc() {
+  //     let res = await localStorage.getItem("role").toUpperCase();
+  //     setRole(res);
+  //   }
+  //   setRoleFunc();
+  // }, []);
 
   const onLogout = async () => {
     // await logout.mutateAsync()
@@ -75,9 +80,7 @@ export function Navbar({ className }) {
             <DropdownMenuTrigger asChild>
               <div className="flex cursor-pointer items-center">
                 <UserCircle2 className="mr-2 h-10 w-10" />
-                <span>
-                  {user?.username ? user?.username : "no_username"}
-                </span>
+                <span>{user?.username ? user?.username : "no_username"}</span>
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">

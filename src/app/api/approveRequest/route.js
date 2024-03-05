@@ -29,6 +29,30 @@ export const POST = async (request) => {
     // Authenticate user
     const userId = await authMiddleware(token);
 
+    function calculateTimeDifference(startTime, endTime) {
+      // Split the time strings into hours and minutes
+      const [startHour, startMinute] = startTime.split(":").map(Number);
+      const [endHour, endMinute] = endTime.split(":").map(Number);
+
+      // Create Date objects with arbitrary dates but matching hours and minutes
+      const startDate = new Date(0, 0, 0, startHour, startMinute);
+      const endDate = new Date(0, 0, 0, endHour, endMinute);
+      // Calculate the difference in milliseconds
+      let diffInMs = endDate.getTime() - startDate.getTime();
+      console.log(
+        startTime,
+        startDate,
+        endDate,
+        diffInMs,
+        "+==================difff"
+      );
+
+      // Convert milliseconds to hours
+      const diffInHours = diffInMs / (1000 * 60 * 60);
+
+      return diffInHours;
+    }
+
     let requester = await User.findById(userId);
     console.log(requester, "request role");
     if (requester.role === userRole && requester.role != "employee") {
@@ -123,6 +147,21 @@ export const POST = async (request) => {
               passOutDoc.hrApprove = status;
               passOutDoc.status = status;
             }
+            const diffInHours = calculateTimeDifference(
+              passOutDoc.passOut,
+              "16:00"
+            );
+            console.log("diff in hous wla chala", diffInHours, "diffInHours");
+            passOutDoc.passOutTotalHours =
+              passOutDoc.passOutTotalHours + diffInHours;
+            if (passOutDoc.passOutTotalHours > 8) {
+              console.log("diff in hous wla chala");
+              passOutDoc.passOutTotalHours = 0;
+              applicationUser.leavesBalance.casual =applicationUser.leavesBalance.casual - 1;
+              applicationUser.markModified("leavesBalance");
+              await applicationUser.save()
+            }
+
             let savedDoc = await passOutDoc.save();
             return NextResponse.json({ message: "success", data: savedDoc });
           } else {

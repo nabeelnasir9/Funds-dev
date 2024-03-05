@@ -1,5 +1,4 @@
 import * as z from "zod";
-
 import { ExtendedForm } from "@/lib/interfaces";
 import { CreateUser, User } from "./interfaces";
 import { NO_VALUE } from "@/lib/config";
@@ -22,29 +21,11 @@ export const createUserForm: ExtendedForm<CreateUser> = [
         key: "passOut",
         type: "select",
         valueType: "normal",
-        values: [
-          {
-            label: "--------Select------",
-            value: NO_VALUE,
-          },
-          {
-            label: "2 hours",
-            value: "2h",
-          },
-          {
-            label: "4 hours",
-            value: "4h",
-          },
-		  {
-            label: "End of the day",
-            value: "EOD",
-          },
-        ],
+        values: generatePassOutOptions(),
         defaultValue: "",
         placeholder: "Select time",
-        validation: z.enum(["2h", "4h", "EOD"]),
+        validation: z.string().min(1, "time is required"),
       },
-
       {
         label: "Reason",
         key: "reason",
@@ -58,334 +39,23 @@ export const createUserForm: ExtendedForm<CreateUser> = [
   },
 ];
 
-// export const searchUserForm: ExtendedForm<User> = [
-//   {
-//     type: "normal-group",
-//     fields: [
-//       {
-//         label: "Email",
-//         key: "email",
-//         type: "text",
-//         valueType: "normal",
-//         defaultValue: "",
-//         placeholder: "",
-//         validation: z.any(),
-//       },
-//       {
-//         label: "Username",
-//         key: "user_name",
-//         type: "text",
-//         valueType: "normal",
-//         defaultValue: "",
-//         placeholder: "",
-//         validation: z.any(),
-//       },
-//       {
-//         label: "Role",
-//         key: "role",
-//         type: "select",
-//         valueType: "normal",
-//         values: [
-//           {
-//             label: "--Select--",
-//             value: NO_VALUE,
-//           },
-//           {
-//             label: "User",
-//             value: "user",
-//           },
-//           {
-//             label: "Admin",
-//             value: "admin",
-//           },
-//         ],
-//         defaultValue: "",
-//         placeholder: "Select Role",
-//         validation: z.any(),
-//       },
-//       {
-//         label: "Access Level",
-//         key: "access_level",
-//         type: "select",
-//         valueType: "normal",
-//         values: [
-//           {
-//             label: "--Select--",
-//             value: NO_VALUE,
-//           },
-//           {
-//             label: "Read Access",
-//             value: "read",
-//           },
-//           {
-//             label: "Create & Read Access",
-//             value: "create,read",
-//           },
-//           {
-//             label: "Create, Read & Update Access",
-//             value: "create,read,update",
-//           },
-//           {
-//             label: "Create, Read, Update & Delete Access",
-//             value: "create,read,update,delete",
-//           },
-//         ],
-//         defaultValue: "",
-//         placeholder: "Select Access Level",
-//         validation: z.any(),
-//       },
-//       {
-//         label: "Is Banned",
-//         key: "isBanned",
-//         type: "select",
-//         valueType: "normal",
-//         values: [
-//           {
-//             label: "--Select--",
-//             value: NO_VALUE,
-//           },
-//           {
-//             label: "Yes",
-//             value: "true",
-//           },
-//           {
-//             label: "No",
-//             value: "false",
-//           },
-//         ],
-//         defaultValue: "",
-//         placeholder: "Change Ban Status",
-//         validation: z.any(),
-//       },
-//       {
-//         label: "Is Creator",
-//         key: "isCreator",
-//         type: "select",
-//         valueType: "normal",
-//         values: [
-//           {
-//             label: "--Select--",
-//             value: NO_VALUE,
-//           },
-//           {
-//             label: "Yes",
-//             value: "true",
-//           },
-//           {
-//             label: "No",
-//             value: "false",
-//           },
-//         ],
-//         defaultValue: "",
-//         placeholder: "Change Creator Status",
-//         validation: z.any(),
-//       },
-//       {
-//         label: "Is Verified",
-//         key: "isVerified",
-//         type: "select",
-//         valueType: "normal",
-//         values: [
-//           {
-//             label: "--Select--",
-//             value: NO_VALUE,
-//           },
-//           {
-//             label: "Yes",
-//             value: "true",
-//           },
-//           {
-//             label: "No",
-//             value: "false",
-//           },
-//         ],
-//         defaultValue: "",
-//         placeholder: "Change Verified Status",
-//         validation: z.any(),
-//       },
-//     ],
-//   },
-// ];
-
-// export const updateUserForm: ExtendedForm<CreateUser> = [
-//   {
-//     type: "normal-group",
-//     fields: [
-//       {
-//         label: "Email",
-//         key: "email",
-//         type: "text",
-//         valueType: "normal",
-//         defaultValue: "",
-//         placeholder: "",
-//         validation: z
-//           .string()
-//           .min(1, "Email is required")
-//           .email("Invalid email")
-//           .optional(),
-//       },
-//       {
-//         label: "Username",
-//         key: "user_name",
-//         type: "text",
-//         valueType: "normal",
-//         defaultValue: "",
-//         placeholder: "",
-//         validation: z.string().min(1, "Username is required").optional(),
-//       },
-//       {
-//         label: "Name",
-//         key: "name",
-//         type: "text",
-//         valueType: "normal",
-//         defaultValue: "",
-//         placeholder: "",
-//         validation: z.string().optional(),
-//       },
-//       {
-//         label: "Phone",
-//         key: "phone",
-//         type: "number",
-//         valueType: "normal",
-//         defaultValue: "",
-//         placeholder: "",
-//         validation: z
-//           .string()
-//           .transform((a) => Number(a))
-//           .optional(),
-//       },
-//       {
-//         label: "Role",
-//         key: "role",
-//         type: "select",
-//         valueType: "normal",
-//         values: [
-//           {
-//             label: "User",
-//             value: "user",
-//           },
-//           {
-//             label: "Admin",
-//             value: "admin",
-//           },
-//         ],
-//         defaultValue: "",
-//         placeholder: "Select Role",
-//         validation: z.enum(["user", "admin"]).optional(),
-//       },
-//       {
-//         label: "Access Level",
-//         key: "access_level",
-//         type: "select",
-//         valueType: "normal",
-//         values: [
-//           {
-//             label: "Read Access",
-//             value: "read",
-//           },
-//           {
-//             label: "Create & Read Access",
-//             value: "create,read",
-//           },
-//           {
-//             label: "Create, Read & Update Access",
-//             value: "create,read,update",
-//           },
-//           {
-//             label: "Create, Read, Update & Delete Access",
-//             value: "create,read,update,delete",
-//           },
-//         ],
-//         defaultValue: "",
-//         placeholder: "Select Access Level",
-//         validation: z
-//           .enum([
-//             "read",
-//             "create,read",
-//             "create,read,update",
-//             "create,read,update,delete",
-//           ])
-//           .optional(),
-//       },
-//       {
-//         label: "Is Banned",
-//         key: "isBanned",
-//         type: "select",
-//         valueType: "normal",
-//         values: [
-//           {
-//             label: "Yes",
-//             value: "true",
-//           },
-//           {
-//             label: "No",
-//             value: "false",
-//           },
-//         ],
-//         defaultValue: "",
-//         placeholder: "Change Ban Status",
-//         validation: z
-//           .enum(["true", "false"])
-//           .transform((a) => (a === "true" ? true : false))
-//           .optional(),
-//       },
-//       {
-//         label: "Is Creator",
-//         key: "isCreator",
-//         type: "select",
-//         valueType: "normal",
-//         values: [
-//           {
-//             label: "Yes",
-//             value: "true",
-//           },
-//           {
-//             label: "No",
-//             value: "false",
-//           },
-//         ],
-//         defaultValue: "",
-//         placeholder: "Change Creator Status",
-//         validation: z
-//           .enum(["true", "false"])
-//           .transform((a) => (a === "true" ? true : false))
-//           .optional(),
-//       },
-//       {
-//         label: "Is Verified",
-//         key: "isVerified",
-//         type: "select",
-//         valueType: "normal",
-//         values: [
-//           {
-//             label: "Yes",
-//             value: "true",
-//           },
-//           {
-//             label: "No",
-//             value: "false",
-//           },
-//         ],
-//         defaultValue: "",
-//         placeholder: "Change Verified Status",
-//         validation: z
-//           .enum(["true", "false"])
-//           .transform((a) => (a === "true" ? true : false))
-//           .optional(),
-//       },
-//       {
-//         label: "Password",
-//         key: "password",
-//         type: "text",
-//         valueType: "normal",
-//         defaultValue: "",
-//         placeholder: "",
-//         validation: z
-//           .string()
-//           .min(1, "Password is required")
-//           .min(8, "Password must have than 8 characters")
-//           .optional(),
-//       },
-//     ],
-//   },
-// ];
+// Function to generate passOut options from 8 AM to 4 PM with a half-hour gap
+function generatePassOutOptions() {
+  const options = [{ label: "--------Select------", value: NO_VALUE }];
+  const startTime = 8; // 8 AM
+  const endTime = 16; // 4 PM
+  for (let hour = startTime; hour <= endTime; hour++) {
+    for (let minute = 0; minute <= 30; minute += 30) {
+      const timeString =
+        (hour < 10 ? "0" : "") +
+        hour +
+        ":" +
+        (minute === 0 ? "00" : minute);
+      options.push({
+        label: timeString,
+        value: timeString,
+      });
+    }
+  }
+  return options;
+}

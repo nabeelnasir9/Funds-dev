@@ -43,13 +43,9 @@ export function UsersTable({ className }: { className?: string }) {
   const [tableData, setTableData] = React.useState([]);
   const [acceptedCash, setAcceptedCash] = React.useState([]);
   const [role, setRole] = React.useState();
-  // React.useEffect(() => {
-  //   async function setRoleFunc() {
-  //     let res = await localStorage.getItem("role").toUpperCase();
-  //     setRole(res);
-  //   }
-  // setRoleFunc()
-  // }, []);
+  const [requestMade, setRequestMade] = React.useState(false);
+  
+  
 
   React.useEffect(() => {
     const getReq = async () => {
@@ -79,7 +75,7 @@ export function UsersTable({ className }: { className?: string }) {
       setTableData(newRes);
     };
     getReq();
-  }, []);
+  }, [requestMade]);
 
   const onSubmit = async (values: CreateUser) => {
     try {
@@ -90,6 +86,7 @@ export function UsersTable({ className }: { className?: string }) {
 
       if (res.message === "success") {
         // toast.dismiss();
+        setRequestMade(true)
         // toast.success("Successfully added request");
         formRef.current?.click();
       } else {

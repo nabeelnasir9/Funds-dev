@@ -44,6 +44,8 @@ export function UsersTable({ className }: { className?: string }) {
   const [acceptedLeave, setAcceptedLeave] = React.useState<any>([]);
   const [user, setUser] = React.useState<any>();
   const [role, setRole] = React.useState<any>();
+  const [requestMade, setRequestMade] = React.useState(false);
+
   React.useEffect(() => {
     const getUser = async () => {
       try {
@@ -88,7 +90,7 @@ export function UsersTable({ className }: { className?: string }) {
       setTableData(newRes);
     };
     getReq();
-  }, []);
+  }, [requestMade]);
 
   const onSubmit = async (values: CreateUser) => {
     try {
@@ -99,6 +101,7 @@ export function UsersTable({ className }: { className?: string }) {
 
       if (res.message === "success") {
         // toast.dismiss();
+        setRequestMade(true)
         // toast.success("Successfully added request");
         formRef.current?.click();
       } else {

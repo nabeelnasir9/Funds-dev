@@ -66,9 +66,10 @@ export const createUserLeaveForm: ExtendedForm<CreateUser> = [
       {
         label: "Date",
         key: "date",
-        type: "text",
+        type: "date",
         valueType: "normal",
         defaultValue: "",
+       
         placeholder: "",
         validation: z.string().min(1, 'Date is required'),
       },

@@ -33,7 +33,7 @@ export default function Page() {
         response.data;
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("role", response.data.savedUser.role);
-        router.push("/dashboard");
+        router.push("/login");
 
         emailjs.send(
           "service_d1tavgc",
