@@ -32,7 +32,10 @@ export async function getCashRequest(searchParams?: string) {
   let bodyData;
   if (role === "employee") {
     bodyData = { token: userToken, employee: true };
-  } else {
+  } else if (role === "superAdmin") {
+    bodyData = { token: userToken, admin: true };
+  } 
+   else {
     bodyData = {  token: userToken };
   }
   console.log(userToken, "=============", bodyData);

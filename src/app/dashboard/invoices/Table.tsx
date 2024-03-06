@@ -59,7 +59,7 @@ export function UsersTable({ className }: { className?: string }) {
         (req: any) => req.status !== "pending"
       );
       setAcceptedPassOut(acceptCash);
-      if (roleFormDb == "hr") {
+      if (roleFormDb == "accountant") {
         let finalReq = newRes.filter(
           (item: any, i: any) => item.mangerApprove === "accept"
         );
@@ -159,7 +159,7 @@ export function UsersTable({ className }: { className?: string }) {
         // { id: 4, columnDef: { header: "Sick/casual" }, isPlaceholder: false },
         // { id: 5, columnDef: { header: "Reason" }, isPlaceholder: false }, // Fixed typo in "Attachment"
         { id: 3, columnDef: { header: "Date" }, isPlaceholder: false },
-        { id: 7, columnDef: { header: "HR" }, isPlaceholder: false },
+        { id: 7, columnDef: { header: "Accountant" }, isPlaceholder: false },
         { id: 8, columnDef: { header: "Manager" }, isPlaceholder: false },
         { id: 6, columnDef: { header: "Status" }, isPlaceholder: false }, // Fixed typo in "Attachment"
       ],

@@ -90,7 +90,7 @@ export const POST = async (request) => {
           let InvoiceDoc = await Invoice.findById(docId);
           let applicationUser = await User.findById(InvoiceDoc.userId);
           if (
-            applicationUser.hr === userId ||
+            applicationUser.accountant === userId ||
             applicationUser.manager === userId
           ) {
             console.log(InvoiceDoc, "doc found");
@@ -100,7 +100,7 @@ export const POST = async (request) => {
                 InvoiceDoc.status = status;
               }
             } else {
-              InvoiceDoc.hrApprove = status;
+              InvoiceDoc.accountantApprove = status;
               InvoiceDoc.status = status;
             }
             let savedDoc = await InvoiceDoc.save();

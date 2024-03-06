@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
     type: String,default:"pending"
 
   },
-  hrApprove: {
+  accountantApprove: {
     type: String,default:"pending"
   },
   

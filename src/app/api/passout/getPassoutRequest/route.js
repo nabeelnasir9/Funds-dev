@@ -9,7 +9,7 @@ import { NextResponse } from "next/server";
 export const POST = async (request) => {
   try {
     await dbConnect();
-    const { token, employee } = await request.json();
+    const { token, employee,admin } = await request.json();
 
     console.log(token, "==================token=========");
     // Authenticate user
@@ -18,7 +18,9 @@ export const POST = async (request) => {
     // Fetch cash requests for the authenticated user
     let passoutRequests;
 
-    if (employee) {
+    if (admin) {
+      passoutRequests = await Passout.find().populate("userId");
+    } else if (employee) {
       passoutRequests = await Passout.find({ userId: userId }).populate(
         "userId"
       );

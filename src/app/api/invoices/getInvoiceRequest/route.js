@@ -9,33 +9,39 @@ import { NextResponse } from "next/server";
 export const POST = async (request) => {
   try {
     await dbConnect();
-    const { token,employee } = await request.json();
+    const { token, employee,admin } = await request.json();
 
     console.log(token, "==================token=========");
     // Authenticate user
     const userId = await authMiddleware(token);
 
     // Fetch cash requests for the authenticated user
-    let passoutRequests ;
+    let passoutRequests;
+    if (admin) {
+      passoutRequests = await Invoice.find().populate("userId");
+    } else if (employee) {
+      passoutRequests = await Invoice.find({ userId: userId }).populate(
+        "userId"
+      );
+    } else {
+      let passoutReq = await Invoice.find().populate("userId"); // Declare leavesReq
+      passoutRequests = await Promise.all(
+        passoutReq.map(async (req) => {
+          let reqUser = await User.findById(req.userId); // Assuming User model is imported
 
-    if (employee) {
-      passoutRequests = await Invoice.find({userId:userId}).populate("userId");
-   } else {
-
-    let passoutReq = await Invoice.find().populate("userId"); // Declare leavesReq
-    passoutRequests = await Promise.all(
-      passoutReq.map(async (req) => {
-        let reqUser = await User.findById(req.userId); // Assuming User model is imported
-
-        if (reqUser.hr == userId || reqUser.manager == userId) {
-          return req;
-        } else {
-          return null;
-        }
-      })
-    );
-    passoutRequests = passoutRequests.filter((req) => req !== null); // Remove null entries
-   }
+          if (
+            reqUser.hr == userId ||
+            reqUser.manager == userId ||
+            reqUser.accountant == userId
+          ) {
+            return req;
+          } else {
+            return null;
+          }
+        })
+      );
+      passoutRequests = passoutRequests.filter((req) => req !== null); // Remove null entries
+    }
     // Convert createdAt and updatedAt dates to local string format
     passoutRequests = passoutRequests.map((passoutRequest) => ({
       ...passoutRequest.toObject(), // Convert Mongoose document to plain JavaScript object

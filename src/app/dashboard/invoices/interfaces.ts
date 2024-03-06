@@ -8,7 +8,7 @@ export class UserClass {
     // public reason: string = "",
     public createdAt: string = "",
     
-    public hrApprove: string = '',
+    public accountantApprove: string = '',
 		public mangerApprove: string = '',
     public status: string = "",
     public created_at: string = "",

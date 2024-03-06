@@ -8,7 +8,7 @@ import { NextResponse } from "next/server";
 export const POST = async (request) => {
   try {
     await dbConnect();
-    const { token, employee } = await request.json();
+    const { token, employee ,admin} = await request.json();
 
     console.log(employee, "==================token=========");
     // Authenticate user
@@ -16,15 +16,21 @@ export const POST = async (request) => {
 
     // Fetch cash requests for the authenticated user
     let cashRequests;
-    if (employee) {
-      cashRequests = await Cash.find({ userId: userId }).populate('userId');;
+    if (admin) {
+      cashRequests = await Cash.find().populate("userId");
+    } else if (employee) {
+      cashRequests = await Cash.find({ userId: userId }).populate("userId");
     } else {
-      let cashReq = await Cash.find().populate('userId');
+      let cashReq = await Cash.find().populate("userId");
       cashRequests = await Promise.all(
         cashReq.map(async (req) => {
           let reqUser = await User.findById(req.userId);
 
-          if (reqUser.hr == userId || reqUser.manager == userId || reqUser.accountant == userId) {
+          if (
+            reqUser.hr == userId ||
+            reqUser.manager == userId ||
+            reqUser.accountant == userId
+          ) {
             return req;
           } else {
             return null;
@@ -39,9 +45,8 @@ export const POST = async (request) => {
       ...cashRequest.toObject(), // Convert Mongoose document to plain JavaScript object
       createdAt: new Date(cashRequest.createdAt).toDateString(),
       updatedAt: new Date(cashRequest.updatedAt).toDateString(),
-     
-        username: cashRequest.userId.username, // Add username to cash request object
-    
+
+      username: cashRequest.userId.username, // Add username to cash request object
     }));
 
     return NextResponse.json({ message: "success", data: cashRequests });

@@ -8,13 +8,15 @@ import { NextResponse } from "next/server";
 export const POST = async (request) => {
   try {
     await dbConnect();
-    const { token, employee } = await request.json();
+    const { token, employee ,admin} = await request.json();
 
     console.log(token, "==================token=========");
     // Authenticate user
     const userId = await authMiddleware(token);
     let leavesRequests;
-    if (employee) {
+    if (admin) {
+      leavesRequests = await Leave.find().populate("userId");
+    } else if (employee) {
       leavesRequests = await Leave.find({ userId: userId }).populate("userId");
     } else {
       let leavesReq = await Leave.find().populate("userId"); // Declare leavesReq
@@ -22,7 +24,11 @@ export const POST = async (request) => {
         leavesReq.map(async (req) => {
           let reqUser = await User.findById(req.userId); // Assuming User model is imported
 
-          if (reqUser.hr == userId || reqUser.manager == userId) {
+          if (
+            reqUser.hr == userId ||
+            reqUser.manager == userId ||
+            reqUser.accountant == userId
+          ) {
             return req;
           } else {
             return null;
@@ -37,9 +43,8 @@ export const POST = async (request) => {
     leavesRequests = leavesRequests.map((leavesRequest) => ({
       ...leavesRequest.toObject(), // Convert Mongoose document to plain JavaScript object
       createdAt: new Date(leavesRequest.createdAt).toDateString(),
-     
-        username: leavesRequest.userId.username, // Add username to cash request object
-    
+
+      username: leavesRequest.userId.username, // Add username to cash request object
     }));
 
     return NextResponse.json({ message: "success", data: leavesRequests });
@@ -47,7 +52,8 @@ export const POST = async (request) => {
     console.error(error);
     return NextResponse.json({
       error: "Internal Server Error", // Provide a more descriptive error message
-      message: "Something went wrong in the server while fetching leave requests",
+      message:
+        "Something went wrong in the server while fetching leave requests",
     });
   }
 };
