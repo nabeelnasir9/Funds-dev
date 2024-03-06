@@ -30,6 +30,9 @@ const userSchema = new mongoose.Schema({
   hrApprove: {
     type: String,default:"pending"
   },
+  accountantApprove: {
+    type: String,default:"pending"
+  },
   createdAt: {
     type: Date,
     default: Date.now,

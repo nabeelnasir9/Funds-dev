@@ -25,9 +25,11 @@ const userSchema = new mongoose.Schema({
   role: { type: String },
   hr: { type: String },
   manager: { type: String },
-  roles: { type: Array, default: ["employee", "hr", "manager"] },
+  accountant: { type: String },
+  roles: { type: Array, default: ["employee", "hr", "manager","accountant"] },
   hrs: { type: Array, default: [] },
   managers: { type: Array, default: [] },
+  accountants: { type: Array, default: [] },
   leavesBalance: { type: Object, default: { sick: 10, casual: 10 } },
   createdAt: {
     type: Date,

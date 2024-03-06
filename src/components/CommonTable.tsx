@@ -128,13 +128,13 @@ export function CommonTable(props: CommonTableProps) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
-  const [roles, setRoles] = React.useState<any>(Array(3).fill("")); // Array of role states
+  const [roles, setRoles] = React.useState<any>(Array(4).fill("")); // Array of role states
   const handleChange = async (index: any, value: any) => {
     let valuesFromStorage:any = await localStorage.getItem("rolesArray");
     let val = JSON.parse(valuesFromStorage);
     console.log(val, "-------valueas", index);
 
-    if ((val[0] === "hr" || val[0] === "manager") && index != 0) {
+    if ((val[0] === "hr" || val[0] === "manager" || val[0] === "accountant") && index != 0) {
       toast.success("no need of HR or Manager");
       setSelectDisable(true);
       await localStorage.setItem("rolesArray",JSON.stringify(roles));

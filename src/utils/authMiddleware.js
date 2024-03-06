@@ -7,7 +7,6 @@ const authMiddleware = async (req, res, next) => {
   // Get the token from the request headers, query parameters, or cookies
   const token = req // Assuming the token is in the "Authorization" header
 
-  console.log(token, "token in req");
   try {
     if (!token) {
       throw new Error("Authentication token is missing");
@@ -15,7 +14,6 @@ const authMiddleware = async (req, res, next) => {
 
     // Verify the token
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decodedToken, "decoded token");
     // Check if the user exists in the database
     const user = await User.findById(decodedToken.userId);
 

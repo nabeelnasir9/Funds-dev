@@ -10,7 +10,7 @@ export const POST = async (request) => {
     await dbConnect();
     const { token, employee } = await request.json();
 
-    // console.log(token, "==================token=========");
+    console.log(employee, "==================token=========");
     // Authenticate user
     const userId = await authMiddleware(token);
 
@@ -24,7 +24,7 @@ export const POST = async (request) => {
         cashReq.map(async (req) => {
           let reqUser = await User.findById(req.userId);
 
-          if (reqUser.hr == userId || reqUser.manager == userId) {
+          if (reqUser.hr == userId || reqUser.manager == userId || reqUser.accountant == userId) {
             return req;
           } else {
             return null;

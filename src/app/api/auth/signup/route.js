@@ -15,13 +15,14 @@ export const POST = async (request) => {
 
     const hrs = await Users.find({ role: "hr" });
     const managers = await Users.find({ role: "manager" });
-
+const accountants=await Users.find({role:"accountant"})
     const newUser = new Users({
       username,
       email,
       password: hashedPassword,
       hrs,
       managers,
+      accountants
     });
 
     const savedUser = await newUser.save();

@@ -57,7 +57,7 @@ export function UsersTable({ className }: { className?: string }) {
       let newRes = res?.data.filter((req:any) => req.status === "pending");
       let acceptCash = res?.data.filter((req:any) => req.status !== "pending");
       setAcceptedCash(acceptCash)
-      if (roleFormDb.toLowerCase() == "hr") {
+      if (roleFormDb.toLowerCase() == "accountant") {
         let finalReq = newRes.filter(
           (item:any, i:any) => item.mangerApprove === "accept"
         );

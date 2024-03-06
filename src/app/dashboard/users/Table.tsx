@@ -145,9 +145,10 @@ export function UsersTable({ className }: { className?: string }) {
         { id: 5, columnDef: { header: "CreatedAt" }, isPlaceholder: false }, // Fixed typo in "Attachment"
         { id: 3, columnDef: { header: "Status" }, isPlaceholder: false },
         { id: 4, columnDef: { header: "Role" }, isPlaceholder: false }, // Fixed typo in "Attachment"
-        { id: 4, columnDef: { header: "Set Role" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        { id: 5, columnDef: { header: "Set Role" }, isPlaceholder: false }, // Fixed typo in "Attachment"
         { id: 6, columnDef: { header: "Set HR" }, isPlaceholder: false }, // Fixed typo in "Attachment"
         { id: 7, columnDef: { header: "Set Manager" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        { id: 8, columnDef: { header: "Set Accountant" }, isPlaceholder: false }, // Fixed typo in "Attachment"
         // { id: 4, columnDef: { header: "Sick/casual" }, isPlaceholder: false },
       ],
     },

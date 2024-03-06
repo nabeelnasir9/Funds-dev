@@ -62,7 +62,7 @@ export const POST = async (request) => {
           let cashDoc = await Cash.findById(docId);
           let applicationUser = await User.findById(cashDoc.userId);
           if (
-            applicationUser.hr === userId ||
+            applicationUser.accountant === userId ||
             applicationUser.manager === userId
           ) {
             console.log(cashDoc, "doc found");
@@ -72,7 +72,7 @@ export const POST = async (request) => {
                 cashDoc.status = status;
               }
             } else {
-              cashDoc.hrApprove = status;
+              cashDoc.accountantApprove = status;
               cashDoc.status = status;
             }
             let savedDoc = await cashDoc.save();
@@ -206,6 +206,7 @@ export const POST = async (request) => {
             (user.role = approveUserData[0]),
               (user.hr = approveUserData[1]._id),
               (user.manager = approveUserData[2]._id);
+              (user.accountant = approveUserData[3]._id);
             user.status = status;
           } else {
             user.status = status;
