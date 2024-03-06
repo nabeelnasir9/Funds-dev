@@ -69,7 +69,13 @@ export function UsersTable({ className }: { className?: string }) {
       }
       setTableData(newRes);
     };
+    const intervalId = setInterval(() => {
+      getReq();
+    }, 20000);
+
     getReq();
+
+    return () => clearInterval(intervalId); 
   }, [requestMade]);
 
   const onSubmit = async (values: CreateUser) => {

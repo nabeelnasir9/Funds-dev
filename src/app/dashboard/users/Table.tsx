@@ -61,7 +61,14 @@ export function UsersTable({ className }: { className?: string }) {
         console.log(error);
       }
     };
+    const intervalId = setInterval(() => {
+      getAllUser();
+    }, 20000);
+
     getAllUser();
+
+    return () => clearInterval(intervalId); 
+   
   }, []);
 
   const onSubmit = async (values: CreateUser) => {
@@ -144,7 +151,7 @@ export function UsersTable({ className }: { className?: string }) {
         { id: 2, columnDef: { header: "Email" }, isPlaceholder: false },
         { id: 5, columnDef: { header: "CreatedAt" }, isPlaceholder: false }, // Fixed typo in "Attachment"
         { id: 3, columnDef: { header: "Status" }, isPlaceholder: false },
-        { id: 4, columnDef: { header: "Role" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        // { id: 4, columnDef: { header: "Role" }, isPlaceholder: false }, // Fixed typo in "Attachment"
         { id: 5, columnDef: { header: "Set Role" }, isPlaceholder: false }, // Fixed typo in "Attachment"
         { id: 6, columnDef: { header: "Set HR" }, isPlaceholder: false }, // Fixed typo in "Attachment"
         { id: 7, columnDef: { header: "Set Manager" }, isPlaceholder: false }, // Fixed typo in "Attachment"

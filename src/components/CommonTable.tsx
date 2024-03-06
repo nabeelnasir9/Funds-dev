@@ -295,7 +295,7 @@ export function CommonTable(props: CommonTableProps) {
                           accordions={[
                             {
                               label: (
-                                <div className="flex justify-between gap-8 w-full">
+                                <div className="flex justify-between gap-6 w-full">
                                   <p>{item?.cost_center}</p>
                                   <div
                                     onClick={() => {
@@ -319,7 +319,7 @@ export function CommonTable(props: CommonTableProps) {
                                       return (
                                         <div
                                           key={i}
-                                          className="flex justify-between gap-8 w-full"
+                                          className="flex justify-between gap-6 w-full"
                                         >
                                           <p>{subAccount?.sub_account}</p>
                                           <div
@@ -364,7 +364,7 @@ export function CommonTable(props: CommonTableProps) {
                     <p className="flex-1 overflow-ellipsis break-words">
                       {/* {(value as Array<any>).join(", ")} */}
                       <select
-                        className="rounded-[12px] p-1"
+                        className="rounded-[12px] p-1 w-[70px]"
                         name="role"
                         disabled={selectDisable}
                         // value={roles[0]==="employee"?columnIndex -5:"ddd"}
@@ -535,7 +535,7 @@ export function CommonTable(props: CommonTableProps) {
               <TableRow>
                 <TableCell
                   colSpan={props.columns.length}
-                  className="h-24 text-center"
+                  className="h-24 w-[70px] text-center"
                 >
                   <Loading
                     type="spin"

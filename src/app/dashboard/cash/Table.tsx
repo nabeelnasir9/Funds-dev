@@ -47,33 +47,40 @@ export function UsersTable({ className }: { className?: string }) {
   
 
   React.useEffect(() => {
-    const getReq = async () => {
-      let roleFormDb:any = (await localStorage.getItem("role"))?.toUpperCase() ?? "employee";
-      setRole(roleFormDb);
-      console.log("function called----------------", roleFormDb);
+    const fetchData = async () => {
+      try {
+        let roleFormDb:any = (await localStorage.getItem("role"))?.toUpperCase() ?? "employee";
+        setRole(roleFormDb);
+        console.log("function called----------------", roleFormDb);
 
-      let res:any = await userCashRequest.mutateAsync("ali");
-      console.log(res.data, "response data");
-      let newRes = res?.data.filter((req:any) => req.status === "pending");
-      let acceptCash = res?.data.filter((req:any) => req.status !== "pending");
-      setAcceptedCash(acceptCash)
-      if (roleFormDb.toLowerCase() == "accountant") {
-        let finalReq = newRes.filter(
-          (item:any, i:any) => item.mangerApprove === "accept"
-        );
+        let res = await userCashRequest.mutateAsync("ali");
+        console.log(res.data, "response data");
+        let newRes = res?.data.filter((req:any) => req.status === "pending");
+        let acceptCash = res?.data.filter((req:any) => req.status !== "pending");
+        setAcceptedCash(acceptCash);
+
+        let finalReq;
+        if (roleFormDb.toLowerCase() === "accountant") {
+          finalReq = newRes.filter((item:any) => item.mangerApprove === "accept");
+        } else if (roleFormDb.toLowerCase() === "manager") {
+          finalReq = newRes.filter((item:any) => item.mangerApprove === "pending");
+        } else {
+          finalReq = newRes;
+        }
         setTableData(finalReq);
-        return;
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
-      if (roleFormDb.toLowerCase() == "manager") {
-        let finalReq = newRes.filter(
-          (item:any, i:any) => item.mangerApprove === "pending"
-        );
-        setTableData(finalReq);
-        return;
-      }
-      setTableData(newRes);
     };
-    getReq();
+
+    const intervalId = setInterval(() => {
+      fetchData();
+    }, 20000);
+
+    fetchData(); // Fetch data initially when component mounts
+
+    return () => clearInterval(intervalId); // Cleanup function to clear interval
+
   }, [requestMade]);
 
   const onSubmit = async (values: CreateUser) => {

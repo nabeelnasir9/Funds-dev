@@ -324,9 +324,12 @@ export default function Layout({ children }) {
   }
   return (
     <div className="min-h-screen flex justify-center items-center">
-      <p className="text-[40px]">
-        {" "}
+      <p className="text-[40px] flex flex-col justify-center items-center ">
+       
         Please wait until the Admin accept your request
+      <button onClick={()=>{router.push("/login")}} className="flex mt-[50px] justify-center rounded-md bg-blue-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+          Sign in
+        </button>
       </p>
     </div>
   );
