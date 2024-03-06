@@ -25,7 +25,7 @@ import {
   // updateUserForm,
   //  searchUserForm
 } from "./forms";
-import { useGetUsers } from "../invoices/mutations";
+// import { useUpdateUser } from "../invoices/mutations";
 
 export function UsersTable({ className }: { className?: string }) {
   const searchQuery = useSearchQuery();
@@ -99,7 +99,7 @@ export function UsersTable({ className }: { className?: string }) {
   };
 
   const useViewCustomerDetails = (index: number) => {
-    const users: any = useGetUsers();
+    const users: any = useUpdateUser();
     if (users?.data && users?.data?.users[index]) {
       setDetailUser(users.data.users[index] as User);
       detailsRef.current?.click();
@@ -107,7 +107,7 @@ export function UsersTable({ className }: { className?: string }) {
   };
 
   const useOnEditUser = (index: number) => {
-    const users: any = useGetUsers();
+    const users: any = useUpdateUser();
 
     if (users?.data && users?.data.users[index]) {
       setFormType("edit");
@@ -148,7 +148,9 @@ export function UsersTable({ className }: { className?: string }) {
       id: 1,
       headers: [
         { id: 0, columnDef: { header: "Sr." }, isPlaceholder: false },
-        { id: 1, columnDef: { header: "Name" }, isPlaceholder: false },
+        { id: 9, columnDef: { header: "User Name" }, isPlaceholder: false },
+
+        { id: 1, columnDef: { header: "Title" }, isPlaceholder: false },
         { id: 2, columnDef: { header: "PassOut Time" }, isPlaceholder: false },
         // { id: 4, columnDef: { header: "Sick/casual" }, isPlaceholder: false },
         { id: 5, columnDef: { header: "Reason" }, isPlaceholder: false }, // Fixed typo in "Attachment"

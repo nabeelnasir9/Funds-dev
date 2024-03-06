@@ -14,20 +14,25 @@ import {
 } from "@/components";
 import { type User, type CreateUser, UserClass } from "./interfaces";
 import {
-  useCreateUser,
-  useGetUsers,
+  useCreatePassoutRequest,
+  useUserGetPassoutRequest,
   useUpdateUser,
   useDeleteUsers,
   useUploadUsers,
 } from "./mutations";
-import { createUserForm, updateUserForm, searchUserForm } from "./forms";
-import { getUsers } from "./apis";
+import {
+  createUserForm,
+  // updateUserForm,
+  //  searchUserForm
+} from "./forms";
 
 export function UsersTable({ className }: { className?: string }) {
   const searchQuery = useSearchQuery();
 
-  const users = useGetUsers(searchQuery.queryStr);
-  const createUser = useCreateUser();
+  const userPassoutRequest: any = useUserGetPassoutRequest(
+    searchQuery.queryStr
+  );
+  const createPassoutRequest = useCreatePassoutRequest();
   const updateUser = useUpdateUser();
   const uploadUsers = useUploadUsers();
   const deleteUsers = useDeleteUsers();
@@ -35,9 +40,57 @@ export function UsersTable({ className }: { className?: string }) {
   const [formType, setFormType] = React.useState<"create" | "edit">("create");
   const formRef = React.useRef<React.ElementRef<"button">>(null);
   const detailsRef = React.useRef<React.ElementRef<"button">>(null);
+  const [tableData, setTableData] = React.useState([]);
+  const [acceptedPassOut, setAcceptedPassOut] = React.useState<any>([]);
+  const [role, setRole] = React.useState<any>();
+  const [requestMade, setRequestMade] = React.useState(false);
+
+  React.useEffect(() => {
+    const getReq = async () => {
+      console.log("function called");
+      let roleFormDb = await localStorage.getItem("role");
+      setRole(roleFormDb?.toLowerCase());
+      let res: any = await userPassoutRequest.mutateAsync("ali");
+      console.log(res.data, "response data");
+      let newRes: any = res?.data.filter(
+        (req: any) => req.status === "pending"
+      );
+      let acceptCash: any = res?.data.filter(
+        (req: any) => req.status !== "pending"
+      );
+      setAcceptedPassOut(acceptCash);
+      if (roleFormDb == "hr") {
+        let finalReq = newRes.filter(
+          (item: any, i: any) => item.mangerApprove === "accept"
+        );
+        setTableData(finalReq);
+        return;
+      }
+      setTableData(newRes);
+    };
+    getReq();
+  }, [requestMade]);
 
   const onSubmit = async (values: CreateUser) => {
-    await createUser.mutateAsync(values);
+    try {
+      console.log(values, "value from the form");
+      // toast.loading("adding cash request");
+      let res = await createPassoutRequest.mutateAsync(values);
+      console.log(res.message, "response from the store");
+
+      if (res.message === "success") {
+        // toast.dismiss();
+        setRequestMade(true)
+        // toast.success("Successfully added request");
+        formRef.current?.click();
+      } else {
+        throw new Error("something went wrong");
+      }
+    } catch (error) {
+      console.log(error, "error");
+      // toast.dismiss();
+      // toast.error("some thing went wrong");
+    }
   };
 
   const onUpdate = async (values: any) => {
@@ -45,7 +98,7 @@ export function UsersTable({ className }: { className?: string }) {
   };
 
   const useViewCustomerDetails = (index: number) => {
-    const users:any = useGetUsers()
+    const users: any = useDeleteUsers();
     if (users?.data && users?.data?.users[index]) {
       setDetailUser(users.data.users[index] as User);
       detailsRef.current?.click();
@@ -53,7 +106,8 @@ export function UsersTable({ className }: { className?: string }) {
   };
 
   const useOnEditUser = (index: number) => {
-    const users:any = useGetUsers()
+    const users: any = useDeleteUsers();
+
     if (users?.data && users?.data.users[index]) {
       setFormType("edit");
       setDetailUser(users?.data.users[index] as User);
@@ -80,39 +134,34 @@ export function UsersTable({ className }: { className?: string }) {
     };
     isPlaceholder: boolean;
   };
-  
+
   type CashRequestItem = {
     id: number;
     headers: CashRequestHeader[];
   };
-  
+
   type CashRequest = CashRequestItem[];
-  
+
   const cashRequest: CashRequest = [
     {
       id: 1,
       headers: [
-        { id: 1, columnDef: { header: "Tite" }, isPlaceholder: false },
-        { id: 2, columnDef: { header: "Amount" }, isPlaceholder: false },
-        { id: 3, columnDef: { header: "Advance/paid" }, isPlaceholder: false },
-        { id: 3, columnDef: { header: "Attachment" }, isPlaceholder: false }, // Fixed typo in "Attachment"
-      ],
-    },
-  ];
-  const cashHistory: any = [
-    {
-      id: 1,
-      headers: [
-        { id: 1, columnDef: { header: "Tite" }, isPlaceholder: false },
-        { id: 2, columnDef: { header: "Amount" }, isPlaceholder: false },
+        { id: 0, columnDef: { header: "Sr." }, isPlaceholder: false },
+        { id: 9, columnDef: { header: "User Name" }, isPlaceholder: false },
+
+        { id: 1, columnDef: { header: "Title" }, isPlaceholder: false },
+        // { id: 4, columnDef: { header: "Sick/casual" }, isPlaceholder: false },
+        // { id: 5, columnDef: { header: "Reason" }, isPlaceholder: false }, // Fixed typo in "Attachment"
         { id: 3, columnDef: { header: "Date" }, isPlaceholder: false },
-        { id: 3, columnDef: { header: "Status" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        { id: 7, columnDef: { header: "HR" }, isPlaceholder: false },
+        { id: 8, columnDef: { header: "Manager" }, isPlaceholder: false },
+        { id: 6, columnDef: { header: "Status" }, isPlaceholder: false }, // Fixed typo in "Attachment"
       ],
     },
   ];
+
   return (
     <div className={cn("w-full", className)}>
-      <h1 className="text-2xl font-bold text-center"> Invoices</h1>
       {/* <CommonAccordion
         accordions={[
           {
@@ -137,36 +186,52 @@ export function UsersTable({ className }: { className?: string }) {
           },
         ]}
       /> */}
-      <hr className="bg-gray-300" />
-      <CommonTable
-        cashRequest={cashRequest}
-        tableKey="cash"
-        columns={columns}
-        hideRowActions={["create_invoice", "duplicate"]}
-        data={users?.data?.users || []}
-        loading={users?.isLoading}
-        onCreate={() => {
-          setFormType("create");
-          formRef?.current?.click();
-        }}
-        onEdit={useOnEditUser}
-        onUpload={onUploadUsers}
-        onViewDetails={useViewCustomerDetails}
-        onDeleteMany={onDeleteUsers}
-        page={searchQuery.pagination.page}
-        limit={searchQuery.pagination.limit}
-        lastPage={users?.data?.pagination.last_page || 0}
-        totalDocuments={users?.data?.pagination.total_count || 0}
-        setPage={searchQuery.setPage}
-        setLimit={searchQuery.setLimit}
-      />
+      {localStorage.getItem("role") === "superAdmin" ? null : (
+        <>
+          <div className="flex justify-between">
+            <h1 className="text-2xl font-bold "></h1>
+
+            <h1 className="text-2xl font-bold text-center">Invoices </h1>
+            <h1 className="text-2xl font-bold "></h1>
+          </div>
+          <hr className="bg-gray-300 mt-[20px]" />
+          <CommonTable
+            cashRequest={cashRequest}
+            tableKey="passout"
+            columns={columns}
+            hideRowActions={["create_invoice", "duplicate"]}
+            data={tableData}
+            loading={userPassoutRequest?.isLoading}
+            onCreate={() => {
+              setFormType("create");
+              formRef?.current?.click();
+            }}
+            tableData={tableData}
+            setTableDataFun={setTableData}
+            historyData={acceptedPassOut}
+            setHistoryData={setAcceptedPassOut}
+            onEdit={useOnEditUser}
+            onUpload={onUploadUsers}
+            onViewDetails={useViewCustomerDetails}
+            onDeleteMany={onDeleteUsers}
+            page={searchQuery.pagination.page}
+            limit={searchQuery.pagination.limit}
+            lastPage={0}
+            totalDocuments={10}
+            // lastPage={users?.data?.pagination.last_page || 0}
+            // totalDocuments={users?.data?.pagination.total_count || 0}
+            setPage={searchQuery.setPage}
+            setLimit={searchQuery.setLimit}
+          />
+        </>
+      )}
       <CommonModal ref={formRef} className="sm:min-w-[510px] lg:min-w-[800px]">
         <CommonForm
           type="modal"
           defaultObj={detailUser}
           operationType={formType}
           closeModal={() => formRef.current?.click()}
-          extendedForm={formType === "create" ? createUserForm : updateUserForm}
+          extendedForm={formType === "create" ? createUserForm : createUserForm}
           submitText={formType === "create" ? "Create" : "Update"}
           cancelText="Cancel"
           submitFunc={(values) =>
@@ -185,7 +250,36 @@ export function UsersTable({ className }: { className?: string }) {
         />
       </CommonModal>
 
-     
+      <h1 className="text-2xl font-bold text-center mt-[10px]">
+        {" "}
+        Invoices History
+      </h1>
+      <hr className="bg-gray-300 mt-[20px]" />
+
+      <CommonTable
+        cashRequest={cashRequest}
+        tableKey="history"
+        columns={columns}
+        hideRowActions={["create_invoice", "duplicate"]}
+        data={acceptedPassOut}
+        loading={acceptedPassOut?.isLoading}
+        tableData={tableData}
+        setTableDataFun={setTableData}
+        historyData={acceptedPassOut}
+        setHistoryData={setAcceptedPassOut}
+        onEdit={useOnEditUser}
+        onUpload={onUploadUsers}
+        onViewDetails={useViewCustomerDetails}
+        onDeleteMany={onDeleteUsers}
+        page={searchQuery.pagination.page}
+        limit={searchQuery.pagination.limit}
+        lastPage={0}
+        totalDocuments={10}
+        // lastPage={users?.data?.pagination.last_page || 0}
+        // totalDocuments={users?.data?.pagination.total_count || 0}
+        setPage={searchQuery.setPage}
+        setLimit={searchQuery.setLimit}
+      />
     </div>
   );
 }

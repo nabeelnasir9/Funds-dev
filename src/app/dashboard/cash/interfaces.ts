@@ -3,6 +3,7 @@ import { HttpCommonResponse, CommonGetAllResponse } from '@/lib/interfaces'
 export class UserClass {
 	constructor(
 		public _id: string = '',
+		public username: string = '',
 		public title: string = '',
 		public amount: number = 0,
 		public type:"Select type" | "advance" | "paid" = "Select type" ,

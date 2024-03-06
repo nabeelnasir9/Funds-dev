@@ -222,7 +222,7 @@ export const CommonForm = (props: CommonFormProps) => {
 			<form
 				onSubmit={form.handleSubmit((values) => {
 					let filteredObj: Record<string, any> = {}
-					console.log(values,"value in func");
+					console.log(values,"value in func-----------------------000000");
 					
 					Object.entries(values).forEach(([key, value]) => {
 						if (value !== NO_VALUE && (value || typeof value === 'boolean')) {

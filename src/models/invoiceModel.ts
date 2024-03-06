@@ -11,18 +11,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please add a title"],
   },
-  reason: {
-    type: String,
-  },
+ 
   status: {
     type: String,
-    required: true,
     default:"pending"
   },
-  leaveType: {
-    type: String,
-    required: [true, "Please add a type"],
-  },
+ 
   mangerApprove: {
     type: String,default:"pending"
 
@@ -30,15 +24,14 @@ const userSchema = new mongoose.Schema({
   hrApprove: {
     type: String,default:"pending"
   },
+  
   createdAt: {
     type: Date,
     default: Date.now,
   },
-  leaveDate: {
-    type: String,
-  },
+ 
 });
 
 // Export the model, creating it if it doesn't already exist
-export default mongoose.models.LeaveRequest ||
-  mongoose.model("LeaveRequest", userSchema);
+export default mongoose.models.InvoiceRequests ||
+  mongoose.model("InvoiceRequests", userSchema);

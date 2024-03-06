@@ -4,7 +4,38 @@ import { ExtendedForm } from "@/lib/interfaces";
 import { CreateUser, User } from "./interfaces";
 import { NO_VALUE } from "@/lib/config";
 
-export const createUserLeaveForm: ExtendedForm<CreateUser> = [
+function validateAttachment(value: any, formValues: any) {
+  console.log(value,"------------------values from the attat-----------------");
+  console.log(formValues,"------------------values from the formValues-----------------");
+
+  if (formValues.leave === "sick" && !value) {
+      return "Attachment is required for sick leave";
+  }
+  return undefined;
+}
+
+// Define your Zod schema
+export const createUserLeaveFormSchema = z.object({
+  name: z.string().min(1, 'name is required'),
+  leave: z.enum(["sick", "casual"]),
+  reasons: z.string().min(1, 'reason is required'),
+  date: z.string().min(1, 'Date is required'),
+  attachment: z.custom((value) => {
+    console.log(value,"------------------values from the attat-----------------");
+    
+    return (formValues: any) => {
+    console.log(formValues,"------------------values from the formValues-----------------");
+
+        // if (formValues.leave === "sick" && !value) {
+            return "Attachment is required for sick leave";
+        // }
+        return undefined;
+    };
+})
+});
+
+// Define your form using the ExtendedForm type
+export const createUserLeaveForm: ExtendedForm<z.infer<typeof createUserLeaveFormSchema>> = [
   {
     type: "normal-group",
     fields: [
@@ -15,20 +46,19 @@ export const createUserLeaveForm: ExtendedForm<CreateUser> = [
         valueType: "normal",
         defaultValue: "",
         placeholder: "",
-        validation: z.string().min(1, 'name is required'),
+        validation: createUserLeaveFormSchema.shape.name,
       },
 
-
       {
-				label: 'Leave',
-				key: 'leave',
-				type: 'select',
-				valueType: 'normal',
-				values: [
-					{
-						label: '--------Select------',
-						value: NO_VALUE,
-					},
+        label: "Leave",
+        key: "leave",
+        type: "select",
+        valueType: "normal",
+        values: [
+          {
+            label: "--------Select------",
+            value: NO_VALUE,
+          },
           {
             label: "Casual",
             value: "casual",
@@ -37,13 +67,12 @@ export const createUserLeaveForm: ExtendedForm<CreateUser> = [
             label: "Sick",
             value: "sick",
           },
-				],
-				defaultValue: '',
-				placeholder: 'Select Role',
-				validation: z.enum(['sick', 'casual']),
-			},
+        ],
+        defaultValue: "",
+        placeholder: "Select Role",
+        validation: createUserLeaveFormSchema.shape.leave,
+      },
 
-    
       {
         label: "Reason",
         key: "reasons",
@@ -51,17 +80,8 @@ export const createUserLeaveForm: ExtendedForm<CreateUser> = [
         valueType: "normal",
         defaultValue: "",
         placeholder: "",
-        validation: z.string().min(1, 'reason is required'),
+        validation: createUserLeaveFormSchema.shape.reasons,
       },
-	  // {
-    //     label: "Attachment",
-    //     key: "attachment",
-    //     type: "file",
-    //     valueType: "normal",
-    //     defaultValue: "",
-    //     placeholder: "",
-    //     validation: z.string().min(1, 'Attatchment is required'),
-    //   },
 
       {
         label: "Date",
@@ -69,13 +89,23 @@ export const createUserLeaveForm: ExtendedForm<CreateUser> = [
         type: "date",
         valueType: "normal",
         defaultValue: "",
-       
         placeholder: "",
-        validation: z.string().min(1, 'Date is required'),
+        validation: createUserLeaveFormSchema.shape.date,
+      },
+
+      {
+        label: "Attachment",
+        key: "attachment",
+        type: "file",
+        valueType: "normal",
+        defaultValue: "",
+        placeholder: "",
+        validation: createUserLeaveFormSchema.shape.attachment,
       },
     ],
   },
 ];
+
 
 // export const searchUserForm: ExtendedForm<User> = [
 //   {

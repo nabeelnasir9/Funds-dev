@@ -17,9 +17,9 @@ export const POST = async (request) => {
     // Fetch cash requests for the authenticated user
     let cashRequests;
     if (employee) {
-      cashRequests = await Cash.find({ userId: userId });
+      cashRequests = await Cash.find({ userId: userId }).populate('userId');;
     } else {
-      let cashReq = await Cash.find();
+      let cashReq = await Cash.find().populate('userId');
       cashRequests = await Promise.all(
         cashReq.map(async (req) => {
           let reqUser = await User.findById(req.userId);
@@ -39,6 +39,9 @@ export const POST = async (request) => {
       ...cashRequest.toObject(), // Convert Mongoose document to plain JavaScript object
       createdAt: new Date(cashRequest.createdAt).toDateString(),
       updatedAt: new Date(cashRequest.updatedAt).toDateString(),
+     
+        username: cashRequest.userId.username, // Add username to cash request object
+    
     }));
 
     return NextResponse.json({ message: "success", data: cashRequests });

@@ -3,6 +3,8 @@ import { HttpCommonResponse, CommonGetAllResponse } from "@/lib/interfaces";
 export class UserClass {
   constructor(
     public _id: string = "",
+		public username: string = '',
+
     public title: string = "",
     public leaveType: string = "",
     public reason: any = "",
@@ -15,7 +17,7 @@ export class UserClass {
 
     // public name: string = "",
     // public date: string = "",
-    // public attachment: any = "",
+    public attachment: any = "",
 
     // public reasons: string = "",
 

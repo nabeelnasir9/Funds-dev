@@ -3,6 +3,7 @@ import User from "../../../models/userModel";
 import Cash from "../../../models/cashModel";
 import Leave from "../../../models/leaveModel";
 import PassOut from "../../../models/passoutModel";
+import Invoice from "../../../models/invoiceModel";
 import authMiddleware from "../../../utils/authMiddleware";
 import { NextResponse } from "next/server";
 
@@ -85,7 +86,34 @@ export const POST = async (request) => {
 
           break;
         }
+        case "invoices": {
+          let InvoiceDoc = await Invoice.findById(docId);
+          let applicationUser = await User.findById(InvoiceDoc.userId);
+          if (
+            applicationUser.hr === userId ||
+            applicationUser.manager === userId
+          ) {
+            console.log(InvoiceDoc, "doc found");
+            if (userRole === "manager") {
+              InvoiceDoc.mangerApprove = status;
+              if (status === "reject") {
+                InvoiceDoc.status = status;
+              }
+            } else {
+              InvoiceDoc.hrApprove = status;
+              InvoiceDoc.status = status;
+            }
+            let savedDoc = await InvoiceDoc.save();
+            return NextResponse.json({ message: "success", data: savedDoc });
+          } else {
+            return NextResponse.json({
+              message: "auth error",
+              data: "hr or manager id does not match",
+            });
+          }
 
+          break;
+        }
         case "leaves": {
           let leaveDoc = await Leave.findById(docId);
           let applicationUser = await User.findById(leaveDoc.userId);

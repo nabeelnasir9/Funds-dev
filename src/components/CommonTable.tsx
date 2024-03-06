@@ -548,14 +548,12 @@ export function CommonTable(props: CommonTableProps) {
               </TableRow>
             ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => {
-                console.log(row, "table row", table.getRowModel().rows);
                 return (
                   <TableRow
                     key={row.id}
                     // data-state={row.getIsSelected() && "selected"}
                   >
                     {row.getVisibleCells().map((cell) => {
-                      console.log(cell, "cell==========");
 
                       return (
                         <TableCell key={cell.id}>

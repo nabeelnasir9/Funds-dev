@@ -13,7 +13,8 @@ export const apiUrls = {
     getLeaveRequest: "api/leaves/getLeaves",
     addPassoutRequest: "api/passout/addPassoutRequest",
     getPassoutRequest: "api/passout/getPassoutRequest",
-
+    addInvoiceRequest: "api/invoices/addInvoiceRequest",
+    getInvoiceRequest: "api/invoices/getInvoiceRequest",
     approveRequest: "api/approveRequest",
   },
 };

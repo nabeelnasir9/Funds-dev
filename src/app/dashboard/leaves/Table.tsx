@@ -26,7 +26,7 @@ import {
   // searchUserForm,
   createUserLeaveForm,
 } from "./forms";
-import { useGetUsers } from "../invoices/mutations";
+// import { useGetUsers } from "./mutations";
 
 export function UsersTable({ className }: { className?: string }) {
   const searchQuery = useSearchQuery();
@@ -118,24 +118,26 @@ export function UsersTable({ className }: { className?: string }) {
     await updateUser.mutateAsync({ ...values, _id: detailUser?._id || "" });
   };
 
-  const useViewCustomerDetails = (index: number) => {
-    const users: any = useGetUsers();
+  // const useViewCustomerDetails = (index: number) => {
+  //   const users: any = useGetUsers();
 
-    if (userLeaveRequest?.data && userLeaveRequest?.data?.users[index]) {
-      setDetailUser(users.data.users[index] as User);
-      detailsRef.current?.click();
-    }
-  };
+  //   if (userLeaveRequest?.data && userLeaveRequest?.data?.users[index]) {
+  //     setDetailUser(users.data.users[index] as User);
+  //     detailsRef.current?.click();
+  //   }
+  // };
 
-  const useOnEditUser = (index: number) => {
-    const users: any = useGetUsers();
+  // const useOnEditUser = (index: number) => {
+  //   const users: any = useGetUsers();
 
-    if (userLeaveRequest?.data && userLeaveRequest?.data.users[index]) {
-      setFormType("edit");
-      setDetailUser(users?.data.users[index] as User);
-      formRef.current?.click();
-    }
-  };
+  //   if (userLeaveRequest?.data && userLeaveRequest?.data.users[index]) {
+  //     setFormType("edit");
+  //     setDetailUser(users?.data.users[index] as User);
+  //     formRef.current?.click();
+  //   }
+  // };
+
+  
 
   const onUploadUsers = async (file: File) => {
     await uploadUsers.mutateAsync(file);
@@ -169,7 +171,9 @@ export function UsersTable({ className }: { className?: string }) {
       id: 1,
       headers: [
         { id: 0, columnDef: { header: "Sr." }, isPlaceholder: false },
-        { id: 1, columnDef: { header: "Name" }, isPlaceholder: false },
+        { id: 9, columnDef: { header: "User Name" }, isPlaceholder: false },
+
+        { id: 1, columnDef: { header: "Title" }, isPlaceholder: false },
         { id: 2, columnDef: { header: "Sick/casual" }, isPlaceholder: false },
         { id: 3, columnDef: { header: "Reason" }, isPlaceholder: false }, // Fixed typo in "Attachment"
         { id: 4, columnDef: { header: "Date" }, isPlaceholder: false },
@@ -184,6 +188,7 @@ export function UsersTable({ className }: { className?: string }) {
 
   return (
     <div className={cn("w-full", className)}>
+
       {localStorage.getItem("role") === "superAdmin" ? null : (
         <>
       <div className="flex justify-between">
@@ -234,6 +239,7 @@ export function UsersTable({ className }: { className?: string }) {
       /> */}
           <hr className="bg-gray-300 mt-[20px]" />
 
+
           <CommonTable
             cashRequest={cashRequest}
             tableKey="leaves"
@@ -249,9 +255,9 @@ export function UsersTable({ className }: { className?: string }) {
             setTableDataFun={setTableData}
             historyData={acceptedLeave}
             setHistoryData={setAcceptedLeave}
-            onEdit={useOnEditUser}
+            onEdit={setAcceptedLeave}
             onUpload={onUploadUsers}
-            onViewDetails={useViewCustomerDetails}
+            onViewDetails={setAcceptedLeave}
             onDeleteMany={onDeleteUsers}
             page={searchQuery.pagination.page}
             limit={searchQuery.pagination.limit}
@@ -310,9 +316,9 @@ export function UsersTable({ className }: { className?: string }) {
         setTableDataFun={setTableData}
         historyData={acceptedLeave}
         setHistoryData={setAcceptedLeave}
-        onEdit={useOnEditUser}
+        onEdit={setAcceptedLeave}
         onUpload={onUploadUsers}
-        onViewDetails={useViewCustomerDetails}
+        onViewDetails={setAcceptedLeave}
         onDeleteMany={onDeleteUsers}
         page={1}
         limit={10}

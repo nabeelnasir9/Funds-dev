@@ -15,9 +15,9 @@ export const POST = async (request) => {
     const userId = await authMiddleware(token);
     let leavesRequests;
     if (employee) {
-      leavesRequests = await Leave.find({ userId: userId });
+      leavesRequests = await Leave.find({ userId: userId }).populate("userId");
     } else {
-      let leavesReq = await Leave.find(); // Declare leavesReq
+      let leavesReq = await Leave.find().populate("userId"); // Declare leavesReq
       leavesRequests = await Promise.all(
         leavesReq.map(async (req) => {
           let reqUser = await User.findById(req.userId); // Assuming User model is imported
@@ -33,6 +33,14 @@ export const POST = async (request) => {
     }
 
     // Convert createdAt and updatedAt dates to local string format
+
+    leavesRequests = leavesRequests.map((leavesRequest) => ({
+      ...leavesRequest.toObject(), // Convert Mongoose document to plain JavaScript object
+      createdAt: new Date(leavesRequest.createdAt).toDateString(),
+     
+        username: leavesRequest.userId.username, // Add username to cash request object
+    
+    }));
 
     return NextResponse.json({ message: "success", data: leavesRequests });
   } catch (error) {

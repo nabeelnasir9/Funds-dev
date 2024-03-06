@@ -1,33 +1,27 @@
 import dbConnect from "../../../../utils/dbConnect";
-import Leave from "../../../../models/leaveModel";
+import Invoice from "../../../../models/invoiceModel";
 import authMiddleware from "../../../../utils/authMiddleware";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import cloudinary from "../../../../lib/config/cloudinary"
-import imgss from "../../../../imgs/test.png"
+
 // @ts-ignore
 export const POST = async (request) => {
   try {
     await dbConnect();
-    const { reasons, name, leave, token, date ,attachment} = await request.json();
-
-    // const result = await cloudinary.uploader.upload(attachment);
-    console.log(attachment,"attachment",result);
+    const {  name,  token } = await request.json();
+    console.log(token, "====================", name);
     // const authorization = headers().get("Authorization");
     // console.log(authorization)
     let userId = await authMiddleware(token);
 
-
-    const newLeave = new Leave({
+    const newInvoice = new Invoice({
       userId: userId,
       title: name,
-      reason:reasons,
 
-      leaveType: leave,
-      leaveDate: date,
     });
 
-    const res = await newLeave.save();
+    const res = await newInvoice.save();
+    console.log(res, "request saved");
 
     return NextResponse.json({ message: "success", data: "res" });
   } catch (error) {
