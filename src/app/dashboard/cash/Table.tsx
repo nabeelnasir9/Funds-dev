@@ -60,7 +60,7 @@ export function UsersTable({ className }: { className?: string }) {
         setAcceptedCash(acceptCash);
 
         let finalReq;
-        if (roleFormDb.toLowerCase() === "accountant") {
+        if (roleFormDb == "ACCOUNTANT") {
           finalReq = newRes.filter((item:any) => item.mangerApprove === "accept");
         } else if (roleFormDb.toLowerCase() === "manager") {
           finalReq = newRes.filter((item:any) => item.mangerApprove === "pending");
@@ -166,8 +166,8 @@ export function UsersTable({ className }: { className?: string }) {
         { id: 3, columnDef: { header: "Type" }, isPlaceholder: false },
         { id: 5, columnDef: { header: "CreatedAt" }, isPlaceholder: false },
         { id: 6, columnDef: { header: "updatedAt" }, isPlaceholder: false },
-        { id: 7, columnDef: { header: "HR" }, isPlaceholder: false },
         { id: 8, columnDef: { header: "Manager" }, isPlaceholder: false },
+        { id: 7, columnDef: { header: "Accountant" }, isPlaceholder: false },
         { id: 4, columnDef: { header: "Status" }, isPlaceholder: false },
         // ...(role !== "employee" ? [
         //   { id: 7, columnDef: { header: "Reject" }, isPlaceholder: false },
@@ -214,7 +214,7 @@ export function UsersTable({ className }: { className?: string }) {
             },
           ]}
         /> */}
-      {(localStorage.getItem("role")) === "superAdmin" ? null : (
+      {(localStorage.getItem("role")) === "superAdmin" || (localStorage.getItem("role")) === "hr" ? null : (
         <>
         <h1 className="text-2xl font-bold text-center">New Cash Request</h1>
         <hr className="bg-gray-300 mt-[20px]" />

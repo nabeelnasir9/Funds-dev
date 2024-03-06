@@ -130,24 +130,28 @@ export function CommonTable(props: CommonTableProps) {
   );
   const [roles, setRoles] = React.useState<any>(Array(4).fill("")); // Array of role states
   const handleChange = async (index: any, value: any) => {
-    let valuesFromStorage:any = await localStorage.getItem("rolesArray");
+    let valuesFromStorage: any = await localStorage.getItem("rolesArray");
     let val = JSON.parse(valuesFromStorage);
     console.log(val, "-------valueas", index);
 
-    if ((val[0] === "hr" || val[0] === "manager" || val[0] === "accountant") && index != 0) {
+    if (
+      (val[0] === "hr" || val[0] === "manager" || val[0] === "accountant") &&
+      index != 0
+    ) {
       toast.success("no need of HR or Manager");
-      setSelectDisable(true);
-      await localStorage.setItem("rolesArray",JSON.stringify(roles));
+      // setSelectDisable(true);
+      await localStorage.setItem("rolesArray", JSON.stringify([val[0],"","",""]));
 
       return;
+    } else {
+      console.log(index, "------------sent in func", value);
+      setRoles((prevArray: any) => {
+        const newArray = [...prevArray];
+        newArray[index] = value; // Update the first element
+        console.log(newArray, "-------------÷÷----------noew role before");
+        return newArray;
+      });
     }
-    console.log(index, "------------sent in func", value);
-    setRoles((prevArray: any) => {
-      const newArray = [...prevArray];
-      newArray[index] = value; // Update the first element
-      console.log(newArray, "-------------÷÷----------noew role before");
-      return newArray;
-    });
   };
 
   const [selectDisable, setSelectDisable] = React.useState(false);
@@ -177,10 +181,9 @@ export function CommonTable(props: CommonTableProps) {
       let userToken = await localStorage.getItem("token");
       let role = await localStorage.getItem("role");
       let rolesArray: any = await localStorage.getItem("rolesArray");
-      let val=JSON.parse(rolesArray)
+      let val = JSON.parse(rolesArray);
       if (val[0] === "hr" || val[0] === "manager") {
-        val[1]="",
-        val[2]=""
+        (val[1] = ""), (val[2] = "");
       }
       let bodyData = {
         token: userToken,
@@ -370,13 +373,13 @@ export function CommonTable(props: CommonTableProps) {
                         // value={roles[0]==="employee"?columnIndex -5:"ddd"}
                         onChange={(e) =>
                           handleChange(
-                            columnIndex - 5,
+                            columnIndex - 3,
                             value[e.target.selectedIndex - 1]
                           )
                         }
                         id=""
                       >
-                        <option  value="null">Select</option>
+                        <option value="null">Select</option>
                         {value.map((item: any, index: any) => (
                           <option
                             key={index}
@@ -520,7 +523,11 @@ export function CommonTable(props: CommonTableProps) {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header: any) => {
                   return (
-                    <TableHead key={header.id} colSpan={header.colSpan}>
+                    <TableHead
+                      className="whitespace-nowrap"
+                      key={header.id}
+                      colSpan={header.colSpan}
+                    >
                       {header.isPlaceholder ? null : (
                         <div>{header.columnDef.header}</div>
                       )}
@@ -535,7 +542,7 @@ export function CommonTable(props: CommonTableProps) {
               <TableRow>
                 <TableCell
                   colSpan={props.columns.length}
-                  className="h-24 w-[70px] text-center"
+                  className="h-24 w-[50px] text-center"
                 >
                   <Loading
                     type="spin"
@@ -554,7 +561,6 @@ export function CommonTable(props: CommonTableProps) {
                     // data-state={row.getIsSelected() && "selected"}
                   >
                     {row.getVisibleCells().map((cell) => {
-
                       return (
                         <TableCell key={cell.id}>
                           {flexRender(

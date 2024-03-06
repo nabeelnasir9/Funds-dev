@@ -74,7 +74,7 @@ export function UsersTable({ className }: { className?: string }) {
 
     getReq();
 
-    return () => clearInterval(intervalId); 
+    return () => clearInterval(intervalId);
   }, [requestMade]);
 
   const onSubmit = async (values: CreateUser) => {
@@ -86,7 +86,7 @@ export function UsersTable({ className }: { className?: string }) {
 
       if (res.message === "success") {
         // toast.dismiss();
-        setRequestMade(true)
+        setRequestMade(true);
         // toast.success("Successfully added request");
         formRef.current?.click();
       } else {
@@ -192,7 +192,8 @@ export function UsersTable({ className }: { className?: string }) {
           },
         ]}
       /> */}
-      {localStorage.getItem("role") === "superAdmin" ? null : (
+      {localStorage.getItem("role") === "superAdmin" ||
+      localStorage.getItem("role") === "hr" ? null : (
         <>
           <div className="flex justify-between">
             <h1 className="text-2xl font-bold "></h1>

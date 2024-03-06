@@ -8,7 +8,7 @@ export class UserClass {
     public email: string = "",
     public createdAt: string = "",
 
-    public status: string = "",
+    // public status: string = "",
     // public role: string = "",
     public roles:any=["employee","hr","manager"],
     public hrs:any =[],

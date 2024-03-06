@@ -12,7 +12,7 @@ export const POST = async (request) => {
     const { reasons, name, leave, token, date ,attachment} = await request.json();
 
     // const result = await cloudinary.uploader.upload(attachment);
-    console.log(attachment,"attachment",result);
+    console.log(attachment,"attachment");
     // const authorization = headers().get("Authorization");
     // console.log(authorization)
     let userId = await authMiddleware(token);

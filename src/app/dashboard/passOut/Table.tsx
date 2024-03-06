@@ -194,7 +194,7 @@ export function UsersTable({ className }: { className?: string }) {
           },
         ]}
       /> */}
-      {localStorage.getItem("role") === "superAdmin" ? null : (
+      {localStorage.getItem("role") === "superAdmin" || localStorage.getItem("role") === "accountant" ? null : (
         <>
           <div className="flex justify-between">
             <h1 className="text-2xl font-bold "></h1>

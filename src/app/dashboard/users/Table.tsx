@@ -63,7 +63,7 @@ export function UsersTable({ className }: { className?: string }) {
     };
     const intervalId = setInterval(() => {
       getAllUser();
-    }, 20000);
+    }, 40000);
 
     getAllUser();
 
@@ -150,7 +150,7 @@ export function UsersTable({ className }: { className?: string }) {
         { id: 1, columnDef: { header: "Name" }, isPlaceholder: false },
         { id: 2, columnDef: { header: "Email" }, isPlaceholder: false },
         { id: 5, columnDef: { header: "CreatedAt" }, isPlaceholder: false }, // Fixed typo in "Attachment"
-        { id: 3, columnDef: { header: "Status" }, isPlaceholder: false },
+        // { id: 3, columnDef: { header: "Status" }, isPlaceholder: false },
         // { id: 4, columnDef: { header: "Role" }, isPlaceholder: false }, // Fixed typo in "Attachment"
         { id: 5, columnDef: { header: "Set Role" }, isPlaceholder: false }, // Fixed typo in "Attachment"
         { id: 6, columnDef: { header: "Set HR" }, isPlaceholder: false }, // Fixed typo in "Attachment"
