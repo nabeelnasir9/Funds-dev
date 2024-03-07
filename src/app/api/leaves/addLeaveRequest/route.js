@@ -21,11 +21,14 @@ export const POST = async (request) => {
     const newLeave = new Leave({
       userId: userId,
       title: name,
+      attachment:attachment,
       reason:reasons,
-
       leaveType: leave,
       leaveDate: date,
     });
+    
+
+    console.log(newLeave, "newLeave")
 
     const res = await newLeave.save();
 

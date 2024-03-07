@@ -12,6 +12,7 @@ export function ShowDetails({
 	close?: () => void
 	className?: string
 }) {
+	console.log(obj)
 	return (
 		<div className={cn('relative rounded-sm p-8', className)}>
 			{/* close */}

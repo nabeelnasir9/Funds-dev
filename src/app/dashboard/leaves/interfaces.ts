@@ -13,11 +13,11 @@ export class UserClass {
     public hrApprove: string = '',
 		public mangerApprove: string = '',
     public status: string = "",
+    public attachment: string = "",
     // public email: string = '',
 
     // public name: string = "",
     // public date: string = "",
-    public attachment: any = "",
 
     // public reasons: string = "",
 
