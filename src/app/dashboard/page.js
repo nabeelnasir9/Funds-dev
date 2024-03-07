@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 // 	description: 'Qafila Travels Dashboard',
 // }
 
-export default function page() {
+export default function Page() {
 	const router=useRouter()
   const cardsArray = [
     {
@@ -48,7 +48,7 @@ export default function page() {
 
       {cardsArray.map((card, i) => {
         return (
-          <div className="max-w-sm h-[200px] w-[300px] rounded overflow-hidden shadow-lg">
+          <div className="max-w-sm h-[200px] w-[300px] rounded overflow-hidden shadow-lg" key={i}>
             <div className="px-6 py-4">
               <div className="font-bold text-xl mb-2 text-center">{card.title}</div>
               <p className="text-gray-700 text-base text-center">{card.heading}</p>
