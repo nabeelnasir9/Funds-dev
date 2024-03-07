@@ -15,6 +15,7 @@ export const apiUrls = {
     getPassoutRequest: "api/passout/getPassoutRequest",
     addInvoiceRequest: "api/invoices/addInvoiceRequest",
     getInvoiceRequest: "api/invoices/getInvoiceRequest",
+    downloadExcel: "api/downloadExcel",
     approveRequest: "api/approveRequest",
   },
 };

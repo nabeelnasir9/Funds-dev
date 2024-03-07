@@ -19,7 +19,7 @@ export default function Page() {
       password,
     };
     const response = axios
-      .post("/api/auth/login", data)
+      .post("/api/downloadExcel", data)
       .then(async(response) => {
         response.data,
           console.log(response.data, "user"),
