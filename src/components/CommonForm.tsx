@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, Fragment, useState, useMemo } from 'react'
-import { useFieldArray, useForm, type UseFormReturn } from 'react-hook-form'
+import { useFieldArray, useForm, type UseFormReturn, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { format as fechaDateFormat } from 'fecha'
@@ -57,6 +57,7 @@ type CommonFormProps = {
 	submitText: string
 	cancelText: string
 	submitFunc: (values: any) => void
+	onViewDetails?: (index: number) => void
 	clearable?: boolean
 	fieldsToCopy?: string[]
 	nextAndPrev?: boolean
@@ -70,14 +71,21 @@ type CommonFormProps = {
 } & (CommonForm | CommonModalForm)
 
 export const CommonForm = (props: CommonFormProps) => {
+	const [fileData, setFileData] = useState<any>(null)
 	const extendedForm = useMemo<ExtendedForm<any>>(
 		() =>
 			props.extendedForm.map((group) => {
 				return {
 					...group,
 					fields: group.fields.map((field) => {
+						console.log(field,"field in form-------------------")
 						if (field.type === 'heading') {
 							return field
+						}
+						if (field.type === 'file') {
+							// upload file to cloudinary and get the url
+							console.log("file field", field)
+
 						}
 						let defaultValue = ''
 						if (props.defaultObj && props.defaultObj[field.key]) {
@@ -221,15 +229,17 @@ export const CommonForm = (props: CommonFormProps) => {
 		<Form {...form}>
 			<form
 				onSubmit={form.handleSubmit((values) => {
+					console.log(fileData,"file data in form-------------------")
 					let filteredObj: Record<string, any> = {}
 					console.log(values,"value in func-----------------------000000");
-					
+					values.attachment = fileData
 					Object.entries(values).forEach(([key, value]) => {
 						if (value !== NO_VALUE && (value || typeof value === 'boolean')) {
 							if (defaultValues[key] !== value) {
 								filteredObj[key] = value
 							}
 						}
+
 					})
 					props.submitFunc(values)
 				})}
@@ -247,6 +257,8 @@ export const CommonForm = (props: CommonFormProps) => {
 									form={form}
 									operationType={props.operationType}
 									customOptions={props.customOptions}
+									setFileData={setFileData}
+									fileData={fileData}
 								/>
 							</div>
 						) : group.type === 'accordion' ? (
@@ -261,6 +273,7 @@ export const CommonForm = (props: CommonFormProps) => {
 												form={form}
 												operationType={props.operationType}
 												customOptions={props.customOptions}
+												setFileData={setFileData}
 											/>
 										),
 										classNames: {
@@ -377,10 +390,13 @@ function FormGroup(props: {
 	fields: IFormField<any>[]
 	operationType: CommonFormProps['operationType']
 	form: UseFormReturn
+	setFileData: (file: any) => void
+	fileData?: any
 	customOptions?: {
 		[key: string]: Value[]
 	}
 }) {
+	const {setFileData} = props
 	return (
 		<>
 			{props.fields.map((aField, i) => {
@@ -394,7 +410,42 @@ function FormGroup(props: {
 								)}>
 								{aField.heading}
 							</h3>
-						) : aField.type === 'select' ? (
+						) :
+						aField.type === 'file' ? (
+							<FormField
+								control={props.form.control}
+								name={(aField as any).key}
+								render={({ field }) => {
+									return (
+										<FormItem
+											className={
+												aField.classNames && aField.classNames.wrapper
+											}>
+											<FormLabel
+												className={
+													aField.classNames && aField.classNames.label
+												}>
+												{aField.label}
+											</FormLabel>
+											<FormControl>
+												<Input
+													type={aField.type}
+													{...field}
+													placeholder={aField.placeholder}
+													className={aField?.classNames?.input}
+													disabled={aField.disabled}
+													onChange={(e:any) => {
+														setFileData(e.target.files[0])
+													}}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)
+								}}
+							/>
+						) : 
+						aField.type === 'select' ? (
 							<FormField
 								control={props.form.control}
 								name={(aField as any).key}

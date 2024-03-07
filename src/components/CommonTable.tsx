@@ -67,6 +67,7 @@ const commonTableRowActions = [
   "duplicate",
   "create_invoice",
   "create_voucher",
+  "attachment"
 ] as const;
 
 type CashRequestHeader = {
@@ -554,13 +555,27 @@ export function CommonTable(props: CommonTableProps) {
                 </TableCell>
               </TableRow>
             ) : table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => {
+              table.getRowModel().rows.map((row, i) => {
                 return (
                   <TableRow
                     key={row.id}
                     // data-state={row.getIsSelected() && "selected"}
                   >
                     {row.getVisibleCells().map((cell) => {
+                      console.log(cell, "cell ")
+                      if (cell.column.id === "attachment") {
+                        return (
+                          <TableCell key={cell.id}>
+                            <a
+                              href={cell?.row?.original?.attachment}
+                              target="_blank"
+                              className="text-blue-500"
+                            >
+                              Attachment
+                            </a>
+                          </TableCell>
+                        );
+                      }
                       return (
                         <TableCell key={cell.id}>
                           {flexRender(
@@ -570,6 +585,11 @@ export function CommonTable(props: CommonTableProps) {
                         </TableCell>
                       );
                     })}
+                    <TableCell>
+                      <FileEdit onClick={() => props.onViewDetails(row.index)} style={{
+                        cursor: "pointer"
+                      }} />
+                    </TableCell>
                   </TableRow>
                 );
               })

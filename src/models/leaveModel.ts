@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 // Create a schema for the User model
-const userSchema = new mongoose.Schema({
+const leaveSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User', // Reference to the User model
@@ -10,6 +10,9 @@ const userSchema = new mongoose.Schema({
   title: {
     type: String,
     required: [true, "Please add a title"],
+  },
+  attachment: {
+    type: String,
   },
   reason: {
     type: String,
@@ -41,4 +44,4 @@ const userSchema = new mongoose.Schema({
 
 // Export the model, creating it if it doesn't already exist
 export default mongoose.models.LeaveRequest ||
-  mongoose.model("LeaveRequest", userSchema);
+  mongoose.model("LeaveRequest", leaveSchema);
