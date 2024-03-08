@@ -38,7 +38,13 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
   },
   attachment: {
-    type: String,
+    type: String, 
+  },
+  reqMore:{
+    type:String,default:"no"
+  },
+  reqNote:{
+    type:String,default:""
   },
   updatedAt: {
     type: Date,

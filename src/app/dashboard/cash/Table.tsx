@@ -110,7 +110,7 @@ export function UsersTable({ className }: { className?: string }) {
 
   const onSubmit = async (values: CreateUser) => {
     try {
-      console.log(values, "value from the form");
+      console.log(values, "value from the form ------------------------------------");
       const imageUrl = await uploadImage(values.attachment);
       values.attachment = imageUrl;
 
@@ -290,6 +290,10 @@ export function UsersTable({ className }: { className?: string }) {
             // totalDocuments={users?.data?.pagination.total_count || 0}
             setPage={searchQuery.setPage}
             setLimit={searchQuery.setLimit}
+            attachment={true}
+            editIcon={
+              localStorage.getItem("role") === "employee" ? true : false
+            }
           />
         </>
       )}
@@ -357,6 +361,10 @@ export function UsersTable({ className }: { className?: string }) {
         // totalDocuments={users?.data?.pagination.total_count || 0}
         setPage={searchQuery.setPage}
         setLimit={searchQuery.setLimit}
+        attachment={true}
+        editIcon={
+          false
+        }
       />
     </div>
   );

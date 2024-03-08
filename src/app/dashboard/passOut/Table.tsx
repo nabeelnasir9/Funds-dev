@@ -66,16 +66,16 @@ export function UsersTable({ className }: { className?: string }) {
         );
         setTableData(finalReq);
         return;
-      }
-      setTableData(newRes);
+      }else{
+      setTableData(newRes);}
     };
-    const intervalId = setInterval(() => {
-      getReq();
-    }, 20000);
+    // const intervalId = setInterval(() => {
+    //   getReq();
+    // }, 20000);
 
     getReq();
 
-    return () => clearInterval(intervalId); 
+    // return () => clearInterval(intervalId);
   }, [requestMade]);
 
   const onSubmit = async (values: CreateUser) => {
@@ -87,7 +87,7 @@ export function UsersTable({ className }: { className?: string }) {
 
       if (res.message === "success") {
         // toast.dismiss();
-        setRequestMade(true)
+        setRequestMade(true);
         // toast.success("Successfully added request");
         formRef.current?.click();
       } else {
@@ -194,7 +194,8 @@ export function UsersTable({ className }: { className?: string }) {
           },
         ]}
       /> */}
-      {localStorage.getItem("role") === "superAdmin" || localStorage.getItem("role") === "accountant" ? null : (
+      {localStorage.getItem("role") === "superAdmin" ||
+      localStorage.getItem("role") === "accountant" ? null : (
         <>
           <div className="flex justify-between">
             <h1 className="text-2xl font-bold "></h1>
@@ -230,6 +231,8 @@ export function UsersTable({ className }: { className?: string }) {
             // totalDocuments={users?.data?.pagination.total_count || 0}
             setPage={searchQuery.setPage}
             setLimit={searchQuery.setLimit}
+            attachment={true}
+            editIcon={false}
           />
         </>
       )}
@@ -287,6 +290,8 @@ export function UsersTable({ className }: { className?: string }) {
         // totalDocuments={users?.data?.pagination.total_count || 0}
         setPage={searchQuery.setPage}
         setLimit={searchQuery.setLimit}
+        attachment={false}
+        editIcon={false}
       />
     </div>
   );

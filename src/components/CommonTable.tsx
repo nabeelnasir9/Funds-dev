@@ -1,5 +1,9 @@
 import * as React from "react";
-import { ChevronDownIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
+import {
+  ChevronDownIcon,
+  Cross1Icon,
+  DotsHorizontalIcon,
+} from "@radix-ui/react-icons";
 import {
   FileEdit,
   Trash,
@@ -67,7 +71,7 @@ const commonTableRowActions = [
   "duplicate",
   "create_invoice",
   "create_voucher",
-  "attachment"
+  "attachment",
 ] as const;
 
 type CashRequestHeader = {
@@ -117,6 +121,8 @@ export type CommonTableProps = {
   setTableDataFun?: any;
   historyData?: any;
   setHistoryData?: any;
+  attachment?: boolean;
+  editIcon?: boolean;
 };
 
 export type TableMeta = Pick<CommonTableProps, "onEdit">;
@@ -126,6 +132,12 @@ export function CommonTable(props: CommonTableProps) {
   let pathName = pathname.split("/");
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [isOpen, setIsOpen] = React.useState<any>(false);
+  const [attachmentNote, setAttachmentNote] = React.useState<any>("");
+  const [requireFileModal, setRequireFileModal] = React.useState<any>(false);
+  const [note, setNote] = React.useState<any>(false);
+  const [docId, setDocId] = React.useState<any>();
+  const [attachmentFile, setAttachmentFile] = React.useState<any>();
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -141,7 +153,10 @@ export function CommonTable(props: CommonTableProps) {
     ) {
       toast.success("no need of HR or Manager");
       // setSelectDisable(true);
-      await localStorage.setItem("rolesArray", JSON.stringify([val[0],"","",""]));
+      await localStorage.setItem(
+        "rolesArray",
+        JSON.stringify([val[0], "", "", ""])
+      );
 
       return;
     } else {
@@ -176,6 +191,64 @@ export function CommonTable(props: CommonTableProps) {
   // }, [])
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
+
+  const sendReqMore = async () => {
+    try {
+      toast.loading("loading");
+      let userToken = await localStorage.getItem("token");
+      let bodyData = {
+        token: userToken,
+        reqNote: note,
+        docId: docId,
+      };
+      let res = await http.post(apiUrls.users.addReqMore, bodyData);
+
+      if (res.message === "success") {
+        toast.dismiss();
+        toast.success("request sent");
+        setIsOpen(false);
+      }
+    } catch (error) {}
+  };
+
+  const uploadImage = async () => {
+    const files = attachmentFile;
+    const data = new FormData();
+    data.append("file", files);
+    data.append("upload_preset", "dsuzcga3"); // Replace with your upload preset
+    const res = await fetch(
+      "https://api.cloudinary.com/v1_1/datptkvvx/image/upload", // Replace with your cloud name
+      {
+        method: "POST",
+        body: data,
+      }
+    );
+    const file = await res.json();
+
+    return file.secure_url;
+  };
+
+  const sendMoreFile = async () => {
+    try {
+      toast.loading("loading");
+      const imageUrl = await uploadImage();
+
+      let userToken = await localStorage.getItem("token");
+      let bodyData = {
+        token: userToken,
+        docId: docId,
+        attachment: imageUrl,
+      };
+      let res = await http.post(apiUrls.users.addMoreFile, bodyData);
+
+      if (res.message === "success") {
+        toast.dismiss();
+        toast.success("request sent");
+        setRequireFileModal(false);
+      }
+    } catch (error) {}
+  };
+
   const handleApprove = async (id: any, status: any) => {
     try {
       toast.loading("loading");
@@ -410,6 +483,46 @@ export function CommonTable(props: CommonTableProps) {
           },
         })
       ),
+      isMangerOrHr && props.tableKey !== "history" && pathName[2] == "cash"
+        ? {
+            id: "Req More",
+            header: ({ table }: any) => (
+              <Checkbox
+                checked={table.getIsAllPageRowsSelected()}
+                onCheckedChange={(value) =>
+                  table.toggleAllPageRowsSelected(!!value)
+                }
+                aria-label="Select all"
+              />
+            ),
+            cell: ({ row }: any) =>
+              row?.original.reqMore != "yes" ? (
+                <Button
+                  onClick={() => {
+                    setIsOpen(true), setDocId(row?.original?._id);
+                  }}
+                  style={{
+                    backgroundColor: "grey",
+                    color: "white",
+                  }}
+                >
+                  Req More
+                </Button>
+              ) : (
+                <Button
+                  disabled={true}
+                  style={{
+                    backgroundColor: "#488c3f",
+                    color: "white",
+                  }}
+                >
+                  Req Sent
+                </Button>
+              ),
+            enableSorting: false,
+            enableHiding: false,
+          }
+        : null,
       isMangerOrHr && props.tableKey !== "history"
         ? {
             id: "Reject",
@@ -448,7 +561,7 @@ export function CommonTable(props: CommonTableProps) {
             ),
             cell: ({ row }: any) => (
               <Button
-                style={{ backgroundColor: "#488c3f", color: "white" }}
+                style={{ backgroundColor: "green", color: "white" }}
                 onClick={() => handleApprove(row.original._id, "accept")}
               >
                 Approve
@@ -486,10 +599,99 @@ export function CommonTable(props: CommonTableProps) {
       },
     },
   });
+  console.log(props.data, ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
 
   return (
     <>
       <div className="flex items-center justify-between py-4">
+        {isOpen && (
+          <div className="fixed z-10 inset-0 overflow-y-auto">
+            <div className="flex items-center justify-center min-h-screen">
+              <div className="fixed inset-0 bg-black opacity-50"></div>
+              <div className="z-20 w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+                <div className="flex justify-end">
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                  >
+                    <Cross1Icon />
+                  </button>
+                </div>
+                <div className="mt-4">
+                  <textarea
+                    onChange={(e) => setNote(e.target.value)}
+                    style={{
+                      border: "2px solid black",
+                      borderRadius: "10px",
+                      padding: "10px",
+                      marginBottom: "20px",
+                    }}
+                    name="note"
+                    id="note"
+                    placeholder="Enter your note"
+                    cols={42}
+                    rows={5}
+                  ></textarea>
+                  <div>
+                    <Button
+                      onClick={() => sendReqMore()}
+                      style={{
+                        backgroundColor: "grey",
+                        color: "white",
+                      }}
+                    >
+                      Send
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {requireFileModal && (
+          <div className="fixed z-10 inset-0 overflow-y-auto">
+            <div className="flex items-center justify-center min-h-screen">
+              <div className="fixed inset-0 bg-black opacity-50"></div>
+              <div className="z-20 w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+                <div className="flex justify-end">
+                  <button
+                    onClick={() => setRequireFileModal(false)}
+                    className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                  >
+                    <Cross1Icon />
+                  </button>
+                </div>
+                <div className="mt-4">
+                  <p>
+                    <span style={{ fontSize: "20px", fontWeight: "600" }}>
+                      {" "}
+                      Note:
+                    </span>{" "}
+                    {attachmentNote}
+                  </p>
+
+                  <input
+                    className="my-2"
+                    type="file"
+                    onChange={(e: any) => setAttachmentFile(e.target.files[0])}
+                  />
+                  <div>
+                    <Button
+                      onClick={() => sendMoreFile()}
+                      style={{
+                        backgroundColor: "grey",
+                        color: "white",
+                      }}
+                    >
+                      Send
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
         {/* <DropdownMenu> */}
         {/* <DropdownMenuTrigger asChild> */}
         <Button variant="outline" className="">
@@ -561,35 +763,89 @@ export function CommonTable(props: CommonTableProps) {
                     key={row.id}
                     // data-state={row.getIsSelected() && "selected"}
                   >
-                    {row.getVisibleCells().map((cell) => {
-                      console.log(cell, "cell ")
-                      if (cell.column.id === "attachment") {
+                    {props.attachment &&
+                      row.getVisibleCells().map((cell) => {
+                        console.log(cell, "cell ");
+                        if (cell.column.id === "attachment") {
+                          return (
+                            <TableCell key={cell.id}>
+                              {cell?.row?.original?.attachment &&
+                              cell?.row?.original?.reqMore == "no" ? (
+                                <a
+                                  href={cell?.row?.original?.attachment}
+                                  target="_blank"
+                                  className="text-blue-500"
+                                >
+                                  Attachment
+                                </a>
+                              ) : pathName[2] === "cash" &&
+                                localStorage.getItem("role") != "employee" ? (
+                                <a
+                                  href={cell?.row?.original?.attachment}
+                                  target="_blank"
+                                  className="text-blue-500"
+                                >
+                                  Attachment
+                                </a>
+                              ) : localStorage.getItem("role") === "employee" &&
+                                pathName[2] === "cash" ? (
+                                cell?.row?.original.reqMore == "no" ? (
+                                  <a
+                                    href={cell?.row?.original?.attachment}
+                                    target="_blank"
+                                    className="text-blue-500"
+                                  >
+                                    Attachment
+                                  </a>
+                                ) : (
+                                  <Button
+                                    onClick={() => {
+                                      setRequireFileModal(true),
+                                        setAttachmentNote(
+                                          cell?.row?.original?.reqNote
+                                        ),
+                                        setDocId(cell?.row?.original?._id);
+                                    }}
+                                    style={{
+                                      backgroundColor: "red",
+                                      color: "white",
+                                    }}
+                                  >
+                                    Add File
+                                  </Button>
+                                )
+                              ) : (
+                                <a
+                                  href={cell?.row?.original?.attachment}
+                                  target="_blank"
+                                  className="text-blue-500"
+                                >
+                                  Attachment
+                                </a>
+                              )}
+                            </TableCell>
+                          );
+                        }
                         return (
                           <TableCell key={cell.id}>
-                            <a
-                              href={cell?.row?.original?.attachment}
-                              target="_blank"
-                              className="text-blue-500"
-                            >
-                              Attachment
-                            </a>
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
                           </TableCell>
                         );
-                      }
-                      return (
-                        <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
-                      );
-                    })}
-                    <TableCell>
-                      <FileEdit onClick={() => props.onViewDetails(row.index)} style={{
-                        cursor: "pointer"
-                      }} />
-                    </TableCell>
+                      })}
+
+                    {props.editIcon && (
+                      <TableCell>
+                        <FileEdit
+                          onClick={() => props.onViewDetails(row.index)}
+                          style={{
+                            cursor: "pointer",
+                          }}
+                        />
+                      </TableCell>
+                    )}
                   </TableRow>
                 );
               })

@@ -315,6 +315,10 @@ export function UsersTable({ className }: { className?: string }) {
             totalDocuments={0}
             setPage={searchQuery.setPage}
             setLimit={searchQuery.setLimit}
+            attachment={true}
+            editIcon={
+              localStorage.getItem("role") === "employee" ? true : false
+            }
           />
         </>
       )}
@@ -380,6 +384,10 @@ export function UsersTable({ className }: { className?: string }) {
         // totalDocuments={users?.data?.pagination.total_count || 0}
         setPage={searchQuery.setPage}
         setLimit={searchQuery.setLimit}
+        attachment={true}
+            editIcon={
+              false
+            }
       />
     </div>
   );
