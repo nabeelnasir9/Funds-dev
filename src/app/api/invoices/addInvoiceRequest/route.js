@@ -8,7 +8,7 @@ import { NextResponse } from "next/server";
 export const POST = async (request) => {
   try {
     await dbConnect();
-    const {  name,  token } = await request.json();
+    const {  name,  token,attachment } = await request.json();
     console.log(token, "====================", name);
     // const authorization = headers().get("Authorization");
     // console.log(authorization)
@@ -17,7 +17,7 @@ export const POST = async (request) => {
     const newInvoice = new Invoice({
       userId: userId,
       title: name,
-
+      attachment:attachment,
     });
 
     const res = await newInvoice.save();

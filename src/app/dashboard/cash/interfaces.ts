@@ -12,6 +12,7 @@ export class UserClass {
 		public mangerApprove: string = '',
 		public accountantApprove: string = '',
 		public status: string = '',
+		public attachment: string = "",
 		// public email: string = '',
 		// public user_name: string = '',
 		// public role: string = '',

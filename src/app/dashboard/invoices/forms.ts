@@ -33,7 +33,7 @@ export const createUserForm: ExtendedForm<CreateUser> = [
         valueType: "normal",
         defaultValue: "",
         placeholder: "",
-        validation: z.string().min(1, "file is required"),
+        validation: z.string().min(0),
       },
     ],
   },

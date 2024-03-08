@@ -129,7 +129,7 @@ export function UsersTable({ className }: { className?: string }) {
 
       values.attachment = imageUrl;
       // toast.loading("adding cash request");
-      let res = await createLeaveRequest.mutateAsync(values);
+      let res:any = await createLeaveRequest.mutateAsync(values);
       console.log(res.message, "response from the store");
 
       if (res.message === "success") {

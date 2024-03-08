@@ -8,7 +8,7 @@ import { NextResponse } from "next/server";
 export const POST = async (request) => {
   try {
     await dbConnect();
-    const {amount,title,type,token} = await request.json();
+    const {amount,title,type,token,attachment} = await request.json();
     console.log(type,token,"====================");
     // const authorization = headers().get("Authorization");
     // console.log(authorization)
@@ -24,6 +24,7 @@ export const POST = async (request) => {
       amount,
       type,
       status: "pending",
+      attachment:attachment
     });
 
     const res = await newCash.save();

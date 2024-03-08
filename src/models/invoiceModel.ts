@@ -24,7 +24,9 @@ const userSchema = new mongoose.Schema({
   accountantApprove: {
     type: String,default:"pending"
   },
-  
+  attachment: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

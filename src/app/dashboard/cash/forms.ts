@@ -49,7 +49,15 @@ export const createCashRequestForm: ExtendedForm<CreateUser> = [
 				placeholder: 'Select Role',
 				validation: z.enum(['advance', 'paid']),
 			},
-			
+			{
+				label: "Attachment",
+				key: "attachment",
+				type: "file",
+				valueType: "normal",
+				defaultValue: "",
+				placeholder: "",
+				validation: z.string().min(0),
+			  },
 		],
 	},
 ]

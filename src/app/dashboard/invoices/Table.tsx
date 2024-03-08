@@ -45,6 +45,9 @@ export function UsersTable({ className }: { className?: string }) {
   const [role, setRole] = React.useState<any>();
   const [requestMade, setRequestMade] = React.useState(false);
 
+  const [fileUrl, setFileUrl] = React.useState<any>("");
+  const [detailLeave, setDetailLeave] = React.useState<any>();
+
   React.useEffect(() => {
     const getReq = async () => {
       console.log("function called");
@@ -68,18 +71,40 @@ export function UsersTable({ className }: { className?: string }) {
       }
       setTableData(newRes);
     };
-    const intervalId = setInterval(() => {
-      getReq();
-    }, 20000);
+    // const intervalId = setInterval(() => {
+    //   getReq();
+    // }, 20000);
 
     getReq();
 
-    return () => clearInterval(intervalId);
+    // return () => clearInterval(intervalId);
   }, [requestMade]);
+
+  const uploadImage = async (e: any) => {
+    const files = e;
+    const data = new FormData();
+    data.append("file", files);
+    data.append("upload_preset", "dsuzcga3"); // Replace with your upload preset
+    const res = await fetch(
+      "https://api.cloudinary.com/v1_1/datptkvvx/image/upload", // Replace with your cloud name
+      {
+        method: "POST",
+        body: data,
+      }
+    );
+    const file = await res.json();
+
+    setFileUrl(file.secure_url);
+    return file.secure_url;
+  };
 
   const onSubmit = async (values: CreateUser) => {
     try {
       console.log(values, "value from the form");
+
+      const imageUrl = await uploadImage(values.attachment);
+      values.attachment = imageUrl;
+
       // toast.loading("adding cash request");
       let res = await createPassoutRequest.mutateAsync(values);
       console.log(res.message, "response from the store");
@@ -101,6 +126,22 @@ export function UsersTable({ className }: { className?: string }) {
 
   const onUpdate = async (values: any) => {
     await updateUser.mutateAsync({ ...values, _id: detailUser?._id || "" });
+  };
+
+  const viewLeaveRequest = (index: number) => {
+    {
+      console.log(userPassoutRequest?.data.data[index], "userLeaveRequest");
+      console.log("viewLeaveRequest", index);
+
+      if (userPassoutRequest?.data && userPassoutRequest?.data.data[index]) {
+        const leaveRequest = { ...userPassoutRequest.data.data[index] };
+        delete leaveRequest.userId; // Remove the userId object
+        console.log(leaveRequest, "leaveRequest without userId");
+
+        setDetailLeave(leaveRequest); // Save the modified leaveRequest in state
+        detailsRef.current?.click();
+      }
+    }
   };
 
   const useViewCustomerDetails = (index: number) => {
@@ -206,7 +247,7 @@ export function UsersTable({ className }: { className?: string }) {
             cashRequest={cashRequest}
             tableKey="passout"
             columns={columns}
-            hideRowActions={["create_invoice", "duplicate"]}
+            hideRowActions={["create_invoice", "duplicate","attachment"]}
             data={tableData}
             loading={userPassoutRequest?.isLoading}
             onCreate={() => {
@@ -219,7 +260,7 @@ export function UsersTable({ className }: { className?: string }) {
             setHistoryData={setAcceptedPassOut}
             onEdit={useOnEditUser}
             onUpload={onUploadUsers}
-            onViewDetails={useViewCustomerDetails}
+            onViewDetails={viewLeaveRequest}
             onDeleteMany={onDeleteUsers}
             page={searchQuery.pagination.page}
             limit={searchQuery.pagination.limit}
@@ -235,11 +276,12 @@ export function UsersTable({ className }: { className?: string }) {
       <CommonModal ref={formRef} className="sm:min-w-[510px] lg:min-w-[800px]">
         <CommonForm
           type="modal"
-          defaultObj={detailUser}
+          defaultObj={detailLeave}
           operationType={formType}
           closeModal={() => formRef.current?.click()}
           extendedForm={formType === "create" ? createUserForm : createUserForm}
           submitText={formType === "create" ? "Create" : "Update"}
+          onViewDetails={viewLeaveRequest}
           cancelText="Cancel"
           submitFunc={(values) =>
             formType === "create"
@@ -252,7 +294,7 @@ export function UsersTable({ className }: { className?: string }) {
 
       <CommonModal ref={detailsRef}>
         <ShowDetails
-          obj={detailUser ? detailUser : {}}
+        obj={detailLeave ? detailLeave : {}}
           close={() => detailsRef.current?.click()}
         />
       </CommonModal>
