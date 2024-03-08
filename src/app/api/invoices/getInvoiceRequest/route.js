@@ -9,7 +9,7 @@ import { NextResponse } from "next/server";
 export const POST = async (request) => {
   try {
     await dbConnect();
-    const { token, employee,admin } = await request.json();
+    const { token, employee, admin } = await request.json();
 
     console.log(token, "==================token=========");
     // Authenticate user
@@ -28,7 +28,7 @@ export const POST = async (request) => {
       passoutRequests = await Promise.all(
         passoutReq.map(async (req) => {
           let reqUser = await User.findById(req.userId); // Assuming User model is imported
-
+          console.log(reqUser.hr, "----------------------");
           if (
             reqUser.hr == userId ||
             reqUser.manager == userId ||

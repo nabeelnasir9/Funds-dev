@@ -29,8 +29,9 @@ export const POST = async (request) => {
       passoutRequests = await Promise.all(
         passoutReq.map(async (req) => {
           let reqUser = await User.findById(req.userId); // Assuming User model is imported
+          console.log(reqUser.hr, "----------------------------");
 
-          if (reqUser.hr == userId || reqUser.manager == userId) {
+          if (reqUser.hr == userId || reqUser.manager == userId ||  reqUser.accountant == userId) {
             return req;
           } else {
             return null;

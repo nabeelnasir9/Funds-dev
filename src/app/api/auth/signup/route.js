@@ -18,7 +18,7 @@ export const POST = async (request) => {
 const accountants=await Users.find({role:"accountant"})
     const newUser = new Users({
       username,
-      email,
+      email:email.toLowerCase(),
       password: hashedPassword,
       hrs,
       managers,

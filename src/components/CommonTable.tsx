@@ -130,6 +130,7 @@ export type TableMeta = Pick<CommonTableProps, "onEdit">;
 export function CommonTable(props: CommonTableProps) {
   const pathname = usePathname();
   let pathName = pathname.split("/");
+console.log(props.data,"-------------------------------accepted data");
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [isOpen, setIsOpen] = React.useState<any>(false);

@@ -8,7 +8,7 @@ import { NextResponse } from "next/server";
 export const POST = async (request) => {
   try {
     await dbConnect();
-    const { token, employee ,admin} = await request.json();
+    const { token, employee, admin } = await request.json();
 
     console.log(employee, "==================token=========");
     // Authenticate user
@@ -25,7 +25,7 @@ export const POST = async (request) => {
       cashRequests = await Promise.all(
         cashReq.map(async (req) => {
           let reqUser = await User.findById(req.userId);
-
+          console.log(reqUser.hr, "----------------------------");
           if (
             reqUser.hr == userId ||
             reqUser.manager == userId ||

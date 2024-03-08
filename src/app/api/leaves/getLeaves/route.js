@@ -22,12 +22,14 @@ export const POST = async (request) => {
       let leavesReq = await Leave.find().populate("userId"); // Declare leavesReq
       leavesRequests = await Promise.all(
         leavesReq.map(async (req) => {
+          console.log(`UserID: ${req.userId},-------------------`);
           let reqUser = await User.findById(req.userId); // Assuming User model is imported
+          console.log(reqUser.hr, "----------------------------");
 
           if (
-            reqUser.hr == userId ||
-            reqUser.manager == userId ||
-            reqUser.accountant == userId
+            reqUser?.hr == userId ||
+            reqUser?.manager == userId ||
+            reqUser?.accountant == userId
           ) {
             return req;
           } else {
