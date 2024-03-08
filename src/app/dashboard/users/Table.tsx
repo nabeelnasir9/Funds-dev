@@ -217,6 +217,8 @@ export function UsersTable({ className }: { className?: string }) {
         // totalDocuments={users?.data?.pagination.total_count || 0}
         setPage={searchQuery.setPage}
         setLimit={searchQuery.setLimit}
+        attachment={true}
+        editIcon={false}
       />
       <CommonModal ref={formRef} className="sm:min-w-[510px] lg:min-w-[800px]">
         <CommonForm
