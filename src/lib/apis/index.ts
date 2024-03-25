@@ -19,5 +19,6 @@ export const apiUrls = {
     addMoreFile: "api/reqMore/addMoreFile",
     downloadExcel: "api/downloadExcel",
     approveRequest: "api/approveRequest",
+    updatePassword: "api/users/updatePassword",
   },
 };

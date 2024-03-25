@@ -10,32 +10,32 @@ export default function Page() {
 	const router=useRouter()
   const cardsArray = [
     {
-      title: "Cash",
-      heading: "Add Cash",
-      description: "Add cash requests and check ",
+      title: "Expense Management",
+      heading: "",
+      description: "Cash Reimbursement & Advance Cash Request ",
       button: "Detail",
 	  link:"/dashboard/cash"
     },
     {
-      title: "Leaves",
-      heading: "Add Leaves",
-      description: "Add cash requests and check ",
+      title: "Leave Management",
+      heading: "",
+      description: "Apply for Leave ",
       button: "Detail",
 	  link:"/dashboard/leaves"
 
     },
     {
-      title: "PassOut",
-      heading: "Add PassOut",
-      description: "Add cash requests and check ",
+      title: "Time Off Management",
+      heading: "",
+      description: "Apply and Check Status for Time Off",
       button: "Detail",
 	  link:"/dashboard/passOut"
 
     },
     {
-      title: "Invoice",
-      heading: "Add Invoices",
-      description: "Add cash requests and check ",
+      title: "Invoice Management",
+      heading: "",
+      description: "Invoice Creation, Tracking, and Approval",
       button: "Detail",
 	  link:"/dashboard/invoices"
 

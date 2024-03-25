@@ -15,6 +15,7 @@ import {
   Plane,
   Bus,
   User,
+  NotepadText,
   UserRoundPlus,
   Database,
   BookUser,
@@ -28,6 +29,7 @@ import {
   StickyNoteIcon,
   HomeIcon,
   UsersRound,
+  Coins
 } from "lucide-react";
 
 import useStore from "@/lib/store";
@@ -63,17 +65,17 @@ export default function Layout({ children }) {
     {
       name: "Leaves",
       path: "/dashboard/leaves",
-      icon: <HomeIcon />,
+      icon: <StickyNoteIcon />,
     },
     {
       name: "Pass out",
       path: "/dashboard/passOut",
-      icon: <User />,
+      icon: <Flag />,
     },
     {
       name: "Invoices",
       path: "/dashboard/invoices",
-      icon: <StickyNoteIcon />,
+      icon: <Coins />,
     },
   ]);
 
@@ -160,9 +162,11 @@ export default function Layout({ children }) {
               className="sidebar space-y-2  overflow-y-auto p-3"
               style={{
                 maxHeight: "calc(100vh - 100px)",
+                width: sidebarToggle ? "250px" : "72px",
+                overflowX: "hidden",
               }}
             >
-              <li
+              {/* <li
                 className="flex justify-end rounded-md bg-blue-500 p-3 text-white"
                 key={0}
               >
@@ -178,7 +182,7 @@ export default function Layout({ children }) {
                 >
                   {sidebarToggle ? "Contract Sidebar" : "Expand Sidebar"}
                 </CommonTooltip>
-              </li>
+              </li> */}
               {defaultRoutes.map((route, i) => (
                 <li key={i + 1}>
                   <Link

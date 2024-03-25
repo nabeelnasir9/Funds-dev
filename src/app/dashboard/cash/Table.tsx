@@ -207,7 +207,7 @@ export function UsersTable({ className }: { className?: string }) {
         { id: 9, columnDef: { header: "User Name" }, isPlaceholder: false },
         { id: 1, columnDef: { header: "Title" }, isPlaceholder: false },
         { id: 2, columnDef: { header: "Amount" }, isPlaceholder: false },
-        { id: 3, columnDef: { header: "Type" }, isPlaceholder: false },
+        // { id: 3, columnDef: { header: "Type" }, isPlaceholder: false },
         { id: 5, columnDef: { header: "CreatedAt" }, isPlaceholder: false },
         { id: 6, columnDef: { header: "updatedAt" }, isPlaceholder: false },
         { id: 8, columnDef: { header: "Manager" }, isPlaceholder: false },

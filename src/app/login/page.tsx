@@ -5,10 +5,13 @@ import axios from "axios";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { set } from "mongoose";
 export default function Page() {
   const router=useRouter()
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,6 +28,7 @@ export default function Page() {
           console.log(response.data, "user"),
         await  localStorage.setItem("token", response.data.token);
         await localStorage.setItem("role", response.data.data.role)
+        setLoading(false);
         router.push("/dashboard")
       }) // Assuming response.data contains the user data you want to use in success message
       .catch((error) => Promise.reject(error)); // Ensure errors are correctly propagated
@@ -47,6 +51,7 @@ export default function Page() {
         },
       }
     );
+    setLoading(false);
   };
   return (
     <>
@@ -54,6 +59,10 @@ export default function Page() {
         <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
           <div className="mx-auto w-full max-w-sm lg:w-96">
             <div>
+              <div className="flex justify-center items-center">
+                <Image src="/a.png" alt="logo" width={100} height={100} />
+                <Image src="/e.png" alt="logo" width={100} height={100} />
+              </div>
               <h2 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-gray-900">
                 Sign in to your account
               </h2>
@@ -74,7 +83,11 @@ export default function Page() {
                   action="#"
                   method="POST"
                   className="space-y-6"
-                  onSubmit={handleSubmit}
+                  onSubmit={(e)=>{
+                    setLoading(true)
+                    handleSubmit(e)
+                  
+                  }}
                 >
                   <div>
                     <label
@@ -149,7 +162,7 @@ export default function Page() {
                       type="submit"
                       className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     >
-                      Sign in
+                      {loading ? "Loading..." : "Sign in"}
                     </button>
                   </div>
                 </form>

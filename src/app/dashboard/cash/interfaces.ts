@@ -6,7 +6,7 @@ export class UserClass {
 		public username: string = '',
 		public title: string = '',
 		public amount: number = 0,
-		public type:"Select type" | "advance" | "paid" = "Select type" ,
+		// public type:"Select type" | "advance" | "paid" = "Select type" ,
 		public createdAt: string = '',
 		public updatedAt: string = '',
 		public mangerApprove: string = '',
