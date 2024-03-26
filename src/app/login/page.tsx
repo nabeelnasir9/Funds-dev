@@ -7,8 +7,9 @@ import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { set } from "mongoose";
+import { GlobeDemo } from "@/components/GlobeDemo";
 export default function Page() {
-  const router=useRouter()
+  const router = useRouter();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -23,13 +24,13 @@ export default function Page() {
     };
     const response = axios
       .post("/api/auth/login", data)
-      .then(async(response) => {
+      .then(async (response) => {
         response.data,
           console.log(response.data, "user"),
-        await  localStorage.setItem("token", response.data.token);
-        await localStorage.setItem("role", response.data.data.role)
+          await localStorage.setItem("token", response.data.token);
+        await localStorage.setItem("role", response.data.data.role);
         setLoading(false);
-        router.push("/dashboard")
+        router.push("/dashboard");
       }) // Assuming response.data contains the user data you want to use in success message
       .catch((error) => Promise.reject(error)); // Ensure errors are correctly propagated
 
@@ -59,9 +60,15 @@ export default function Page() {
         <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
           <div className="mx-auto w-full max-w-sm lg:w-96">
             <div>
-              <div className="flex justify-center items-center">
-                <Image src="/a.png" alt="logo" width={100} height={100} />
-                <Image src="/e.png" alt="logo" width={100} height={100} />
+              <div className="flex justify-evenly items-center">
+                <Image src="/a.png" alt="logo" width={110} height={110} />
+                <Image
+                  src="/e.png"
+                  alt="logo"
+                  width={150}
+                  height={150}
+                  style={{ marginTop: "12px" }}
+                />
               </div>
               <h2 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-gray-900">
                 Sign in to your account
@@ -83,10 +90,9 @@ export default function Page() {
                   action="#"
                   method="POST"
                   className="space-y-6"
-                  onSubmit={(e)=>{
-                    setLoading(true)
-                    handleSubmit(e)
-                  
+                  onSubmit={(e) => {
+                    setLoading(true);
+                    handleSubmit(e);
                   }}
                 >
                   <div>
@@ -223,12 +229,16 @@ export default function Page() {
             </div>
           </div>
         </div>
-        <div className="relative hidden w-0 flex-1 lg:block">
-          <img
+        <div
+          className="relative hidden w-0 flex-1 lg:block"
+          style={{ borderLeft: "2px solid #d3d3d352" }}
+        >
+          {/* <img
             className="absolute inset-0 h-full w-full object-cover"
             src="https://images.unsplash.com/photo-1496917756835-20cb06e75b4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1908&q=80"
             alt=""
-          />
+          /> */}
+          <GlobeDemo />
         </div>
       </div>
     </>
