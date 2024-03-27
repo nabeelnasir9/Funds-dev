@@ -4,10 +4,10 @@ export class UserClass {
   constructor(
     public _id: string = "",
 		public username: string = '',
-
     public title: string = "",
     public leaveType: string = "",
     public reason: any = "",
+    public dateFrom: string = "",
     public leaveDate: string = "",
     public createdAt: string = "",
     public hrApprove: string = '',
