@@ -19,10 +19,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  type: {
-    type: String,
-    required: [true, "Please add a type"],
-  },
+  // type: {
+  //   type: String,
+  //   required: [true, "Please add a type"],
+  // },
   mangerApprove: {
     type: String,default:"pending"
 

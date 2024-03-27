@@ -67,7 +67,8 @@ type CommonInputData<T> = {
 	validation: z.ZodTypeAny | null
 } & (NormalValue | CalculatedValue)
 
-export const textInputTypes = ['text', 'email', 'password', 'date', 'number', 'file'] as const
+export const textInputTypes = ['text', 'email', 'password', 'date', 'number', 'file', 'textarea'] as const;
+
 
 export type ITextInputField<T> = CommonInputData<T> & {
 	type: (typeof textInputTypes)[number]

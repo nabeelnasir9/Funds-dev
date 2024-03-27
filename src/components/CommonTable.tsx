@@ -358,10 +358,13 @@ console.log(props.data,"-------------------------------accepted data");
         (column, columnIndex) => ({
           accessorKey: column,
           header: <p className="capitalize">{snakeCaseToNormal(column)}</p>,
-
+          
           // @ts-ignore
           cell: ({ row }) => {
+            console.log("🚀 ~ tableColums ~ column:", column)
+            console.log("🚀 ~ tableColums ~ row:", row)
             const value = row.getValue(column);
+            console.log("valuesssssssssssssssssssssssss",value)
             return (
               <div className="flex flex-col" key={column}>
                 {props?.accordion?.includes(column) ? (
@@ -726,6 +729,7 @@ console.log(props.data,"-------------------------------accepted data");
             {props.cashRequest?.map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header: any) => {
+                  console.log("headerrrrrrrrrrrrrrrrrrrrrrrrrrrr",header)
                   return (
                     <TableHead
                       className="whitespace-nowrap"

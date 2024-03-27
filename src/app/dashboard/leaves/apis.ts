@@ -7,6 +7,7 @@ import { LoginResponse } from "@/app/login/interfaces";
 export async function createLeaveRequest(data: CreateUser) {
   let userToken = await localStorage.getItem("token");
 
+  console.log("datauser wala ha ",data)
   const bodyData = { ...data, token: userToken };
   return http.post<LoginResponse>(apiUrls.users.addLeaveRequest, bodyData);
 }

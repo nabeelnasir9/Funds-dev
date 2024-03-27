@@ -8,8 +8,8 @@ import { NextResponse } from "next/server";
 export const POST = async (request) => {
   try {
     await dbConnect();
-    const {amount,title,type,token,attachment} = await request.json();
-    console.log(type,token,"====================");
+    const {amount,title,token,attachment} = await request.json();
+    console.log(token,"====================");
     // const authorization = headers().get("Authorization");
     // console.log(authorization)
     let userId = await authMiddleware(token);
@@ -22,7 +22,6 @@ export const POST = async (request) => {
       userId: userId,
       title,
       amount,
-      type,
       status: "pending",
       attachment:attachment
     });

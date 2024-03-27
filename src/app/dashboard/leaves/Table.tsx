@@ -86,6 +86,7 @@ export function UsersTable({ className }: { className?: string }) {
         let finalReq = newRes.filter(
           (item: any, i: any) => item.mangerApprove === "pending"
         );
+        console.log("finalreqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",finalReq)
         setTableData(finalReq);
         return;
       }
@@ -201,6 +202,9 @@ export function UsersTable({ className }: { className?: string }) {
     (column) => column !== "_id"
   );
 
+  console.log("coulume",columns)
+
+
   type CashRequestHeader = {
     id: number;
     columnDef: {
@@ -226,7 +230,11 @@ export function UsersTable({ className }: { className?: string }) {
         { id: 1, columnDef: { header: "Title" }, isPlaceholder: false },
         { id: 2, columnDef: { header: "Sick/casual" }, isPlaceholder: false },
         { id: 3, columnDef: { header: "Reason" }, isPlaceholder: false }, // Fixed typo in "Attachment"
-        { id: 4, columnDef: { header: "Date" }, isPlaceholder: false },
+        // { id: 4, columnDef: { header: "Date" }, isPlaceholder: false },
+
+        { id: 4, columnDef: { header: "Date From" }, isPlaceholder: false },
+        { id: 10, columnDef: { header: "Date To" }, isPlaceholder: false },
+        { id: 11, columnDef: { header: "Number of Days" }, isPlaceholder: false },
         { id: 5, columnDef: { header: "Created At" }, isPlaceholder: false },
         // { id: 5, columnDef: { header: "Attachment" }, isPlaceholder: false }, // Fixed typo in "Attachment"
         { id: 7, columnDef: { header: "HR" }, isPlaceholder: false },

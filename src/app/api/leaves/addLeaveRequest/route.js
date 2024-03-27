@@ -9,7 +9,8 @@ import imgss from "../../../../imgs/test.png"
 export const POST = async (request) => {
   try {
     await dbConnect();
-    const { reasons, name, leave, token, date ,attachment} = await request.json();
+    const { reasons, name, leave, token, date_from,date_to, number_of_days,attachment} = await request.json();
+    console.log("date_fromeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",date_from,date_to,number_of_days)
 
     // const result = await cloudinary.uploader.upload(attachment);
     console.log(attachment,"attachment");
@@ -24,7 +25,10 @@ export const POST = async (request) => {
       attachment:attachment,
       reason:reasons,
       leaveType: leave,
-      leaveDate: date,
+      dateFrom:date_from,
+      dateTo:date_to,
+      numberOfDays:number_of_days
+      // leaveDate: date,
     });
     
 

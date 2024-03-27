@@ -19,7 +19,7 @@ export const createUserLeaveFormSchema = z.object({
   name: z.string().min(1, 'name is required'),
   leave: z.enum(["sick", "casual"]),
   reasons: z.string().min(1, 'reason is required'),
-  date: z.string().min(1, 'Date is required'),
+  // date: z.string().min(1, 'Date is required'),
   attachment: z.custom((value) => {
     console.log(value,"------------------values from the attat-----------------");
     
@@ -76,22 +76,46 @@ export const createUserLeaveForm: ExtendedForm<z.infer<typeof createUserLeaveFor
       {
         label: "Reason",
         key: "reasons",
-        type: "text",
+        type: "textarea",
         valueType: "normal",
         defaultValue: "",
         placeholder: "",
         validation: createUserLeaveFormSchema.shape.reasons,
       },
-
       {
-        label: "Date",
-        key: "date",
-        type: "date",
-        valueType: "normal",
-        defaultValue: "",
-        placeholder: "",
-        validation: createUserLeaveFormSchema.shape.date,
-      },
+				label: 'Date From',
+				key: 'date_from',
+				type: 'date',
+				valueType: 'normal',
+				defaultValue: '',
+				placeholder: '',
+				validation: z.string().min(1, `Check In Date is required`),
+			},
+			{
+				label: 'Date To',
+				key: 'date_to',
+				type: 'date',
+				valueType: 'normal',
+				defaultValue: '',
+				placeholder: '',
+				validation: z.string().min(1, `Checkout Date is required`),
+			},
+			{
+				label: 'Number Of Days',
+				key: 'number_of_days',
+				type: 'number',
+				valueType: 'derived',
+				expression:
+					'=== return = Math.floor((new Date(date_to) - new Date(date_from)) / (24 * 60 * 60 * 1000))',
+				derivationType: 'arithmetic',
+				defaultValue: '',
+				placeholder: '',
+				validation: z
+					.string()
+					.min(1, `Number Of Days is required`)
+					.transform((a) => Number(a)),
+				disabled: true,
+			},
 
       {
         label: "Attachment",

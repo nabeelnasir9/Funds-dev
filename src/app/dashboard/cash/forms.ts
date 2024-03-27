@@ -18,7 +18,7 @@ export const createCashRequestForm: ExtendedForm<CreateUser> = [
 				validation: z.string().min(1, 'Title is required'),
 			},
 			{
-				label: 'Amount',
+				label: 'Amount (SAR)',
 				key: 'amount',
 				type: 'number',
 				valueType: 'normal',
@@ -26,29 +26,29 @@ export const createCashRequestForm: ExtendedForm<CreateUser> = [
 				placeholder: '',
 				validation: z.string().transform((a) => Number(a)),
 			},
-			{
-				label: 'Type',
-				key: 'type',
-				type: 'select',
-				valueType: 'normal',
-				values: [
-					{
-						label: '--------Select------',
-						value: NO_VALUE,
-					},
-					{
-						label: 'Advance',
-						value: 'advance',
-					},
-					{
-						label: 'Paid',
-						value: 'paid',
-					},
-				],
-				defaultValue: '',
-				placeholder: 'Select Role',
-				validation: z.enum(['advance', 'paid']),
-			},
+			// {
+			// 	label: 'Type',
+			// 	key: 'type',
+			// 	type: 'select',
+			// 	valueType: 'normal',
+			// 	values: [
+			// 		{
+			// 			label: '--------Select------',
+			// 			value: NO_VALUE,
+			// 		},
+			// 		{
+			// 			label: 'Advance',
+			// 			value: 'advance',
+			// 		},
+			// 		{
+			// 			label: 'Paid',
+			// 			value: 'paid',
+			// 		},
+			// 	],
+			// 	defaultValue: '',
+			// 	placeholder: 'Select Role',
+			// 	validation: z.enum(['advance', 'paid']),
+			// },
 			{
 				label: "Attachment",
 				key: "attachment",

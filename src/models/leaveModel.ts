@@ -37,9 +37,18 @@ const leaveSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  leaveDate: {
-    type: String,
+  // leaveDate: {
+  //   type: String,
+  // },
+  dateFrom:{
+    type:String
   },
+  dateTo:{
+    type:String
+  },
+  numberOfDays:{
+    type:Number
+  }
 });
 
 // Export the model, creating it if it doesn't already exist
