@@ -8,6 +8,8 @@ export class UserClass {
     public leaveType: string = "",
     public reason: any = "",
     public dateFrom: string = "",
+    public dateTo: string ="",
+    public numberOfDays:number=0 ,
     public leaveDate: string = "",
     public createdAt: string = "",
     public hrApprove: string = '',
