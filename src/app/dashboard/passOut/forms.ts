@@ -17,14 +17,36 @@ export const createUserForm: ExtendedForm<CreateUser> = [
         validation: z.string().min(1, "name is required"),
       },
       {
-        label: "PassOut",
-        key: "passOut",
+        label: "Time From",
+        key: "timeFrom",
         type: "select",
         valueType: "normal",
-        values: generatePassOutOptions(),
+        values: generatePassOutOptions(), // You need to define generatePassOutOptions function
         defaultValue: "",
-        placeholder: "Select time",
-        validation: z.string().min(1, "time is required"),
+        placeholder: "Select start time",
+        validation: z.string().min(1, "Time From is required"),
+      },
+      {
+        label: "Time To",
+        key: "timeTo",
+        type: "select",
+        valueType: "normal",
+        values: generatePassOutOptions(), // You need to define generatePassOutOptions function
+        defaultValue: "",
+        placeholder: "Select end time",
+        validation: z.string().min(1, "Time To is required"),
+      },
+      {
+        label: "No of Minutes",
+        key: "noOfMinutes",
+        type: "text",
+        valueType: "derived",
+        expression: '=== calculateNumberOfMinutes(formData.timeFrom, formData.timeTo)',
+        derivationType: "arithmetic",
+        defaultValue: "",
+        placeholder: "Automatically calculated",
+        disabled: true,
+        validation: null, 
       },
       {
         label: "Reason",
@@ -33,11 +55,12 @@ export const createUserForm: ExtendedForm<CreateUser> = [
         valueType: "normal",
         defaultValue: "",
         placeholder: "",
-        validation: z.string().min(1, "reason is required"),
+        validation: z.string().min(1, "Reason is required"),
       },
     ],
   },
 ];
+
 
 // Function to generate passOut options from 8 AM to 4 PM with a half-hour gap
 function generatePassOutOptions() {
