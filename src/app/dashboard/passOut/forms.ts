@@ -16,6 +16,16 @@ export const createUserForm: ExtendedForm<CreateUser> = [
         placeholder: "",
         validation: z.string().min(1, "name is required"),
       },
+      // {
+      //   label: "PassOut",
+      //   key: "passOut",
+      //   type: "select",
+      //   valueType: "normal",
+      //   values: generatePassOutOptions(),
+      //   defaultValue: "",
+      //   placeholder: "Select time",
+      //   validation: z.string().min(1, "time is required"),
+      // },
       {
         label: "Time From",
         key: "timeFrom",
@@ -36,26 +46,26 @@ export const createUserForm: ExtendedForm<CreateUser> = [
         placeholder: "Select end time",
         validation: z.string().min(1, "Time To is required"),
       },
-      {
-        label: 'Number Of Minutes',
-        key: 'number_of_minutes',
-        type: 'number',
-        valueType: 'derived',
-        expression:
-        '=== Math.floor((timeTo - timeFrom) / (1000 * 60))',
-        derivationType: 'arithmetic',
-        defaultValue: '',
-        placeholder: '',
-        validation: z
-            .string()
-            .min(1, `Number Of Minutes is required`)
-            .transform((a) => Number(a)),
-        disabled: true,
-    },
+    //   {
+    //     label: 'Number Of Minutes',
+    //     key: 'number_of_minutes',
+    //     type: 'number',
+    //     valueType: 'derived',
+    //     expression:
+    //     '=== Math.floor((timeTo - timeFrom) / (1000 * 60))',
+    //     derivationType: 'arithmetic',
+    //     defaultValue: '',
+    //     placeholder: '',
+    //     validation: z
+    //         .string()
+    //         .min(1, `Number Of Minutes is required`)
+    //         .transform((a) => Number(a)),
+    //     disabled: true,
+    // },
       {
         label: "Reason",
         key: "reason",
-        type: "text",
+        type: "textarea",
         valueType: "normal",
         defaultValue: "",
         placeholder: "",
@@ -84,5 +94,6 @@ function generatePassOutOptions() {
       });
     }
   }
+  console.log(options)
   return options;
 }

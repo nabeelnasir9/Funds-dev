@@ -1,32 +1,52 @@
 import dbConnect from "../../../../utils/dbConnect";
 import Passout from "../../../../models/passoutModel";
+import User from "../../../../models/userModel";
 import authMiddleware from "../../../../utils/authMiddleware";
-import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
-// @ts-ignore
+
 export const POST = async (request) => {
   try {
     await dbConnect();
-    const { reason, name, passOut, token } = await request.json();
-    console.log(token, "====================", name, passOut, reason);
-    // const authorization = headers().get("Authorization");
-    // console.log(authorization)
+    const { reason, name, timeFrom, timeTo, token } = await request.json();
     let userId = await authMiddleware(token);
-    console.log(userId, "user form db");
 
-    const newPassout = new Passout({
-      userId: userId,
-      title: name,
-      reason,
+    // Calculate hours directly and push to passOutTotalHours array
+    const hours = calculateHours(timeFrom, timeTo);
+    const passOutTotalHours = [hours]; // Initialize passOutTotalHours array with calculated hours
 
-      passOut,
-    });
+    const totalHours = passOutTotalHours.reduce((acc, curr) => acc + curr, 0);
+    let remainingCasualLeave = 0;
+    if (totalHours >= 8) {
+      remainingCasualLeave = totalHours - 8;
+    }
 
-    const res = await newPassout.save();
-    console.log(res, "request saved");
+    // Find the user
+    const user = await User.findById(userId);
 
-    return NextResponse.json({ message: "success", data: "res" });
+    // Update the casual leave balance
+    if (user) {
+      const updatedCasualLeaveBalance = user.leavesBalance.casual - remainingCasualLeave;
+
+      // Update user's casual leave balance
+      await User.findByIdAndUpdate(userId, { "leavesBalance.casual": updatedCasualLeaveBalance });
+
+      const newPassout = new Passout({
+        userId: userId,
+        title: name,
+        reason,
+        timeFrom,
+        timeTo,
+        passOutTotalHours, // Directly assign passOutTotalHours array
+      });
+
+      const res = await newPassout.save();
+      console.log(res, "request saved");
+
+      return NextResponse.json({ message: "success", data: "res" });
+    } else {
+      throw new Error("User not found");
+    }
   } catch (error) {
     console.log(error, "error");
     return NextResponse.json({
@@ -35,3 +55,17 @@ export const POST = async (request) => {
     });
   }
 };
+
+
+function calculateHours(timeFrom, timeTo) {
+  const [hoursFrom, minutesFrom] = timeFrom.split(":").map(Number);
+  const [hoursTo, minutesTo] = timeTo.split(":").map(Number);
+
+  const fromDate = new Date(0, 0, 0, hoursFrom, minutesFrom);
+  const toDate = new Date(0, 0, 0, hoursTo, minutesTo);
+
+  const differenceMs = toDate - fromDate;
+  const hoursDifference = differenceMs / (1000 * 60 * 60);
+
+  return hoursDifference;
+}

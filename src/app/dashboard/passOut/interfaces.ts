@@ -5,7 +5,7 @@ export class UserClass {
     public _id: string = "",
     public username: string = "",
     public title: string = "",
-    public passOut: string = "",
+    // public passOut: string = "",
     public reason: string = "",
     public createdAt: string = "",
     public timeFrom:string = "",

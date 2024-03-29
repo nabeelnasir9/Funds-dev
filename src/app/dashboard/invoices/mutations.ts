@@ -52,6 +52,7 @@ export function useUserGetPassoutRequest(searchParams?: string) {
       toast.dismiss();
       loadingToast = toast.loading("Getting Invoice Request");
       const res = await getInvoiceRequest(searchParams);
+      console.log("🚀 ~ mutationFn: ~ res:", res)
       return res;
     },
     onSuccess: (response) => {

@@ -18,9 +18,17 @@ const userSchema = new mongoose.Schema({
     type: String,
     default:"pending"
   },
-  passOut: {
-    type: String,
-    required: [true, "Please add a passOut time"],
+  // passOut: {
+  //   type: String,
+  //   required: [true, "Please add a passOut time"],
+  // },
+  timeFrom: {
+    type: String, // Change type to Date
+    required: [true, "Please add a timeFrom"]
+  },
+  timeTo: {
+    type: String, // Change type to Date
+    required: [true, "Please add a timeTo"]
   },
   mangerApprove: {
     type: String,default:"pending"
@@ -30,13 +38,13 @@ const userSchema = new mongoose.Schema({
     type: String,default:"pending"
   },
   passOutTotalHours:{
-    type:Number,default:0
+    type:Array,default:[]
   },
   createdAt: {
     type: Date,
     default: Date.now,
   },
- 
+
 });
 
 // Export the model, creating it if it doesn't already exist
