@@ -37,17 +37,21 @@ export const createUserForm: ExtendedForm<CreateUser> = [
         validation: z.string().min(1, "Time To is required"),
       },
       {
-        label: "No of Minutes",
-        key: "noOfMinutes",
-        type: "text",
-        valueType: "derived",
-        expression: '=== calculateNumberOfMinutes(formData.timeFrom, formData.timeTo)',
-        derivationType: "arithmetic",
-        defaultValue: "",
-        placeholder: "Automatically calculated",
+        label: 'Number Of Minutes',
+        key: 'number_of_minutes',
+        type: 'number',
+        valueType: 'derived',
+        expression:
+        '=== Math.floor((timeTo - timeFrom) / (1000 * 60))',
+        derivationType: 'arithmetic',
+        defaultValue: '',
+        placeholder: '',
+        validation: z
+            .string()
+            .min(1, `Number Of Minutes is required`)
+            .transform((a) => Number(a)),
         disabled: true,
-        validation: null, 
-      },
+    },
       {
         label: "Reason",
         key: "reason",

@@ -189,23 +189,49 @@ export function UsersTable({ className }: { className?: string }) {
 
   type CashRequest = CashRequestItem[];
 
+  // const cashRequest: CashRequest = [
+  //   {
+  //     id: 1,
+  //     headers: [
+  //       { id: 0, columnDef: { header: "Sr." }, isPlaceholder: false },
+  //       { id: 9, columnDef: { header: "User Name" }, isPlaceholder: false },
+  //       { id: 1, columnDef: { header: "Title" }, isPlaceholder: false },
+  //       // { id: 4, columnDef: { header: "Sick/casual" }, isPlaceholder: false },
+  //       // { id: 5, columnDef: { header: "Reason" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+  //       { id: 3, columnDef: { header: "Date" }, isPlaceholder: false },
+  //       { id: 7, columnDef: { header: "Accountant" }, isPlaceholder: false },
+  //       { id: 8, columnDef: { header: "Manager" }, isPlaceholder: false },
+  //       { id: 6, columnDef: { header: "Status" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        
+  //     ],
+  //   },
+  // ];
   const cashRequest: CashRequest = [
     {
       id: 1,
       headers: [
         { id: 0, columnDef: { header: "Sr." }, isPlaceholder: false },
         { id: 9, columnDef: { header: "User Name" }, isPlaceholder: false },
-
         { id: 1, columnDef: { header: "Title" }, isPlaceholder: false },
-        // { id: 4, columnDef: { header: "Sick/casual" }, isPlaceholder: false },
-        // { id: 5, columnDef: { header: "Reason" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        { id: 4, columnDef: { header: "Sick/casual" }, isPlaceholder: false },
+        { id: 5, columnDef: { header: "Reason" }, isPlaceholder: false },
         { id: 3, columnDef: { header: "Date" }, isPlaceholder: false },
         { id: 7, columnDef: { header: "Accountant" }, isPlaceholder: false },
         { id: 8, columnDef: { header: "Manager" }, isPlaceholder: false },
-        { id: 6, columnDef: { header: "Status" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        { id: 6, columnDef: { header: "Status" }, isPlaceholder: false },
+        { id: 2, columnDef: { header: "Invoice to Company" }, isPlaceholder: false },
+        { id: 10, columnDef: { header: "Invoice No." }, isPlaceholder: false },
+        { id: 11, columnDef: { header: "Date of Invoice" }, isPlaceholder: false },
+        { id: 12, columnDef: { header: "Invoice Description" }, isPlaceholder: false },
+        { id: 13, columnDef: { header: "Total Amount" }, isPlaceholder: false },
+        { id: 14, columnDef: { header: "Total Amount excl. VAT" }, isPlaceholder: false },
+        { id: 15, columnDef: { header: "Expense" }, isPlaceholder: false },
+        { id: 16, columnDef: { header: "Net Earning" }, isPlaceholder: false },
+        { id: 17, columnDef: { header: "Percentage" }, isPlaceholder: false },
       ],
     },
   ];
+  
 
   return (
     <div className={cn("w-full", className)}>

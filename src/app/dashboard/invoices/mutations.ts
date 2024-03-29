@@ -20,6 +20,8 @@ export function useCreatePassoutRequest() {
 
       loadingToast = toast.loading("Adding Invoice Request");
       const res = await createInvoiceRequest(params);
+      console.log("🚀 ~ mutationFn: ~ res:", res)
+      
       return res;
     },
     onSuccess: (response) => {
