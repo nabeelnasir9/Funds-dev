@@ -205,6 +205,7 @@ export function UsersTable({ className }: { className?: string }) {
             <h1 className="text-2xl font-bold "></h1>
 
             <h1 className="text-2xl font-bold text-center">Pass Outs </h1>
+            
             <h1 className="text-2xl font-bold "></h1>
           </div>
           <hr className="bg-gray-300 mt-[20px]" />

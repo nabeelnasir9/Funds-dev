@@ -5,37 +5,32 @@ import { cn } from "@/lib/utils";
 interface InputPropsBase {
   className?: string;
   type?: "text" | "email" | "password" | "date" | "number" | "file" | "textarea";
+  placeholder?: string;
+  disabled?: boolean; // Add disabled property
 }
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement>, InputPropsBase {
-  type?: Exclude<"text" | "email" | "password" | "date" | "number" | "file", "textarea">;
-  onChange?: React.ChangeEventHandler<HTMLInputElement>;
+interface InputProps<T extends HTMLElement> extends InputPropsBase {
+  onChange?: React.ChangeEventHandler<T>;
 }
 
-interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement>, InputPropsBase {
-  type: "textarea";
-  onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
-}
-
-type Props = InputProps | TextareaProps;
+type Props = InputProps<HTMLInputElement> | InputProps<HTMLTextAreaElement>;
 
 const Input = React.forwardRef<
   HTMLInputElement | HTMLTextAreaElement,
   Props
 >((props, ref) => {
-  const { className, type, ...rest } = props;
+  const { className, type, onChange, ...rest } = props;
 
   if (type === "textarea") {
-    const { type: _, ...textareaProps } = props as TextareaProps;
     return (
       <textarea
         className={cn(
-          "flex  w-full rounded-md border-2 resize-none border-black  px-3 py-2 text-sm ",
+          "flex w-full rounded-md border-2 resize-none border-black px-3 py-2 text-sm",
           className
         )}
         ref={ref as React.RefObject<HTMLTextAreaElement>}
-        rows={4}
-        {...textareaProps}
+        {...rest}
+        onChange={onChange as React.ChangeEventHandler<HTMLTextAreaElement>}
       />
     );
   }
@@ -49,6 +44,7 @@ const Input = React.forwardRef<
       )}
       ref={ref as React.RefObject<HTMLInputElement>}
       {...rest}
+      onChange={onChange as React.ChangeEventHandler<HTMLInputElement>}
     />
   );
 });

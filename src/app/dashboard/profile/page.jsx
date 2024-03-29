@@ -4,7 +4,7 @@ import React from 'react'
 import { http } from "@/lib/config";
 import { apiUrls } from '@/lib/apis';
 
-const page = () => {
+const Page = () => {
     const [user, setUser] = React.useState({});
     const [isUpdate, setIsUpdate] = React.useState(false);
     const [updateData, setUpdateData] = React.useState({});
@@ -73,4 +73,4 @@ const page = () => {
 }
 
 
-export default page
+export default Page

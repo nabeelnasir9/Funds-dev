@@ -19,6 +19,9 @@ export const createUserLeaveFormSchema = z.object({
   name: z.string().min(1, 'name is required'),
   leave: z.enum(["sick", "casual"]),
   reasons: z.string().min(1, 'reason is required'),
+  date_from: z.string().min(1, 'Date From is required'), // Add date_from key
+  date_to: z.string().min(1, 'Date To is required'), // Add date_to key
+  number_of_days: z.number().min(1, 'Number of Days is required'), // Add number_of_days key
   // date: z.string().min(1, 'Date is required'),
   attachment: z.custom((value) => {
     console.log(value,"------------------values from the attat-----------------");
