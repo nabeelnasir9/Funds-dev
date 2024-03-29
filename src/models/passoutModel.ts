@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema({
     type: String,default:"pending"
   },
   passOutTotalHours:{
-    type:Array,default:[]
+    type:Number,default:0
   },
   createdAt: {
     type: Date,

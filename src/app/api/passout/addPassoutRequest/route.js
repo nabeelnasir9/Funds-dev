@@ -4,7 +4,6 @@ import User from "../../../../models/userModel";
 import authMiddleware from "../../../../utils/authMiddleware";
 import { NextResponse } from "next/server";
 
-
 export const POST = async (request) => {
   try {
     await dbConnect();
@@ -13,12 +12,12 @@ export const POST = async (request) => {
 
     // Calculate hours directly and push to passOutTotalHours array
     const hours = calculateHours(timeFrom, timeTo);
-    const passOutTotalHours = [hours]; // Initialize passOutTotalHours array with calculated hours
+    console.log("🚀 ~ POST ~ hours:", hours)
 
-    const totalHours = passOutTotalHours.reduce((acc, curr) => acc + curr, 0);
+    // Calculate remaining hours and deduct from casual leave balance if exceeds 8 hours
     let remainingCasualLeave = 0;
-    if (totalHours >= 8) {
-      remainingCasualLeave = totalHours - 8;
+    if (hours >= 8) {
+      remainingCasualLeave = hours - 8;
     }
 
     // Find the user
@@ -37,13 +36,13 @@ export const POST = async (request) => {
         reason,
         timeFrom,
         timeTo,
-        passOutTotalHours, // Directly assign passOutTotalHours array
+        passOutTotalHours: hours, // Directly assign calculated hours
       });
 
       const res = await newPassout.save();
       console.log(res, "request saved");
 
-      return NextResponse.json({ message: "success", data: "res" });
+      return NextResponse.json({ message: "success", data: res });
     } else {
       throw new Error("User not found");
     }
@@ -55,7 +54,6 @@ export const POST = async (request) => {
     });
   }
 };
-
 
 function calculateHours(timeFrom, timeTo) {
   const [hoursFrom, minutesFrom] = timeFrom.split(":").map(Number);

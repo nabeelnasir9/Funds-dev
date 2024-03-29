@@ -10,7 +10,7 @@ export class UserClass {
     public createdAt: string = "",
     public timeFrom:string = "",
     public timeTo:string ="",
-    public noOfMinutes: number =0,
+    public passOutTotalHours: number =0,
     public hrApprove: string = '',
 		public mangerApprove: string = '',
     public status: string = "",

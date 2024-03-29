@@ -25,6 +25,8 @@ import {
   // updateUserForm,
   //  searchUserForm
 } from "./forms";
+import { apiUrls } from "@/lib/apis";
+import { http } from "@/lib/config";
 // import { useUpdateUser } from "../invoices/mutations";
 
 export function UsersTable({ className }: { className?: string }) {
@@ -45,7 +47,26 @@ export function UsersTable({ className }: { className?: string }) {
   const [acceptedPassOut, setAcceptedPassOut] = React.useState<any>([]);
   const [role, setRole] = React.useState<any>();
   const [requestMade, setRequestMade] = React.useState(false);
+  const [user, setUser] = React.useState<any>();
 
+
+
+  React.useEffect(() => {
+    const getUser = async () => {
+      try {
+        let userToken = localStorage.getItem("token");
+
+        const bodyData = { token: userToken };
+        console.log(userToken, "=============", bodyData);
+        let res: any = await http.post(apiUrls.users.me, bodyData);
+        console.log(res, "---------------------------");
+        setUser(res?.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getUser();
+  }, []);
   React.useEffect(() => {
     const getReq = async () => {
       console.log("function called");
@@ -205,8 +226,17 @@ export function UsersTable({ className }: { className?: string }) {
             <h1 className="text-2xl font-bold "></h1>
 
             <h1 className="text-2xl font-bold text-center">Pass Outs </h1>
-            
-            <h1 className="text-2xl font-bold "></h1>
+            {user?.role == "employee" && (
+          <div>
+            <h1 className="text-[16px] font-bold ">
+              Sick Leave Balance: {user?.leavesBalance?.sick}
+            </h1>
+            <h1 className="text-[16px] font-bold ">
+              Casual Leave Balance: {user?.leavesBalance?.casual}
+            </h1>
+          </div>
+        )}
+        {user?.role !== "employee" && <h1 className="text-2xl font-bold "></h1>}
           </div>
           <hr className="bg-gray-300 mt-[20px]" />
           <CommonTable
