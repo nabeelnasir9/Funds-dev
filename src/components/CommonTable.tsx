@@ -38,7 +38,7 @@ import { PAGINATION_LIMIT, env } from "@/lib/config";
 import {
   snakeCaseToNormal,
   copyObjectToClipBoard,
-  // exportJsonToExcel,
+  exportJsonToExcel,
 } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -344,13 +344,13 @@ console.log(props.data,"-------------------------------accepted data");
             aria-label="Select all"
           />
         ),
-        cell: ({ row }: any) => {
-          console.log(
-            row.id,
-            "----------------------------------------------------------------------------------"
-          );
-          return <p>{+row.id + 1}</p>;
-        },
+        cell: ({ row }:any) => (
+					<Checkbox
+						checked={row.getIsSelected()}
+						onCheckedChange={(value) => row.toggleSelected(!!value)}
+						aria-label='Select row'
+					/>
+				),
         enableSorting: false,
         enableHiding: false,
       },
@@ -361,10 +361,7 @@ console.log(props.data,"-------------------------------accepted data");
           
           // @ts-ignore
           cell: ({ row }) => {
-            console.log("🚀 ~ tableColums ~ column:", column)
-            console.log("🚀 ~ tableColums ~ row:", row)
             const value = row.getValue(column);
-            console.log("valuesssssssssssssssssssssssss",value)
             return (
               <div className="flex flex-col" key={column}>
                 {props?.accordion?.includes(column) ? (
@@ -576,7 +573,7 @@ console.log(props.data,"-------------------------------accepted data");
           }
         : null,
     ].filter(Boolean) as ColumnDef<any>[];
-  }, [props.columns, props.accordion, role]);
+  }, [ props.accordion, role]);
 
   const table = useReactTable({
     data: props.data,
@@ -605,6 +602,39 @@ console.log(props.data,"-------------------------------accepted data");
   });
   console.log(props.data, ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
 
+  const [isFirstRender, setIsFirstRender] = React.useState(true)
+	React.useEffect(() => {
+    console.log("props.tableKeyprops.tableKeyprops.tableKey",props.tableKey)
+		if (!isFirstRender) {
+			localStorage.setItem(
+				`${props.tableKey}ColumnVisibility`,
+				JSON.stringify(columnVisibility),
+			)
+		} else {
+			const savedVisibleColumn = localStorage.getItem(`${props.tableKey}ColumnVisibility`)
+
+			console.log("🚀 ~ React.useEffect ~ savedVisibleColumn:", savedVisibleColumn)
+			if (savedVisibleColumn) {
+				setColumnVisibility(JSON.parse(savedVisibleColumn))
+			} else {
+				const initialVisibleColumns = () => {
+					let hiddenColumns: Record<string, boolean> = {}
+					console.log("🚀 ~ initialVisibleColumns ~ hiddenColumns:", hiddenColumns)
+					for (let i = 0; i < props.columns.length; i++) {
+						if (i < 8) {
+							hiddenColumns[props.columns[i]] = true
+						} else {
+							hiddenColumns[props.columns[i]] = false
+						}
+					}
+					return hiddenColumns
+				}
+				setColumnVisibility(initialVisibleColumns())
+        console.log("columnVisibility after ",columnVisibility)
+			}
+			setIsFirstRender(false)
+		}
+	}, [columnVisibility, props.tableKey])
   return (
     <>
       <div className="flex items-center justify-between py-4">
@@ -716,6 +746,73 @@ console.log(props.data,"-------------------------------accepted data");
           </DropdownMenuContent>
         </DropdownMenu> */}
         <div className="flex flex-wrap gap-4">
+        {(() => {
+						const selectedRows = table.getFilteredSelectedRowModel().rows
+						console.log("🚀 ~ CommonTable ~ selectedRows:", selectedRows)
+            console.log("props.columnsprops.columnsprops.columns",props.columns)
+
+						if (selectedRows.length) {
+							return (
+								<>
+									<Button
+										variant={'destructive'}
+										onClick={() => {
+											console.log( "columnVisibilitycolumnVisibility",columnVisibility)
+											const newArray = selectedRows?.map((row) => {
+												const newRow: any = {}
+												props.columns.forEach((column) => {
+													if (columnVisibility[column]) {
+														// let words = column.split(' ')
+
+														// Capitalize the first letter of each word and join them with an underscore
+														// const result: string = words
+														// 	.map(
+														// 		(word) =>
+														// 			word.charAt(0).toUpperCase() +
+														// 			word.slice(1),
+														// 	)
+														// 	.join(' ')
+
+														let newWords = column.split('_')
+														const newResult: string = newWords
+															.map(
+																(word) =>
+																	word.charAt(0).toUpperCase() +
+																	word.slice(1),
+															)
+															.join(' ')
+														newRow[newResult] = row.original[column]
+														console.log(column)
+													}
+												})
+												return newRow
+											})
+                      console.log("newArraynewArraynewArray",newArray)
+											exportJsonToExcel(newArray)
+											// The newArray now contains the transformed data based on your code snippet
+										}}>
+										Export to XL ({selectedRows.length})
+									</Button>
+									{/* <Button
+										variant={'destructive'}
+										onClick={() => {
+											props.onDeleteMany(
+												selectedRows.map((row) => row.original._id),
+											)
+											setRowSelection({})
+										}}>
+										Delete ({selectedRows.length})
+									</Button>
+									{props?.customActionsComponents &&
+										props?.customActionsComponents(
+											selectedRows.map((row) => row.original._id),
+										)} */}
+								</>
+							)
+						} else {
+							return null
+						}
+					})()}
           {props.onCreate && (
             <Button variant={"outline"} onClick={props.onCreate}>
               Create
@@ -726,24 +823,36 @@ console.log(props.data,"-------------------------------accepted data");
       <div className="rounded-md border">
         <Table>
           <TableHeader>
-            {props.cashRequest?.map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header: any) => {
-                  console.log("headerrrrrrrrrrrrrrrrrrrrrrrrrrrr",header)
-                  return (
-                    <TableHead
-                      className="whitespace-nowrap"
-                      key={header.id}
-                      colSpan={header.colSpan}
-                    >
-                      {header.isPlaceholder ? null : (
-                        <div>{header.columnDef.header}</div>
-                      )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
+          {table.getHeaderGroups().map((headerGroup) => (
+							<TableRow key={headerGroup.id}>
+								{headerGroup.headers.map((header) => {
+									return (
+										<TableHead key={header.id} colSpan={header.colSpan}>
+											{header.isPlaceholder ? null : (
+												<div
+													{...{
+														className: header.column.getCanSort()
+															? 'cursor-pointer select-none flex items-center gap-1'
+															: '',
+														onClick:
+															header.column.getToggleSortingHandler(),
+													}}>
+													{flexRender(
+														header.column.columnDef.header,
+														header.getContext(),
+													)}
+													{{
+														asc: <ChevronUp color="black" width={20} />,
+														desc: <ChevronDown width={20} />,
+													}[header.column.getIsSorted() as string] ??
+														null}
+												</div>
+											)}
+										</TableHead>
+									)
+								})}
+							</TableRow>
+						))}
           </TableHeader>
           <TableBody>
             {props.loading ? (
@@ -766,7 +875,7 @@ console.log(props.data,"-------------------------------accepted data");
                 return (
                   <TableRow
                     key={row.id}
-                    // data-state={row.getIsSelected() && "selected"}
+                    data-state={row.getIsSelected() && "selected"}
                   >
                     {props.attachment &&
                       row.getVisibleCells().map((cell) => {
@@ -867,6 +976,56 @@ console.log(props.data,"-------------------------------accepted data");
           </TableBody>
         </Table>
       </div>
+      <div className='mt-auto flex items-center justify-end space-x-2 py-4'>
+				<div className='text-muted-foreground flex-1 text-sm'>
+					{table.getFilteredSelectedRowModel().rows.length ? (
+						<>
+							{table.getFilteredSelectedRowModel().rows.length} of{' '}
+							{table.getFilteredRowModel().rows.length} row(s) selected.
+						</>
+					) : (
+						<>
+							Showing {(props.page - 1) * props.limit + 1}-
+							{(props.page - 1) * props.limit + props.data.length} of{' '}
+							{props.totalDocuments} Documents
+						</>
+					)}
+				</div>
+				<div className='space-x-2'>
+					<Button
+						variant='outline'
+						size='sm'
+						onClick={() => props.setPage(1)}
+						disabled={props.page === 1}
+						title='First Page'>
+						<ChevronsLeft />
+					</Button>
+					<Button
+						variant='outline'
+						size='sm'
+						onClick={() => props.setPage(props.page - 1)}
+						disabled={props.page === 1}
+						title='Previous Page'>
+						<ChevronLeft />
+					</Button>
+					<Button
+						variant='outline'
+						size='sm'
+						onClick={() => props.setPage(props.page + 1)}
+						disabled={props.page === props.lastPage}
+						title='Next Page'>
+						<ChevronRight />
+					</Button>
+					<Button
+						variant='outline'
+						size='sm'
+						onClick={() => props.setPage(props.lastPage)}
+						disabled={props.page === props.lastPage}
+						title='Last Page'>
+						<ChevronsRight />
+					</Button>
+				</div>
+			</div>
     </>
   );
 }

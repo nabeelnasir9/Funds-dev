@@ -9,6 +9,7 @@ export const POST = async (request) => {
   try {
     await dbConnect();
     const {  name,invoiceNo,dateOfInvoice,invoiceDescription,totalAmount,totalAmountExclVAT,expense,netEarning,percentage,  token,attachment } = await request.json();
+    console.log("🚀 ~ POST ~ dateOfInvoice:", dateOfInvoice)
     console.log(token, "====================", name);
     // const authorization = headers().get("Authorization");
     // console.log(authorization)
