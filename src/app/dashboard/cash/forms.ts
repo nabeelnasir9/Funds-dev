@@ -11,7 +11,7 @@ export const createCashRequestForm: ExtendedForm<CreateUser> = [
 			{
 				label: 'Title',
 				key: 'title',
-				type: 'text',
+				type: 'textarea',
 				valueType: 'normal',
 				defaultValue: '',
 				placeholder: '',
