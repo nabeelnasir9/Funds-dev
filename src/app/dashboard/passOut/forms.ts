@@ -8,9 +8,9 @@ export const createUserForm: ExtendedForm<CreateUser> = [
     type: "normal-group",
     fields: [
       {
-        label: "Name",
+        label: "Title",
         key: "name",
-        type: "text",
+        type: "textarea",
         valueType: "normal",
         defaultValue: "",
         placeholder: "",

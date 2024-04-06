@@ -68,8 +68,10 @@ export function Navbar({ className }) {
   return (
     <main className={cn(className)}>
       <div className="mx-auto flex items-center justify-between px-10">
-        <h1 className="flex">
-          <p>Funds Reimbursement</p>
+        <h1 className="flex gap-5">
+          {/* <p>Funds Reimbursement</p> */}
+          <img src="/a.png" alt="" className="w-[80px] h-[80px]"/>
+          <img src="/e.png" alt="" className=" w-[100px] h-[80px]"/>
           {/* <img src='/images/logo-full.png' alt='' className='max-w-[120px] flex-1' /> */}
         </h1>
         <h1>

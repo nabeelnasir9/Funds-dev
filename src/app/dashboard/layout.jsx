@@ -29,9 +29,11 @@ import {
   StickyNoteIcon,
   HomeIcon,
   UsersRound,
-  Coins
+  Coins,
+  Home, 
+  Clock11,
+  FileText
 } from "lucide-react";
-
 import useStore from "@/lib/store";
 import { cn } from "@/lib/utils";
 import { CommonAccordion } from "../../components/CommonAccordion";
@@ -65,17 +67,17 @@ export default function Layout({ children }) {
     {
       name: "Leaves",
       path: "/dashboard/leaves",
-      icon: <StickyNoteIcon />,
+      icon: <Home />,
     },
     {
       name: "Pass out",
       path: "/dashboard/passOut",
-      icon: <Flag />,
+      icon: <Clock11 />,
     },
     {
       name: "Invoices",
       path: "/dashboard/invoices",
-      icon: <Coins />,
+      icon: <FileText />,
     },
   ]);
 
