@@ -122,7 +122,7 @@ export const POST = async (request) => {
             applicationUser.manager === userId
           ) {
             console.log(leaveDoc, "doc found");
-            if (userRole === "manager") {
+            if (userRole === "manager" || userRole === "md") {
               leaveDoc.mangerApprove = status;
               if (status === "reject") {
                 leaveDoc.status = status;
@@ -185,7 +185,7 @@ export const POST = async (request) => {
             if (passOutDoc.passOutTotalHours > 8) {
               console.log("diff in hous wla chala");
               passOutDoc.passOutTotalHours = 0;
-              applicationUser.leavesBalance.casual =applicationUser.leavesBalance.casual - 1;
+              applicationUser.leavesBalance.casual = applicationUser.leavesBalance.casual - 1;
               applicationUser.markModified("leavesBalance");
               await applicationUser.save()
             }
@@ -206,7 +206,7 @@ export const POST = async (request) => {
             (user.role = approveUserData[0]),
               (user.hr = approveUserData[1]._id),
               (user.manager = approveUserData[2]._id);
-              (user.accountant = approveUserData[3]._id);
+            (user.accountant = approveUserData[3]._id);
             user.status = status;
           } else {
             user.status = status;

@@ -1,173 +1,162 @@
-"use client";
+'use client'
 
-import * as React from "react";
-import { Filter } from "lucide-react";
-import { http } from "@/lib/config";
-import { apiUrls } from "@/lib/apis";
-import { useSearchQuery } from "@/lib/hooks";
-import { cn } from "@/lib/utils";
-import {
-  CommonTable,
-  CommonForm,
-  CommonAccordion,
-  CommonModal,
-  ShowDetails,
-} from "@/components";
-import { type User, type CreateUser, UserClass } from "./interfaces";
+import * as React from 'react'
+import { Filter } from 'lucide-react'
+import { http } from '@/lib/config'
+import { apiUrls } from '@/lib/apis'
+import { useSearchQuery } from '@/lib/hooks'
+import { cn } from '@/lib/utils'
+import { CommonTable, CommonForm, CommonAccordion, CommonModal, ShowDetails } from '@/components'
+import { type User, type CreateUser, UserClass } from './interfaces'
 import {
   useCreateLeaveRequest,
   useGetLeaveRequest,
   useUpdateUser,
   useDeleteUsers,
   useUploadUsers,
-} from "./mutations";
+} from './mutations'
 import {
   // updateUserForm,
   // searchUserForm,
   createUserLeaveForm,
-} from "./forms";
+} from './forms'
 // import { useGetUsers } from "./mutations";
 
 export function UsersTable({ className }: { className?: string }) {
-  const searchQuery = useSearchQuery();
+  const searchQuery = useSearchQuery()
 
-  const userLeaveRequest: any = useGetLeaveRequest(searchQuery.queryStr);
-  const createLeaveRequest = useCreateLeaveRequest();
-  const updateUser = useUpdateUser();
-  const uploadUsers = useUploadUsers();
-  const deleteUsers = useDeleteUsers();
-  const [detailUser, setDetailUser] = React.useState<User | null>(null);
-  const [formType, setFormType] = React.useState<"create" | "edit">("create");
-  const formRef = React.useRef<React.ElementRef<"button">>(null);
-  const detailsRef = React.useRef<React.ElementRef<"button">>(null);
-  const [tableData, setTableData] = React.useState([]);
-  const [acceptedLeave, setAcceptedLeave] = React.useState<any>([]);
-  const [user, setUser] = React.useState<any>();
-  const [role, setRole] = React.useState<any>();
-  const [requestMade, setRequestMade] = React.useState(false);
-  const [fileUrl, setFileUrl] = React.useState<any>("");
-  const [detailLeave, setDetailLeave] = React.useState<any>();
+  const userLeaveRequest: any = useGetLeaveRequest(searchQuery.queryStr)
+  const createLeaveRequest = useCreateLeaveRequest()
+  const updateUser = useUpdateUser()
+  const uploadUsers = useUploadUsers()
+  const deleteUsers = useDeleteUsers()
+  const [detailUser, setDetailUser] = React.useState<User | null>(null)
+  const [formType, setFormType] = React.useState<'create' | 'edit'>('create')
+  const formRef = React.useRef<React.ElementRef<'button'>>(null)
+  const detailsRef = React.useRef<React.ElementRef<'button'>>(null)
+  const [tableData, setTableData] = React.useState([])
+  const [acceptedLeave, setAcceptedLeave] = React.useState<any>([])
+  const [user, setUser] = React.useState<any>()
+  const [role, setRole] = React.useState<any>()
+  const [requestMade, setRequestMade] = React.useState(false)
+  const [fileUrl, setFileUrl] = React.useState<any>('')
+  const [detailLeave, setDetailLeave] = React.useState<any>()
 
   React.useEffect(() => {
     const getUser = async () => {
       try {
-        let userToken = localStorage.getItem("token");
+        let userToken = localStorage.getItem('token')
 
-        const bodyData = { token: userToken };
-        console.log(userToken, "=============", bodyData);
-        let res: any = await http.post(apiUrls.users.me, bodyData);
-        console.log(res, "---------------------------");
-        setUser(res?.data);
+        const bodyData = { token: userToken }
+        console.log(userToken, '=============', bodyData)
+        let res: any = await http.post(apiUrls.users.me, bodyData)
+        console.log(res, '---------------------------')
+        setUser(res?.data)
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
-    };
-    getUser();
-  }, []);
+    }
+    getUser()
+  }, [])
 
   React.useEffect(() => {
     const getReq = async () => {
-      console.log("function called");
-      let roleFormDb = await localStorage.getItem("role");
-      setRole(roleFormDb?.toLowerCase());
-      let res: any = await userLeaveRequest.mutateAsync("ali");
-      console.log(res.data, "response data");
-      let newRes = res?.data.filter((req: any) => req.status === "pending");
-      let acceptCash = res?.data.filter((req: any) => req.status !== "pending");
-      setAcceptedLeave(acceptCash);
-      if (roleFormDb == "hr") {
-        let finalReq = newRes.filter(
-          (item: any, i: any) => item.mangerApprove === "accept"
-        );
-        setTableData(finalReq);
-        return;
+      console.log('function called')
+      let roleFormDb = await localStorage.getItem('role')
+      console.log("roleFormDb?.toLowerCase() == 'md'", roleFormDb == 'md')
+      setRole(roleFormDb?.toLowerCase())
+      let res: any = await userLeaveRequest.mutateAsync('ali')
+      console.log(res.data, 'response data')
+      let newRes = res?.data.filter((req: any) => req.status === 'pending')
+      let acceptCash = res?.data.filter((req: any) => req.status !== 'pending')
+      setAcceptedLeave(acceptCash)
+      if (roleFormDb == 'hr') {
+        let finalReq = newRes.filter((item: any, i: any) => item.mangerApprove === 'accept')
+        setTableData(finalReq)
+        return
       }
-      if (roleFormDb?.toLowerCase() == "manager") {
-        let finalReq = newRes.filter(
-          (item: any, i: any) => item.mangerApprove === "pending"
-        );
-        console.log("finalreqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",finalReq)
-        setTableData(finalReq);
-        return;
+      if (roleFormDb?.toLowerCase() == 'manager' || roleFormDb == 'md') {
+        let finalReq = newRes.filter((item: any, i: any) => item.mangerApprove === 'pending')
+        console.log('finalreqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', finalReq)
+        setTableData(finalReq)
+        return
       }
-      setTableData(newRes);
-    };
+      setTableData(newRes)
+    }
     // const intervalId = setInterval(() => {
     //   getReq();
     // }, 20000);
 
-    getReq();
+    getReq()
 
-    // return () => clearInterval(intervalId); 
-    
-  }, [requestMade]);
+    // return () => clearInterval(intervalId);
+  }, [requestMade])
 
-  const uploadImage = async (e:any) => {
-    const files = e;
-    const data = new FormData();
-    data.append('file', files);
-    data.append('upload_preset', 'dsuzcga3'); // Replace with your upload preset
+  const uploadImage = async (e: any) => {
+    const files = e
+    const data = new FormData()
+    data.append('file', files)
+    data.append('upload_preset', 'dsuzcga3') // Replace with your upload preset
     const res = await fetch(
       'https://api.cloudinary.com/v1_1/datptkvvx/image/upload', // Replace with your cloud name
       {
         method: 'POST',
         body: data,
-      }
-    );
-    const file = await res.json();
+      },
+    )
+    const file = await res.json()
 
-    setFileUrl(file.secure_url);
-    return file.secure_url;
-  };
+    setFileUrl(file.secure_url)
+    return file.secure_url
+  }
 
   const onSubmit = async (values: any) => {
     try {
-      console.log(values, "value from the form");
-      
-      const imageUrl = await uploadImage(values.attachment);
+      console.log(values, 'value from the form')
 
-      console.log(imageUrl, "form data");
+      const imageUrl = await uploadImage(values.attachment)
 
-      values.attachment = imageUrl;
+      console.log(imageUrl, 'form data')
+
+      values.attachment = imageUrl
       // toast.loading("adding cash request");
-      let res:any = await createLeaveRequest.mutateAsync(values);
-      console.log(res.message, "response from the store");
+      let res: any = await createLeaveRequest.mutateAsync(values)
+      console.log(res.message, 'response from the store')
 
-      if (res.message === "success") {
+      if (res.message === 'success') {
         // toast.dismiss();
         setRequestMade(true)
         // toast.success("Successfully added request");
-        formRef.current?.click();
+        formRef.current?.click()
       } else {
-        throw new Error("something went wrong");
+        throw new Error('something went wrong')
       }
     } catch (error) {
-      console.log(error, "error");
+      console.log(error, 'error')
       // toast.dismiss();
       // toast.error("some thing went wrong");
     }
-  };
+  }
 
   const onUpdate = async (values: any) => {
-    await updateUser.mutateAsync({ ...values, _id: detailUser?._id || "" });
-  };
+    await updateUser.mutateAsync({ ...values, _id: detailUser?._id || '' })
+  }
 
   const viewLeaveRequest = (index: number) => {
-		{
-      console.log(userLeaveRequest?.data.data[index], "userLeaveRequest");
-			console.log("viewLeaveRequest", index);
+    {
+      console.log(userLeaveRequest?.data.data[index], 'userLeaveRequest')
+      console.log('viewLeaveRequest', index)
 
       if (userLeaveRequest?.data && userLeaveRequest?.data.data[index]) {
-        const leaveRequest = { ...userLeaveRequest.data.data[index] };
-        delete leaveRequest.userId; // Remove the userId object
-        console.log(leaveRequest, "leaveRequest without userId");
-      
-        setDetailLeave(leaveRequest); // Save the modified leaveRequest in state
-        detailsRef.current?.click();
+        const leaveRequest = { ...userLeaveRequest.data.data[index] }
+        delete leaveRequest.userId // Remove the userId object
+        console.log(leaveRequest, 'leaveRequest without userId')
+
+        setDetailLeave(leaveRequest) // Save the modified leaveRequest in state
+        detailsRef.current?.click()
       }
-      
-		}
-	}
+    }
+  }
 
   // const useViewCustomerDetails = (index: number) => {
   //   const users: any = useGetUsers();
@@ -188,89 +177,84 @@ export function UsersTable({ className }: { className?: string }) {
   //   }
   // };
 
-  
-
   const onUploadUsers = async (file: File) => {
-    await uploadUsers.mutateAsync(file);
-  };
+    await uploadUsers.mutateAsync(file)
+  }
 
   const onDeleteUsers = async (ids: string[]) => {
-    await deleteUsers.mutateAsync(ids);
-  };
+    await deleteUsers.mutateAsync(ids)
+  }
 
-  const columns = Object.keys(new UserClass()).filter(
-    (column) => column !== "_id"
-  );
+  const columns = Object.keys(new UserClass()).filter((column) => column !== '_id')
 
-  console.log("coulume",columns)
-
+  console.log('coulume', columns)
 
   type CashRequestHeader = {
-    id: number;
+    id: number
     columnDef: {
-      header: string;
-    };
-    isPlaceholder: boolean;
-  };
+      header: string
+    }
+    isPlaceholder: boolean
+  }
 
   type CashRequestItem = {
-    id: number;
-    headers: CashRequestHeader[];
-  };
+    id: number
+    headers: CashRequestHeader[]
+  }
 
-  type CashRequest = CashRequestItem[];
+  type CashRequest = CashRequestItem[]
 
   const cashRequest: CashRequest = [
     {
       id: 1,
       headers: [
-        { id: 0, columnDef: { header: "Sr." }, isPlaceholder: false },
-        { id: 9, columnDef: { header: "User Name" }, isPlaceholder: false },
+        { id: 0, columnDef: { header: 'Sr.' }, isPlaceholder: false },
+        { id: 9, columnDef: { header: 'User Name' }, isPlaceholder: false },
 
-        { id: 1, columnDef: { header: "Title" }, isPlaceholder: false },
-        { id: 2, columnDef: { header: "Sick/casual" }, isPlaceholder: false },
-        { id: 3, columnDef: { header: "Reason" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        { id: 1, columnDef: { header: 'Title' }, isPlaceholder: false },
+        { id: 2, columnDef: { header: 'Sick/casual' }, isPlaceholder: false },
+        { id: 3, columnDef: { header: 'Reason' }, isPlaceholder: false }, // Fixed typo in "Attachment"
         // { id: 4, columnDef: { header: "Date" }, isPlaceholder: false },
 
-        { id: 4, columnDef: { header: "Date From" }, isPlaceholder: false },
-        { id: 10, columnDef: { header: "Date To" }, isPlaceholder: false },
-        { id: 11, columnDef: { header: "Number of Days" }, isPlaceholder: false },
-        { id: 5, columnDef: { header: "Created At" }, isPlaceholder: false },
+        { id: 4, columnDef: { header: 'Date From' }, isPlaceholder: false },
+        { id: 10, columnDef: { header: 'Date To' }, isPlaceholder: false },
+        { id: 11, columnDef: { header: 'Number of Days' }, isPlaceholder: false },
+        { id: 5, columnDef: { header: 'Created At' }, isPlaceholder: false },
         // { id: 5, columnDef: { header: "Attachment" }, isPlaceholder: false }, // Fixed typo in "Attachment"
-        { id: 7, columnDef: { header: "HR" }, isPlaceholder: false },
-        { id: 8, columnDef: { header: "Manager" }, isPlaceholder: false },
-        { id: 6, columnDef: { header: "Status" }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        { id: 7, columnDef: { header: 'HR' }, isPlaceholder: false },
+        { id: 8, columnDef: { header: 'Manager' }, isPlaceholder: false },
+        { id: 6, columnDef: { header: 'Status' }, isPlaceholder: false }, // Fixed typo in "Attachment"
       ],
     },
-  ];
+  ]
 
   return (
-    <div className={cn("w-full", className)}>
-
-      {localStorage.getItem("role") === "superAdmin" ||localStorage.getItem("role") === "accountant" ? null : (
+    <div className={cn('w-full', className)}>
+      {localStorage.getItem('role') === 'superAdmin' ||
+      localStorage.getItem('role') === 'accountant' ? null : (
         <>
-      <div className="flex justify-between">
-        <h1 className="text-2xl font-bold "></h1>
+          <div className='flex justify-between'>
+            <h1 className='text-2xl font-bold '></h1>
 
-        <h1
-          className={`text-2xl font-bold text-center ${
-            user?.role === "employee" ? "ml-[200px]" : "ml-0"
-          }`}
-        >
-          Leaves Request
-        </h1>
-        {user?.role == "employee" && (
-          <div>
-            <h1 className="text-[16px] font-bold ">
-              Sick Leave Balance: {user?.leavesBalance?.sick}
+            <h1
+              className={`text-2xl font-bold text-center ${
+                user?.role === 'employee' ? 'ml-[200px]' : 'ml-0'
+              }`}
+            >
+              Leaves Request
             </h1>
-            <h1 className="text-[16px] font-bold ">
-              Casual Leave Balance: {user?.leavesBalance?.casual}
-            </h1>
+            {user?.role == 'employee' && (
+              <div>
+                <h1 className='text-[16px] font-bold '>
+                  Sick Leave Balance: {user?.leavesBalance?.sick}
+                </h1>
+                <h1 className='text-[16px] font-bold '>
+                  Casual Leave Balance: {user?.leavesBalance?.casual}
+                </h1>
+              </div>
+            )}
+            {user?.role !== 'employee' && <h1 className='text-2xl font-bold '></h1>}
           </div>
-        )}
-        {user?.role !== "employee" && <h1 className="text-2xl font-bold "></h1>}
-      </div>
           {/* <CommonAccordion
         accordions={[
           {
@@ -295,19 +279,18 @@ export function UsersTable({ className }: { className?: string }) {
           },
         ]}
       /> */}
-          <hr className="bg-gray-300 mt-[20px]" />
-
+          <hr className='bg-gray-300 mt-[20px]' />
 
           <CommonTable
             cashRequest={cashRequest}
-            tableKey="leaves"
+            tableKey='leaves'
             columns={columns}
-            hideRowActions={["create_invoice", "duplicate", "attachment"]}
+            hideRowActions={['create_invoice', 'duplicate', 'attachment']}
             data={tableData}
             loading={userLeaveRequest?.isLoading}
             onCreate={() => {
-              setFormType("create");
-              formRef?.current?.click();
+              setFormType('create')
+              formRef?.current?.click()
             }}
             tableData={tableData}
             setTableDataFun={setTableData}
@@ -324,29 +307,22 @@ export function UsersTable({ className }: { className?: string }) {
             setPage={searchQuery.setPage}
             setLimit={searchQuery.setLimit}
             attachment={true}
-            editIcon={
-              localStorage.getItem("role") === "employee" ? true : false
-            }
+            editIcon={localStorage.getItem('role') === 'employee' ? true : false}
           />
         </>
       )}
-      <CommonModal ref={formRef} className="sm:min-w-[510px] lg:min-w-[800px]">
+      <CommonModal ref={formRef} className='sm:min-w-[510px] lg:min-w-[800px]'>
         <CommonForm
-          type="modal"
+          type='modal'
           defaultObj={detailLeave}
           operationType={formType}
           closeModal={() => formRef.current?.click()}
-          extendedForm={
-            formType === "create" ? createUserLeaveForm : createUserLeaveForm
-          }
+          extendedForm={formType === 'create' ? createUserLeaveForm : createUserLeaveForm}
           onViewDetails={viewLeaveRequest}
-          
-          submitText={formType === "create" ? "Create" : "Update"}
-          cancelText="Cancel"
+          submitText={formType === 'create' ? 'Create' : 'Update'}
+          cancelText='Cancel'
           submitFunc={(values) =>
-            formType === "create"
-              ? onSubmit(values as CreateUser)
-              : onUpdate(values as any)
+            formType === 'create' ? onSubmit(values as CreateUser) : onUpdate(values as any)
           }
           onDuplicate={() => {}}
         />
@@ -359,17 +335,14 @@ export function UsersTable({ className }: { className?: string }) {
         />
       </CommonModal>
 
-      <h1 className="text-2xl font-bold text-center mt-[10px]">
-        {" "}
-        Leave History
-      </h1>
-      <hr className="bg-gray-300 mt-[20px]" />
+      <h1 className='text-2xl font-bold text-center mt-[10px]'> Leave History</h1>
+      <hr className='bg-gray-300 mt-[20px]' />
 
       <CommonTable
         cashRequest={cashRequest}
-        tableKey="history"
+        tableKey='history'
         columns={columns}
-        hideRowActions={["create_invoice", "duplicate"]}
+        hideRowActions={['create_invoice', 'duplicate']}
         data={acceptedLeave}
         loading={acceptedLeave?.isLoading}
         // onCreate={() => {
@@ -393,10 +366,8 @@ export function UsersTable({ className }: { className?: string }) {
         setPage={searchQuery.setPage}
         setLimit={searchQuery.setLimit}
         attachment={true}
-            editIcon={
-              false
-            }
+        editIcon={false}
       />
     </div>
-  );
+  )
 }
