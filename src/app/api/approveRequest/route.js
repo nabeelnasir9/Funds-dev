@@ -63,11 +63,13 @@ export const POST = async (request) => {
           let applicationUser = await User.findById(cashDoc.userId);
           if (
             applicationUser.accountant === userId ||
-            applicationUser.manager === userId
+            applicationUser.manager === userId ||
+            applicationUser.md == userId
           ) {
             console.log(cashDoc, "doc found");
-            if (userRole === "manager") {
+            if (userRole === "manager" || userRole === "md") {
               cashDoc.mangerApprove = status;
+              cashDoc.status = status;
               if (status === "reject") {
                 cashDoc.status = status;
               }
@@ -119,11 +121,13 @@ export const POST = async (request) => {
           let applicationUser = await User.findById(leaveDoc.userId);
           if (
             applicationUser.hr === userId ||
-            applicationUser.manager === userId
+            applicationUser.manager === userId ||
+            applicationUser.md === userId
           ) {
             console.log(leaveDoc, "doc found");
             if (userRole === "manager" || userRole === "md") {
               leaveDoc.mangerApprove = status;
+              leaveDoc.status = status;
               if (status === "reject") {
                 leaveDoc.status = status;
               }
@@ -163,11 +167,12 @@ export const POST = async (request) => {
           let applicationUser = await User.findById(passOutDoc.userId);
           if (
             applicationUser.hr === userId ||
-            applicationUser.manager === userId
+            applicationUser.manager === userId || applicationUser.md === userId
           ) {
             console.log(passOutDoc, "doc found");
-            if (userRole === "manager") {
+            if (userRole === "manager" || userRole === "md") {
               passOutDoc.mangerApprove = status;
+              passOutDoc.status = status;
               if (status === "reject") {
                 passOutDoc.status = status;
               }
@@ -206,8 +211,13 @@ export const POST = async (request) => {
             (user.role = approveUserData[0]),
               (user.hr = approveUserData[1]._id),
               (user.manager = approveUserData[2]._id);
-            (user.accountant = approveUserData[3]._id);
+              (user.accountant = approveUserData[3]._id);
+          (user.md = approveUserData[4]._id);
             user.status = status;
+            user.hrs = undefined;
+            user.managers = undefined;
+            user.accountants = undefined;
+            user.mds = undefined;
           } else {
             user.status = status;
           }

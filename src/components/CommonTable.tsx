@@ -284,7 +284,7 @@ console.log(props.data,"-------------------------------accepted data");
           props.setTableDataFun(updatedTableDate);
           props.setHistoryData([...props.historyData, approvedDoc]);
         }
-        if (role === "manager") {
+        if (role === "manager" || role === "md") {
           let approvedDoc;
           let updatedTableDate: any = props.tableData.filter(
             (item: any, i: any) => {

@@ -25,11 +25,12 @@ export const POST = async (request) => {
       cashRequests = await Promise.all(
         cashReq.map(async (req) => {
           let reqUser = await User.findById(req.userId);
-          console.log(reqUser.hr, "----------------------------");
+          console.log(reqUser, "----------------------------", req.userId);
           if (
             reqUser.hr == userId ||
             reqUser.manager == userId ||
-            reqUser.accountant == userId
+            reqUser.accountant == userId ||
+            reqUser.md == userId
           ) {
             return req;
           } else {

@@ -13,16 +13,18 @@ export const POST = async (request) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     console.log("in api calling", "hash", username, email, password);
 
-    const hrs = await Users.find({ role: "hr" });
-    const managers = await Users.find({ role: "manager" });
-const accountants=await Users.find({role:"accountant"})
+    const hrs = await Users.find({ role: "hr", status: "accept" }).select("username _id");
+    const managers = await Users.find({ role: "manager", status: "accept" }).select("username _id");
+    const accountants=await Users.find({role:"accountant", status:"accept"}).select("username _id")
+    const mds = await Users.find({ role: "md", status: "accept" }).select("username _id");
     const newUser = new Users({
       username,
       email:email.toLowerCase(),
       password: hashedPassword,
       hrs,
       managers,
-      accountants
+      accountants,
+      mds,
     });
 
     const savedUser = await newUser.save();

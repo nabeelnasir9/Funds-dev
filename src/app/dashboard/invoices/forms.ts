@@ -27,8 +27,22 @@ export const createUserForm: ExtendedForm<CreateUser> = [
       {
         label: "Invoice to Company",
         key: "invoiceToCompany",
-        type: "text",
+        type: "select",
         valueType: "normal",
+        values: [
+          {
+            label: "--------Select------",
+            value: NO_VALUE,
+          },
+          {
+            label: "Anaf",
+            value: "anaf",
+          },
+          {
+            label: "Elite",
+            value: "elite",
+          },
+        ],
         defaultValue: "",
         placeholder: "",
         validation: z.string().min(1, "Invoice to Company is required"),

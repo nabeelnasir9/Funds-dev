@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import axios from "axios";
-import { useState } from "react";
+import { useState, memo } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { set } from "mongoose";
 import { GlobeDemo } from "@/components/GlobeDemo";
+
+const GlobeDemoMemo = memo(GlobeDemo);
 export default function Page() {
   const router = useRouter();
   const [email, setEmail] = useState<string>("");
@@ -238,7 +240,7 @@ export default function Page() {
             src="https://images.unsplash.com/photo-1496917756835-20cb06e75b4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1908&q=80"
             alt=""
           /> */}
-          <GlobeDemo />
+          <GlobeDemoMemo />
         </div>
       </div>
     </>

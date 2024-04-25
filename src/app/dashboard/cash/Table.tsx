@@ -68,7 +68,7 @@ export function UsersTable({ className }: { className?: string }) {
           finalReq = newRes.filter(
             (item: any) => item.mangerApprove === "accept"
           );
-        } else if (roleFormDb.toLowerCase() === "manager") {
+        } else if (roleFormDb.toLowerCase() === "manager" || roleFormDb.toLowerCase() === "md") {
           finalReq = newRes.filter(
             (item: any) => item.mangerApprove === "pending"
           );
@@ -179,7 +179,7 @@ export function UsersTable({ className }: { className?: string }) {
   };
 
   const columns = Object.keys(new UserClass()).filter(
-    (column) => column !== "_id"
+    (column) => column !== "_id" && column !== "accountantApprove"
   );
 
   console.log(columns, "===========columns===========");
@@ -211,7 +211,8 @@ export function UsersTable({ className }: { className?: string }) {
         { id: 5, columnDef: { header: "CreatedAt" }, isPlaceholder: false },
         { id: 6, columnDef: { header: "updatedAt" }, isPlaceholder: false },
         { id: 8, columnDef: { header: "Manager" }, isPlaceholder: false },
-        { id: 7, columnDef: { header: "Accountant" }, isPlaceholder: false },
+        // { id: 10, columnDef: { header: "MD" }, isPlaceholder: false },
+        // { id: 7, columnDef: { header: "Accountant" }, isPlaceholder: false },
         { id: 4, columnDef: { header: "Status" }, isPlaceholder: false },
         // ...(role !== "employee" ? [
         //   { id: 7, columnDef: { header: "Reject" }, isPlaceholder: false },
@@ -259,7 +260,7 @@ export function UsersTable({ className }: { className?: string }) {
           ]}
         /> */}
       {localStorage.getItem("role") === "superAdmin" ||
-      localStorage.getItem("role") === "hr" ? null : (
+      localStorage.getItem("role") === "hr"  ? null : (
         <>
           <h1 className="text-2xl font-bold text-center">New Cash Request</h1>
           <hr className="bg-gray-300 mt-[20px]" />

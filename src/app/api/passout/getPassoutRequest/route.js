@@ -31,7 +31,7 @@ export const POST = async (request) => {
           let reqUser = await User.findById(req.userId); // Assuming User model is imported
           console.log(reqUser.hr, "----------------------------");
 
-          if (reqUser.hr == userId || reqUser.manager == userId ||  reqUser.accountant == userId) {
+          if (reqUser.hr == userId || reqUser.manager == userId ||  reqUser.accountant == userId || reqUser.md == userId) {
             return req;
           } else {
             return null;

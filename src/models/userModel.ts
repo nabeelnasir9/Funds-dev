@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
   manager: { type: String },
   accountant: { type: String },
   md: { type: String },
-  roles: { type: Array, default: ['employee', 'hr', 'manager', 'accountant', 'md'] },
+  roles: { type: Array, default: ["employee", "hr", "manager","accountant", "md"] },
   hrs: { type: Array, default: [] },
   managers: { type: Array, default: [] },
   accountants: { type: Array, default: [] },

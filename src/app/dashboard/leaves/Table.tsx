@@ -185,7 +185,9 @@ export function UsersTable({ className }: { className?: string }) {
     await deleteUsers.mutateAsync(ids)
   }
 
-  const columns = Object.keys(new UserClass()).filter((column) => column !== '_id')
+  const columns = Object.keys(new UserClass()).filter(
+    (column) => column !== "_id" && column !== "leaveDate" && column !== "hrApprove"
+  );
 
   console.log('coulume', columns)
 
@@ -221,9 +223,9 @@ export function UsersTable({ className }: { className?: string }) {
         { id: 11, columnDef: { header: 'Number of Days' }, isPlaceholder: false },
         { id: 5, columnDef: { header: 'Created At' }, isPlaceholder: false },
         // { id: 5, columnDef: { header: "Attachment" }, isPlaceholder: false }, // Fixed typo in "Attachment"
-        { id: 7, columnDef: { header: 'HR' }, isPlaceholder: false },
-        { id: 8, columnDef: { header: 'Manager' }, isPlaceholder: false },
-        { id: 6, columnDef: { header: 'Status' }, isPlaceholder: false }, // Fixed typo in "Attachment"
+        // { id: 7, columnDef: { header: "HR" }, isPlaceholder: false },
+        { id: 8, columnDef: { header: "Manager" }, isPlaceholder: false },
+        { id: 6, columnDef: { header: "Status" }, isPlaceholder: false }, // Fixed typo in "Attachment"
       ],
     },
   ]
