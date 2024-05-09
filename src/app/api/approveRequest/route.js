@@ -32,6 +32,7 @@ export const POST = async (request) => {
 
     function calculateTimeDifference(startTime, endTime) {
       // Split the time strings into hours and minutes
+      console.log(startTime, endTime, "startTime, endTime")
       const [startHour, startMinute] = startTime.split(":").map(Number);
       const [endHour, endMinute] = endTime.split(":").map(Number);
 
@@ -170,6 +171,7 @@ export const POST = async (request) => {
             applicationUser.manager === userId || applicationUser.md === userId
           ) {
             console.log(passOutDoc, "doc found");
+            console.log(userRole, "userRole")
             if (userRole === "manager" || userRole === "md") {
               passOutDoc.mangerApprove = status;
               passOutDoc.status = status;
@@ -181,8 +183,8 @@ export const POST = async (request) => {
               passOutDoc.status = status;
             }
             const diffInHours = calculateTimeDifference(
-              passOutDoc.passOut,
-              "16:00"
+              passOutDoc?.timeFrom,
+              passOutDoc?.timeTo,
             );
             console.log("diff in hous wla chala", diffInHours, "diffInHours");
             passOutDoc.passOutTotalHours =

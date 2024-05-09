@@ -74,13 +74,14 @@ export function UsersTable({ className }: { className?: string }) {
       setRole(roleFormDb?.toLowerCase());
       let res: any = await userPassoutRequest.mutateAsync("ali");
       console.log(res.data, "response data");
-      let newRes: any = res?.data.filter(
-        (req: any) => req.status === "pending"
+      let newRes: any = res?.data?.filter(
+        (req: any) => req?.status === "pending"
       );
-      let acceptCash: any = res?.data.filter(
-        (req: any) => req.status !== "pending"
+      console.log(newRes, "newRes")
+      let acceptRequest: any = res?.data?.filter(
+        (req: any) => req?.status === "accept"
       );
-      setAcceptedPassOut(acceptCash);
+      setAcceptedPassOut(acceptRequest);
       if (roleFormDb == "hr") {
         let finalReq = newRes.filter(
           (item: any, i: any) => item.mangerApprove === "accept"
@@ -154,6 +155,8 @@ export function UsersTable({ className }: { className?: string }) {
   const columns = Object.keys(new UserClass()).filter(
     (column) => column !== "_id"
   );
+
+  console.log("columns", columns, "cashRequest")
 
   type CashRequestHeader = {
     id: number;
@@ -298,7 +301,7 @@ export function UsersTable({ className }: { className?: string }) {
 
       <h1 className="text-2xl font-bold text-center mt-[10px]">
         {" "}
-        PassOut History
+        Pass Out History
       </h1>
       <hr className="bg-gray-300 mt-[20px]" />
 

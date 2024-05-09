@@ -29,9 +29,9 @@ export const POST = async (request) => {
       passoutRequests = await Promise.all(
         passoutReq.map(async (req) => {
           let reqUser = await User.findById(req.userId); // Assuming User model is imported
-          console.log(reqUser.hr, "----------------------------");
+          console.log(reqUser?.hr, "----------------------------", userId);
 
-          if (reqUser.hr == userId || reqUser.manager == userId ||  reqUser.accountant == userId || reqUser.md == userId) {
+          if (reqUser?.hr == userId || reqUser?.manager == userId ||  reqUser?.accountant == userId || reqUser?.md == userId) {
             return req;
           } else {
             return null;
@@ -50,7 +50,7 @@ export const POST = async (request) => {
 
     return NextResponse.json({ message: "success", data: passoutRequests });
   } catch (error) {
-    console.error(error);
+    console.error(error, "error in fetching cash requests");
     return NextResponse.json({
       error: error,
       message:

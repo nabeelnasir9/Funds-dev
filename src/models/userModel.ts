@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
   managers: { type: Array, default: [] },
   accountants: { type: Array, default: [] },
   mds: { type: Array, default: [] },
-  leavesBalance: { type: Object, default: { sick: 10, casual: 10 } },
+  leavesBalance: { type: Object, default: { sick: 2.5, casual: 2.5 } },
   createdAt: {
     type: Date,
     default: Date.now,
