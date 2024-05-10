@@ -30,6 +30,7 @@ const userSchema = new mongoose.Schema({
   accountants: { type: Array, default: [] },
   mds: { type: Array, default: [] },
   leavesBalance: { type: Object, default: { sick: 2.5, casual: 2.5 } },
+  passOutBalance: {type: Number, default: 0},
   createdAt: {
     type: Date,
     default: Date.now,

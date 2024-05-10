@@ -49,6 +49,8 @@ export function UsersTable({ className }: { className?: string }) {
   const [requestMade, setRequestMade] = React.useState(false);
   const [user, setUser] = React.useState<any>();
 
+  const [leaveHistoryModal, setLeaveHistoryModal] = React.useState(false)
+  const [leavesPassoutData, setLeavesPassoutData] = React.useState<any>([])
 
 
   React.useEffect(() => {
@@ -66,6 +68,20 @@ export function UsersTable({ className }: { className?: string }) {
       }
     };
     getUser();
+
+    const getLeavesPasout = async () => {
+      try {
+        let userToken = localStorage.getItem('token')
+
+        const bodyData = { token: userToken }
+        let res: any = await http.post(apiUrls.users.getLeavesPassout, bodyData)
+        console.log(res, '---------------------------')
+        setLeavesPassoutData(res?.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getLeavesPasout()
   }, []);
   React.useEffect(() => {
     const getReq = async () => {
@@ -230,7 +246,10 @@ export function UsersTable({ className }: { className?: string }) {
 
             <h1 className="text-2xl font-bold text-center">Pass Outs </h1>
             {user?.role == "employee" && (
-          <div>
+          <div onClick={()=>setLeaveHistoryModal(true)} style={{
+            cursor: 'pointer',
+
+            }}>
             <h1 className="text-[16px] font-bold ">
               Sick Leave Balance: {user?.leavesBalance?.sick}
             </h1>
@@ -274,6 +293,173 @@ export function UsersTable({ className }: { className?: string }) {
           />
         </>
       )}
+      {
+        leaveHistoryModal && 
+          <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0,0,0,0.3)',
+            zIndex: 999,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+          <div style={{
+            height: '80vh',
+            width: '80vw',
+            backgroundColor: 'white',
+            borderRadius: '10px',
+            overflow: 'auto',
+            
+          }}>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              padding: '10px',
+            }}>
+
+            <h1 className='text-2xl font-bold text-center'> Leave History</h1>
+            <p onClick={()=>setLeaveHistoryModal(false)} style={{
+              cursor: 'pointer',
+              color: 'red',
+            }}>Close</p>
+            </div>
+            <hr className='bg-gray-300 mt-[20px]' />
+            <div style={{
+
+            display: 'flex',
+            }}>
+
+            {/* Leaves */}
+            <div style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+
+            }}>
+              <h3
+              style={{
+                textAlign: 'center',
+                width: '100%',
+                padding: '10px',
+                borderBottom: '1px solid grey',
+                fontWeight: 'bold',
+              }}
+              >
+                Leaves Requests
+              </h3>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  padding: '10px',
+                  borderBottom: '1px solid grey',
+                  width: "100%",
+                  fontWeight: 'bold',
+                  backgroundColor: 'lightgrey'
+                }}>
+                  <p>Title</p>
+                  <p>Reason</p>
+                  <p>Date From</p>
+                  <p>Date To</p>
+                  
+              </div>
+              {
+                leavesPassoutData?.leavesRequests?.map((item: any, i: any) => {
+                  return (
+                    <div key={i} style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      padding: '10px',
+                      borderBottom: '1px solid grey', 
+                      width: "100%"
+                    }}>
+                      <p>{item?.title}</p>
+                      <p>{item?.reason}</p>
+                      <p>{item?.dateFrom}</p>
+                      <p>{item?.dateTo}</p>
+
+                    </div>
+                  )
+                }
+              )
+              }
+
+            </div>
+            <div style={{
+              height: '80%',
+              width: '5px',
+              backgroundColor: 'grey',
+              margin: '10px 0px'
+            }}></div>
+            <div style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+
+            }}>
+              <h3
+              style={{
+                textAlign: 'center',
+                width: '100%',
+                padding: '10px',
+                borderBottom: '1px solid grey',
+                fontWeight: 'bold',
+              
+              }}
+               >
+                Passout Requests
+              </h3>
+              <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                padding: '10px',
+                borderBottom: '1px solid grey',
+                width: "100%",
+                fontWeight: 'bold',
+                backgroundColor: 'lightgrey'
+              }}
+              >
+                <p>Title</p>
+                <p>Reason</p>
+                <p>Time From</p>
+                <p>Time To</p>
+              </div>
+
+              {
+                leavesPassoutData?.passOutRequests?.map((item: any, i: any) => {
+                  return (
+                    <div key={i} style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      padding: '10px',
+                      borderBottom: '1px solid grey',
+                      width: "100%",
+                    }}>
+                      <p>{item?.title}</p>
+                      <p>{item?.reason}</p>
+                      <p>{item?.timeFrom}</p>
+                      <p>{item?.timeTo}</p>
+                    </div>
+                  )
+                })
+              }
+
+            </div>
+              </div>
+
+
+
+          </div>
+          
+          </div>
+        
+      }
       <CommonModal ref={formRef} className="sm:min-w-[510px] lg:min-w-[800px]">
         <CommonForm
           type="modal"

@@ -361,7 +361,7 @@ console.log(props.data,"-------------------------------accepted data");
           
           // @ts-ignore
           cell: ({ row }) => {
-            const value = row?.getValue(column);
+            const value = row?.getValue(column || "");
             return (
               <div className="flex flex-col" key={column}>
                 {props?.accordion?.includes(column) ? (
@@ -459,10 +459,10 @@ console.log(props.data,"-------------------------------accepted data");
                           <option
                             key={index}
                             value={
-                              typeof item === "object" ? item.username : item
+                              typeof item === "object" ? item?.username : item
                             }
                           >
-                            {typeof item === "object" ? item.username : item}
+                            {typeof item === "object" ? item?.username : item}
                           </option>
                         ))}
                       </select>

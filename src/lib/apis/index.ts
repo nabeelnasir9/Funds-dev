@@ -11,6 +11,7 @@ export const apiUrls = {
     getCashRequest: "api/cash/getCashHistory",
     addLeaveRequest: "api/leaves/addLeaveRequest",
     getLeaveRequest: "api/leaves/getLeaves",
+    getLeavesPassout: "api/getLeavesPassout",
     addPassoutRequest: "api/passout/addPassoutRequest",
     getPassoutRequest: "api/passout/getPassoutRequest",
     addInvoiceRequest: "api/invoices/addInvoiceRequest",

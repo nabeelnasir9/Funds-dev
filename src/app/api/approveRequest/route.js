@@ -187,16 +187,25 @@ export const POST = async (request) => {
               passOutDoc?.timeTo,
             );
             console.log("diff in hous wla chala", diffInHours, "diffInHours");
-            passOutDoc.passOutTotalHours =
-              passOutDoc.passOutTotalHours + diffInHours;
-            if (passOutDoc.passOutTotalHours > 8) {
-              console.log("diff in hous wla chala");
-              passOutDoc.passOutTotalHours = 0;
-              applicationUser.leavesBalance.casual = applicationUser.leavesBalance.casual - 1;
-              applicationUser.markModified("leavesBalance");
-              await applicationUser.save()
+            console.log(diffInHours, "diffInHours", applicationUser?.passOutBalance, "applicationUser?.passOutBalance", applicationUser?.leavesBalance.casual, "applicationUser?.leavesBalance.casual", diffInHours + applicationUser?.passOutBalance >= 8 && applicationUser?.leavesBalance.casual >= 1)
+
+            if (diffInHours + applicationUser?.passOutBalance >= 8 && applicationUser?.leavesBalance.casual >= 1) {
+              
+              applicationUser.passOutBalance = Math.abs(applicationUser.passOutBalance - diffInHours);
+              applicationUser.leavesBalance = {
+                sick: applicationUser.leavesBalance.sick,
+                casual: applicationUser.leavesBalance.casual - 1,
+              };
+              }
+            
+            else {
+              applicationUser.passOutBalance = applicationUser.passOutBalance + diffInHours;
             }
 
+
+            
+            
+            let saveUser = await applicationUser.save();
             let savedDoc = await passOutDoc.save();
             return NextResponse.json({ message: "success", data: savedDoc });
           } else {
