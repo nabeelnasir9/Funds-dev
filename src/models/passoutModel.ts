@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
     type: String, // Change type to Date
     required: [true, "Please add a timeTo"]
   },
-  mangerApprove: {
+  managerApprove: {
     type: String,default:"pending"
 
   },

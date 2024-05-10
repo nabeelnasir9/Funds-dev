@@ -69,7 +69,7 @@ export const POST = async (request) => {
           ) {
             console.log(cashDoc, "doc found");
             if (userRole === "manager" || userRole === "md") {
-              cashDoc.mangerApprove = status;
+              cashDoc.managerApprove = status;
               cashDoc.status = status;
               if (status === "reject") {
                 cashDoc.status = status;
@@ -96,9 +96,9 @@ export const POST = async (request) => {
             applicationUser.accountant === userId ||
             applicationUser.manager === userId
           ) {
-            console.log(InvoiceDoc, "doc found");
+            console.log( "doc found", userRole, status);
             if (userRole === "manager") {
-              InvoiceDoc.mangerApprove = status;
+              InvoiceDoc.managerApprove = status;
               if (status === "reject") {
                 InvoiceDoc.status = status;
               }
@@ -107,6 +107,7 @@ export const POST = async (request) => {
               InvoiceDoc.status = status;
             }
             let savedDoc = await InvoiceDoc.save();
+            console.log(savedDoc, "savedDoc")
             return NextResponse.json({ message: "success", data: savedDoc });
           } else {
             return NextResponse.json({
@@ -127,7 +128,7 @@ export const POST = async (request) => {
           ) {
             console.log(leaveDoc, "doc found");
             if (userRole === "manager" || userRole === "md") {
-              leaveDoc.mangerApprove = status;
+              leaveDoc.managerApprove = status;
               leaveDoc.status = status;
               let user = await User.findById(leaveDoc.userId);
                 console.log("user saved", user, "--------------");
@@ -187,7 +188,7 @@ export const POST = async (request) => {
             console.log(passOutDoc, "doc found");
             console.log(userRole, "userRole")
             if (userRole === "manager" || userRole === "md") {
-              passOutDoc.mangerApprove = status;
+              passOutDoc.managerApprove = status;
               passOutDoc.status = status;
               if (status === "reject") {
                 passOutDoc.status = status;

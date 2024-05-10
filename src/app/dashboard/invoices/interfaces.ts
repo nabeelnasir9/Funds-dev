@@ -9,7 +9,7 @@ import { HttpCommonResponse, CommonGetAllResponse } from "@/lib/interfaces";
 //     public createdAt: string = "",
     
 //     public accountantApprove: string = '',
-// 		public mangerApprove: string = '',
+// 		public managerApprove: string = '',
 //     public status: string = "",
 //     public attachment: string = "",
 //     public created_at: string = "",

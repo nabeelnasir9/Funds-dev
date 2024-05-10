@@ -66,11 +66,11 @@ export function UsersTable({ className }: { className?: string }) {
         let finalReq;
         if (roleFormDb == "ACCOUNTANT") {
           finalReq = newRes.filter(
-            (item: any) => item.mangerApprove === "accept"
+            (item: any) => item.managerApprove === "accept"
           );
         } else if (roleFormDb.toLowerCase() === "manager" || roleFormDb.toLowerCase() === "md") {
           finalReq = newRes.filter(
-            (item: any) => item.mangerApprove === "pending"
+            (item: any) => item.managerApprove === "pending"
           );
         } else {
           finalReq = newRes;

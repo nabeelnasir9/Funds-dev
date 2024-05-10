@@ -294,13 +294,13 @@ console.log(props.data,"-------------------------------accepted data");
                 if (status == "reject") {
                   approvedDoc = {
                     ...item,
-                    mangerApprove: status,
+                    managerApprove: status,
                     status: status,
                   };
                 } else {
                   approvedDoc = {
                     ...item,
-                    mangerApprove: status,
+                    managerApprove: status,
                   };
                 }
               }

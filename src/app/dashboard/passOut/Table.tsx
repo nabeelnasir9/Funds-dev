@@ -100,7 +100,7 @@ export function UsersTable({ className }: { className?: string }) {
       setAcceptedPassOut(acceptRequest);
       if (roleFormDb == "hr") {
         let finalReq = newRes.filter(
-          (item: any, i: any) => item.mangerApprove === "accept"
+          (item: any, i: any) => item.managerApprove === "accept"
         );
         setTableData(finalReq);
         return;

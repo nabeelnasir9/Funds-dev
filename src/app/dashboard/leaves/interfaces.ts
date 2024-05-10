@@ -13,7 +13,7 @@ export class UserClass {
     public leaveDate: string = "",
     public createdAt: string = "",
     public hrApprove: string = '',
-		public mangerApprove: string = '',
+		public managerApprove: string = '',
     public status: string = "",
     public attachment: string = "",
     // public email: string = '',

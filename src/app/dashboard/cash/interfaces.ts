@@ -9,7 +9,7 @@ export class UserClass {
 		// public type:"Select type" | "advance" | "paid" = "Select type" ,
 		public createdAt: string = '',
 		public updatedAt: string = '',
-		public mangerApprove: string = '',
+		public managerApprove: string = '',
 		public accountantApprove: string = '',
 		public status: string = '',
 		public attachment: string = "",

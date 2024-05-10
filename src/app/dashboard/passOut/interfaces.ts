@@ -11,7 +11,7 @@ export class UserClass {
     public timeFrom:string = "",
     public timeTo:string ="",
     public passOutTotalHours: number =0,
-		public mangerApprove: string = '',
+		public managerApprove: string = '',
     // public hrApprove: string = '',
     public status: string = "",
     public created_at: string = "",

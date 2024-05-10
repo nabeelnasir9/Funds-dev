@@ -89,12 +89,12 @@ export function UsersTable({ className }: { className?: string }) {
       let acceptCash = res?.data.filter((req: any) => req.status !== 'pending')
       setAcceptedLeave(acceptCash)
       if (roleFormDb == 'hr') {
-        let finalReq = newRes.filter((item: any, i: any) => item.mangerApprove === 'accept')
+        let finalReq = newRes.filter((item: any, i: any) => item.managerApprove === 'accept')
         setTableData(finalReq)
         return
       }
       if (roleFormDb?.toLowerCase() == 'manager' || roleFormDb == 'md') {
-        let finalReq = newRes.filter((item: any, i: any) => item.mangerApprove === 'pending')
+        let finalReq = newRes.filter((item: any, i: any) => item.managerApprove === 'pending')
         console.log('finalreqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', finalReq)
         setTableData(finalReq)
         return
