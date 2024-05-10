@@ -361,7 +361,17 @@ console.log(props.data,"-------------------------------accepted data");
           
           // @ts-ignore
           cell: ({ row }) => {
-            const value = row?.getValue(column || "");
+            console.log("row", row);
+            let value: any;
+            
+            try {
+
+              value = row?.getValue(column || "");
+            }
+            catch (error) {
+              console.log("error", error);
+              window.location.reload();
+            }
             return (
               <div className="flex flex-col" key={column}>
                 {props?.accordion?.includes(column) ? (

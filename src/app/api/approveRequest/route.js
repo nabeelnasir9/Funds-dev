@@ -129,6 +129,20 @@ export const POST = async (request) => {
             if (userRole === "manager" || userRole === "md") {
               leaveDoc.mangerApprove = status;
               leaveDoc.status = status;
+              let user = await User.findById(leaveDoc.userId);
+                console.log("user saved", user, "--------------");
+                if (leaveDoc.leaveType === "sick") {
+                  user.leavesBalance.sick = user.leavesBalance.sick - leaveDoc?.numberOfDays;
+                  console.log("user saved", user, "------after--------");
+
+                  user.markModified("leavesBalance");
+                  await user.save();
+                } else {
+                  user.leavesBalance.casual = user.leavesBalance.casual - leaveDoc?.numberOfDays;
+                  console.log("user saved", user, "------after--------");
+                  user.markModified("leavesBalance");
+                  await user.save();
+                }
               if (status === "reject") {
                 leaveDoc.status = status;
               }
@@ -139,13 +153,13 @@ export const POST = async (request) => {
                 let user = await User.findById(leaveDoc.userId);
                 console.log("user saved", user, "--------------");
                 if (leaveDoc.leaveType === "sick") {
-                  user.leavesBalance.sick = user.leavesBalance.sick - 1;
+                  user.leavesBalance.sick = user.leavesBalance.sick -leaveDoc?.numberOfDays;
                   console.log("user saved", user, "------after--------");
 
                   user.markModified("leavesBalance");
                   await user.save();
                 } else {
-                  user.leavesBalance.casual = user.leavesBalance.casual - 1;
+                  user.leavesBalance.casual = user.leavesBalance.casual -leaveDoc?.numberOfDays;
                   console.log("user saved", user, "------after--------");
                   user.markModified("leavesBalance");
                   await user.save();
