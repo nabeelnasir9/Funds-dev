@@ -99,9 +99,9 @@ export const POST = async (request) => {
             console.log( "doc found", userRole, status);
             if (userRole === "manager") {
               InvoiceDoc.managerApprove = status;
-              if (status === "reject") {
+              // if (status === "reject") {
                 InvoiceDoc.status = status;
-              }
+              // }
             } else {
               InvoiceDoc.accountantApprove = status;
               InvoiceDoc.status = status;
