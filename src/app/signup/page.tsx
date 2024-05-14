@@ -7,7 +7,7 @@ import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import emailjs from "emailjs-com";
-import { GlobeDemo } from "@/components/GlobeDemo";
+import Globe from "@/components/magicui/globe";
 export default function Page() {
   const router = useRouter();
   const [email, setEmail] = useState<string>("");
@@ -258,14 +258,10 @@ export default function Page() {
             </div>
           </div>
         </div>
-        <div className="relative hidden w-0 flex-1 lg:block" style={{borderLeft:'2px solid #d3d3d352'}}>
-          {/* <img
-            className="absolute inset-0 h-full w-full object-cover"
-            src="https://images.unsplash.com/photo-1496917756835-20cb06e75b4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1908&q=80"
-            alt=""
-          /> */}
-          <GlobeDemo/>
-        </div>
+        <div className="relative flex h-full w-full max-w-full items-center justify-center overflow-hidden rounded-lg border bg-background px-40 pb-40 pt-8 md:pb-60 md:shadow-xl">
+      <Globe className="top-[130px]" />
+      <div className="pointer-events-none absolute inset-0 h-full bg-[radial-gradient(circle_at_50%_200%,rgba(0,0,0,0.2),rgba(255,255,255,0))]" />
+    </div>
       </div>
     </>
   );
