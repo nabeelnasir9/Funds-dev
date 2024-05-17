@@ -19,6 +19,14 @@ const invoiceSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please add the date of the invoice"],
   },
+  invoiceToCompany: {
+    type: String,
+    required: [true, "Please add the date of the invoice"],
+  },
+  invoiceForCompany: {
+    type: String,
+    required: [true, "Please add the date of the invoice"],
+  },
   invoiceDescription: {
     type: String,
     required: [true, "Please add an invoice description"],

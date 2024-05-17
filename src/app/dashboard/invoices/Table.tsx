@@ -25,9 +25,14 @@ import {
   // updateUserForm,
   //  searchUserForm
 } from "./forms";
+import { PdfDownload } from "./pdfDownload";
+import axios from "axios";
+import { memo } from "react";
 
 export function UsersTable({ className }: { className?: string }) {
   const searchQuery = useSearchQuery();
+  const DownloadPDF = memo(PdfDownload);
+
 
   const userPassoutRequest: any = useUserGetPassoutRequest(
     searchQuery.queryStr
@@ -44,6 +49,7 @@ export function UsersTable({ className }: { className?: string }) {
   const [acceptedPassOut, setAcceptedPassOut] = React.useState<any>([]);
   const [role, setRole] = React.useState<any>();
   const [requestMade, setRequestMade] = React.useState(false);
+  const [companyFilter, setCompanyFilter] = React.useState<any>('Anaf');
 
   const [fileUrl, setFileUrl] = React.useState<any>("");
   const [detailLeave, setDetailLeave] = React.useState<any>();
@@ -56,7 +62,7 @@ export function UsersTable({ className }: { className?: string }) {
       let res: any = await userPassoutRequest.mutateAsync("ali");
       console.log(res.data, "response data");
       let newRes: any = res?.data.filter(
-        (req: any) => req.status === "pending"
+        (req: any) => req.status === "pending" && req?.invoiceToCompany === companyFilter.toLowerCase()
       );
       let acceptCash: any = res?.data.filter(
         (req: any) => req.status !== "pending"
@@ -111,7 +117,7 @@ export function UsersTable({ className }: { className?: string }) {
 
       if (res.message === "success") {
         // toast.dismiss();
-        setRequestMade(true);
+        setRequestMade(!requestMade);
         // toast.success("Successfully added request");
         formRef.current?.click();
       } else {
@@ -124,22 +130,59 @@ export function UsersTable({ className }: { className?: string }) {
     }
   };
 
+  
+
+
   const onUpdate = async (values: any) => {
     await updateUser.mutateAsync({ ...values, _id: detailUser?._id || "" });
   };
 
-  const viewLeaveRequest = (index: number) => {
+  const viewLeaveRequest = (data: any) => {
     {
-      console.log(userPassoutRequest?.data.data[index], "userLeaveRequest");
-      console.log("viewLeaveRequest", index);
+      console.log(data, "userPdfData");
 
-      if (userPassoutRequest?.data && userPassoutRequest?.data.data[index]) {
-        const leaveRequest = { ...userPassoutRequest.data.data[index] };
+      if (userPassoutRequest?.data && data) {
+        const leaveRequest =  data ;
         delete leaveRequest.userId; // Remove the userId object
         console.log(leaveRequest, "leaveRequest without userId");
 
         setDetailLeave(leaveRequest); // Save the modified leaveRequest in state
         detailsRef.current?.click();
+        const downloadPdf = async (obj: Record<string, any>) => {
+          console.log("Download PDF");
+          let config:any = {
+            method: 'post',
+            url: 'http://localhost:3001/generate-pdf',
+            headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/pdf'
+            },
+            responseType: 'blob', // Ensure response is treated as a Blob
+            data: obj
+          };
+          
+          try {
+            const response = await axios.request(config);
+          
+            // Download PDF
+            const blob = new Blob([response.data], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+          
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'invoices.pdf';
+            link.click();
+          
+            window.URL.revokeObjectURL(url); // Clean up
+          } catch (error) {
+            console.error('Error downloading PDF:', error);
+          }
+          }
+
+          downloadPdf(leaveRequest)
+          
+
+	// downloadPdf(detailLeave)
       }
     }
   };
@@ -148,7 +191,7 @@ export function UsersTable({ className }: { className?: string }) {
     const users: any = useDeleteUsers();
     if (users?.data && users?.data?.users[index]) {
       setDetailUser(users.data.users[index] as User);
-      detailsRef.current?.click();
+      // detailsRef.current?.click();
     }
   };
 
@@ -284,7 +327,9 @@ export function UsersTable({ className }: { className?: string }) {
             setHistoryData={setAcceptedPassOut}
             onEdit={useOnEditUser}
             onUpload={onUploadUsers}
-            onViewDetails={viewLeaveRequest}
+            onViewDetails={useViewCustomerDetails}
+            downloadPdf={viewLeaveRequest}
+
             onDeleteMany={onDeleteUsers}
             page={searchQuery.pagination.page}
             limit={searchQuery.pagination.limit}
@@ -295,9 +340,14 @@ export function UsersTable({ className }: { className?: string }) {
             setPage={searchQuery.setPage}
             setLimit={searchQuery.setLimit}
             attachment={true}
-            editIcon={
-              localStorage.getItem("role") === "employee" ? true : false
-            }
+            editIcon={ false}
+            downloadIcon={true}
+            differentCompanies={companyFilter}
+            handleDropdownOption={ (e) => {
+              console.log(e, "e");
+              setRequestMade(!requestMade)
+              setCompanyFilter(e);
+            }}
           />
         </>
       )}
@@ -309,7 +359,7 @@ export function UsersTable({ className }: { className?: string }) {
           closeModal={() => formRef.current?.click()}
           extendedForm={formType === "create" ? createUserForm : createUserForm}
           submitText={formType === "create" ? "Create" : "Update"}
-          onViewDetails={viewLeaveRequest}
+          // onViewDetails={viewLeaveRequest}
           cancelText="Cancel"
           submitFunc={(values) =>
             formType === "create"
@@ -321,9 +371,9 @@ export function UsersTable({ className }: { className?: string }) {
       </CommonModal>
 
       <CommonModal ref={detailsRef}>
-        <ShowDetails
+        <DownloadPDF
         obj={detailLeave ? detailLeave : {}}
-          close={() => detailsRef.current?.click()}
+          // close={() => detailsRef.current?.click()}
         />
       </CommonModal>
 
@@ -360,6 +410,15 @@ export function UsersTable({ className }: { className?: string }) {
             editIcon={
              false
             }
+            downloadIcon={true}
+            downloadPdf={viewLeaveRequest}
+            differentCompanies={companyFilter}
+            handleDropdownOption={ (e) => {
+              console.log(e, "e");
+              setRequestMade(!requestMade)
+              setCompanyFilter(e);
+            }}
+
       />
     </div>
   );

@@ -12,6 +12,8 @@ import {
   ChevronUp,
   ChevronDown,
   Trash2,
+  Download,
+  TrashIcon
 } from "lucide-react";
 import {
   ColumnDef,
@@ -72,6 +74,11 @@ const commonTableRowActions = [
   "create_invoice",
   "create_voucher",
   "attachment",
+  "roles",
+  'hr',
+  'manager',
+  'accountant',
+  'md'
 ] as const;
 
 type CashRequestHeader = {
@@ -116,6 +123,7 @@ export type CommonTableProps = {
   onDeleteSubAccount?: (data: any) => void;
   onDeleteCostCenter?: (data: any) => void;
   onDeleteOne?: (id: any) => void;
+  downloadPdf?: (obj: any) => void;
 
   tableData?: any;
   setTableDataFun?: any;
@@ -123,6 +131,11 @@ export type CommonTableProps = {
   setHistoryData?: any;
   attachment?: boolean;
   editIcon?: boolean;
+  downloadIcon?: any;
+  differentCompanies?: any;
+  handleDropdownOption?: (data: any) => void;
+  deleteIcon?: boolean;
+onDelete?: (id: any) => void;
 };
 
 export type TableMeta = Pick<CommonTableProps, "onEdit">;
@@ -582,6 +595,29 @@ console.log(props.data,"-------------------------------accepted data");
             enableHiding: false,
           }
         : null,
+        props.deleteIcon && {
+          id: "Delete",
+          header: ({ table }: any) => (
+            <Checkbox
+              checked={table.getIsAllPageRowsSelected()}
+              onCheckedChange={(value) =>
+                table.toggleAllPageRowsSelected(!!value)
+              }
+              aria-label="Select all"
+            />
+          ),
+          cell: ({ row }: any) => (
+            <Button
+              style={{ backgroundColor: "red", color: "white" }}
+              onClick={() => props.onDelete(row.original._id)}
+            >
+              Delete
+            </Button>
+          ),
+          enableSorting: false,
+          enableHiding: false,
+        },
+        
     ].filter(Boolean) as ColumnDef<any>[];
   }, [ props.accordion, role]);
 
@@ -741,6 +777,25 @@ console.log(props.data,"-------------------------------accepted data");
         <Button variant="outline" className="">
           Entries: {props?.data?.length}
         </Button>
+        {props.differentCompanies && <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="">
+              Company: {props.differentCompanies}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem style={{
+              color: 'black'
+            }} onClick={() => props.handleDropdownOption("Anaf")}>
+              Anaf
+            </DropdownMenuItem>
+            <DropdownMenuItem style={{
+              color: 'black'
+            }}  onClick={() => props.handleDropdownOption("Elite")}>
+              Elite
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>}
         {/* </DropdownMenuTrigger> */}
         {/* <DropdownMenuContent align="end">
             {PAGINATION_LIMIT.map((limit) => {
@@ -970,6 +1025,19 @@ console.log(props.data,"-------------------------------accepted data");
                         />
                       </TableCell>
                     )}
+                    {props.downloadIcon && props.downloadPdf && (
+                      <TableCell onClick={() => {
+                        console.log(row.original, "row.original")
+                        props.downloadPdf(row.original)
+                      }}>
+                        <Download
+                          
+                          style={{
+                            cursor: "pointer",
+                          }}
+                        />
+                      </TableCell>
+                    )}
                   </TableRow>
                 );
               })
@@ -1063,7 +1131,7 @@ const ActionDropdown = (
     {
       key: "view_details",
       item: (
-        <DropdownMenuItem onClick={() => props.onViewDetails(props.row.index)}>
+        <DropdownMenuItem >
           View Details
         </DropdownMenuItem>
       ),

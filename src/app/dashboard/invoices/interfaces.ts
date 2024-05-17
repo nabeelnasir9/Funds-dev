@@ -42,6 +42,7 @@ export class UserClass {
     public dateOfInvoice: string = "",
     public createdAt: string = "",
     public invoiceToCompany: string = "",
+    public invoiceForCompany: string = "",
     public accountantApprove: string = '',
     public managerApprove: string = '',
     public status: string = "",

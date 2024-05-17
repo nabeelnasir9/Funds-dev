@@ -4,6 +4,7 @@ export const apiUrls = {
     create: "api/auth/create_user",
     me: "api/users/getUser",
     getAll: "api/users/getAllUser",
+    deleteUser: "api/users/deleteUser",
     update: "api/auth/update_user",
     upload: "api/auth/upload",
     deleteMultiple: "api/auth/delete_users",

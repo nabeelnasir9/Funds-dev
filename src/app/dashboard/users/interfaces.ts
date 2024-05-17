@@ -34,6 +34,19 @@ export class UserClass {
 }
 
 export interface User extends UserClass {}
+export class ApprovedUsers {
+  constructor(
+    public _id: string = '',
+    // public user_name: string = '',
+    public username: string = '',
+    public email: string = '',
+    public createdAt: string = '',
+
+  ) 
+  {}
+}
+
+export interface User extends ApprovedUsers {}
 
 export interface CreateUser extends Omit<User, '_id'> {
   password: string

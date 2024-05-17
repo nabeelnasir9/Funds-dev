@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 import { CommonTable, CommonForm, CommonAccordion, CommonModal, ShowDetails } from '@/components'
 import { http } from '@/lib/config'
 import { apiUrls } from '@/lib/apis'
-import { type User, type CreateUser, UserClass } from './interfaces'
+import { type User, type CreateUser, UserClass, ApprovedUsers } from './interfaces'
 import {
   useCreatePassoutRequest,
   useUserGetPassoutRequest,
@@ -35,27 +35,30 @@ export function UsersTable({ className }: { className?: string }) {
   const formRef = React.useRef<React.ElementRef<'button'>>(null)
   const detailsRef = React.useRef<React.ElementRef<'button'>>(null)
   const [tableData, setTableData] = React.useState([])
+  const [approvedUsers, setApprovedUsers] = React.useState([])
 
-  React.useEffect(() => {
-    const getAllUser = async () => {
-      try {
-        toast.dismiss()
-        toast.loading('Getting Users')
-        let userToken = localStorage.getItem('token')
+  const getAllUser = async () => {
+    try {
+      toast.dismiss()
+      toast.loading('Getting Users')
+      let userToken = localStorage.getItem('token')
 
-        const bodyData = { token: userToken }
-        console.log(userToken, '=============', bodyData)
-        let res = await http.post(apiUrls.users.getAll, bodyData)
-        let users = res?.data.filter((user: any, i: any) => user.status === 'pending')
-        setTableData(users)
-        toast.dismiss()
-        toast.success('Users success')
-      } catch (error: any) {
-        toast.dismiss()
-        toast.error(error.message)
-        console.log(error)
-      }
+      const bodyData = { token: userToken }
+      console.log(userToken, '=============', bodyData)
+      let res = await http.post(apiUrls.users.getAll, bodyData)
+      let users = res?.data.filter((user: any, i: any) => user.status === 'pending')
+      setTableData(users)
+      let otherUsers = res?.data.filter((user: any, i: any) => user.status === 'accept')
+      setApprovedUsers(otherUsers)
+      toast.dismiss()
+      toast.success('Users success')
+    } catch (error: any) {
+      toast.dismiss()
+      toast.error(error.message)
+      console.log(error)
     }
+  }
+  React.useEffect(() => {
     const intervalId = setInterval(() => {
       getAllUser()
     }, 40000)
@@ -64,6 +67,24 @@ export function UsersTable({ className }: { className?: string }) {
 
     return () => clearInterval(intervalId)
   }, [])
+
+  const deleteUser = async (id: string) => {
+    try {
+      toast.loading('Deleting User')
+      const bodyData = { id: id }
+      let res = await http.post(apiUrls.users.deleteUser, bodyData)
+      if (res?.status === 200) {
+        toast.dismiss()
+        toast.success('User Deleted')
+        getAllUser()
+      } else {
+        throw new Error('something went wrong')
+      }
+    } catch (error) {
+      toast.dismiss()
+      toast.error('some thing went wrong')
+    }
+  }
 
   const onSubmit = async (values: CreateUser) => {
     try {
@@ -118,6 +139,7 @@ export function UsersTable({ className }: { className?: string }) {
   // };
 
   const columns = Object.keys(new UserClass()).filter((column) => column !== '_id')
+  const approvedColumns = Object.keys(new ApprovedUsers()).filter((column) => column !== '_id')
 
   type CashRequestHeader = {
     id: number
@@ -232,6 +254,37 @@ export function UsersTable({ className }: { className?: string }) {
       <CommonModal ref={detailsRef}>
         <ShowDetails obj={detailUser ? detailUser : {}} close={() => detailsRef.current?.click()} />
       </CommonModal>
+
+      <h1 className='text-2xl font-bold text-center'>Users </h1>
+      <hr />
+      <CommonTable
+        cashRequest={cashRequest}
+        tableKey='history'
+        columns={approvedColumns}
+        hideRowActions={['create_invoice', 'duplicate', 'roles', 'hr', 'manager', 'accountant', 'md']}
+        data={approvedUsers}
+        loading={userPassoutRequest?.isLoading}
+        // onCreate={() => {
+        //   setFormType("create");
+        //   formRef?.current?.click();
+        // }}
+        onEdit={simpleFunc}
+        onUpload={simpleFunc}
+        onViewDetails={simpleFunc}
+        onDeleteMany={simpleFunc}
+        page={searchQuery.pagination.page}
+        limit={searchQuery.pagination.limit}
+        lastPage={0}
+        totalDocuments={10}
+        // lastPage={users?.data?.pagination.last_page || 0}
+        // totalDocuments={users?.data?.pagination.total_count || 0}
+        setPage={searchQuery.setPage}
+        setLimit={searchQuery.setLimit}
+        attachment={true}
+        editIcon={false}
+        deleteIcon={true}
+        onDelete={deleteUser}
+      />
     </div>
   )
 }

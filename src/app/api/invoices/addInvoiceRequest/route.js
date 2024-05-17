@@ -8,8 +8,8 @@ import { NextResponse } from "next/server";
 export const POST = async (request) => {
   try {
     await dbConnect();
-    const {  name,invoiceNo,dateOfInvoice,invoiceDescription,totalAmount,totalAmountExclVAT,expense,netEarning,percentage,  token,attachment } = await request.json();
-    console.log("🚀 ~ POST ~ dateOfInvoice:", dateOfInvoice)
+    const {  name,invoiceNo,dateOfInvoice,invoiceDescription,totalAmount,totalAmountExclVAT,expense,netEarning,percentage,  token,attachment, invoiceToCompany, invoiceForCompany } = await request.json();
+    console.log("🚀 ~ POST ~ dateOfInvoice:", invoiceToCompany, invoiceForCompany)
     console.log(token, "====================", name);
     // const authorization = headers().get("Authorization");
     // console.log(authorization)
@@ -26,7 +26,9 @@ export const POST = async (request) => {
       expense: expense,
       netEarning: netEarning,
       percentage: percentage,
-      attachment: attachment
+      attachment: attachment,
+      invoiceToCompany: invoiceToCompany,
+      invoiceForCompany: invoiceForCompany,
     });
 
     const res = await newInvoice.save();
