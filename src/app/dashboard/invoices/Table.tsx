@@ -152,7 +152,7 @@ export function UsersTable({ className }: { className?: string }) {
           console.log("Download PDF");
           let config:any = {
             method: 'post',
-            url: 'http://localhost:3001/generate-pdf',
+            url: 'https://funds-cron-server.onrender.com/generate-pdf',
             headers: { 
             'Content-Type': 'application/json',
             'Accept': 'application/pdf'

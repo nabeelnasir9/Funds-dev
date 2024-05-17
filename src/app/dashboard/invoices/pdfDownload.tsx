@@ -19,7 +19,7 @@ export function PdfDownload({
 	const downloadPdf = async (obj: Record<string, any>) => {
 		let config:any = {
 		  method: 'post',
-		  url: 'http://localhost:3001/generate-pdf',
+		  url: 'https://funds-cron-server.onrender.com/generate-pdf',
 		  headers: { 
 			'Content-Type': 'application/json',
 			'Accept': 'application/pdf'
