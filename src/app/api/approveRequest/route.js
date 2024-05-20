@@ -235,10 +235,10 @@ export const POST = async (request) => {
           let user = await User.findById(docId);
           if (status === "accept") {
             (user.role = approveUserData[0]),
-              (user.hr = approveUserData[1]._id),
-              (user.manager = approveUserData[2]._id);
-              (user.accountant = approveUserData[3]._id);
-          (user.md = approveUserData[4]._id);
+              (user.hr = approveUserData[1]?._id),
+              (user.manager = approveUserData[2]?._id);
+              (user.accountant = approveUserData[3]?._id);
+          (user.md = approveUserData[4]?._id);
             user.status = status;
             user.hrs = undefined;
             user.managers = undefined;
