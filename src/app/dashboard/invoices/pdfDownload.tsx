@@ -19,7 +19,7 @@ export function PdfDownload({
 	const downloadPdf = async (obj: Record<string, any>) => {
 		let config:any = {
 		  method: 'post',
-		  url: 'http://159.65.246.131/generate-pdf',
+		  url: 'https://psestimating.live/generate-pdf',
 		  headers: { 
 			'Content-Type': 'application/json',
 			'Accept': 'application/pdf'
