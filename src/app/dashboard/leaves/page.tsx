@@ -11,7 +11,7 @@ export default function Dashboard() {
 	return (
 		<div className='flex flex-1 flex-col'>
 			<UsersTable className='flex-1' />
-			<Toaster position="top-right" reverseOrder={true} />
+			<Toaster position="top-center" reverseOrder={true} />
 		</div>
 	)
 }

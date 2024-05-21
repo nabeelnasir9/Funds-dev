@@ -9,7 +9,7 @@ export const POST = async (request) => {
     try {
       await dbConnect();
       const { email, password } = await request.json();
-      const user = await User.findOne({ email }).select('+password');
+      const user = await User.findOne({ email:email.toLowerCase() }).select('+password');
   
       if (!user) {
         return NextResponse.json({ error: "Invalid credentials" });

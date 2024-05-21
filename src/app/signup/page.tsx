@@ -201,7 +201,7 @@ export default function Page() {
                     </button>
                   </div>
                 </form>
-                <Toaster position="top-right" reverseOrder={true} />
+                <Toaster position="top-center" reverseOrder={true} />
               </div>
 
               {/* <div className="mt-10">
