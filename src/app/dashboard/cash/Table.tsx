@@ -81,13 +81,13 @@ export function UsersTable({ className }: { className?: string }) {
       }
     };
 
-    // const intervalId = setInterval(() => {
-    //   fetchData();
-    // }, 20000);
+    const intervalId = setInterval(() => {
+      fetchData();
+    }, 20000);
 
     fetchData(); // Fetch data initially when component mounts
 
-    // return () => clearInterval(intervalId); // Cleanup function to clear interval
+    return () => clearInterval(intervalId); // Cleanup function to clear interval
   }, [requestMade]);
 
   const uploadImage = async (e: any) => {

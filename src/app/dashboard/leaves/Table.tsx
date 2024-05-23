@@ -101,13 +101,13 @@ export function UsersTable({ className }: { className?: string }) {
       }
       setTableData(newRes)
     }
-    // const intervalId = setInterval(() => {
-    //   getReq();
-    // }, 20000);
+    const intervalId = setInterval(() => {
+      getReq();
+    }, 20000);
 
     getReq()
 
-    // return () => clearInterval(intervalId);
+    return () => clearInterval(intervalId);
   }, [requestMade])
 
   const uploadImage = async (e: any) => {

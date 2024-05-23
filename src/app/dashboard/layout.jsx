@@ -157,34 +157,18 @@ export default function Layout({ children }) {
                 "w-[250px]": sidebarToggle,
                 "w-[72px]": !sidebarToggle,
               },
-              "overflow-hidden transition-all"
+              "overflow-hidden transition-all min-w-[72px] ",
             )}
           >
             <ul
               className="sidebar space-y-2  overflow-y-auto p-3"
               style={{
                 maxHeight: "calc(100vh - 100px)",
-                width: sidebarToggle ? "250px" : "72px",
+                minWidth:  "72px",
                 overflowX: "hidden",
               }}
             >
-              {/* <li
-                className="flex justify-end rounded-md bg-blue-500 p-3 text-white"
-                key={0}
-              >
-                <CommonTooltip
-                  trigger={
-                    <ChevronRight
-                      className={cn("cursor-pointer transition-transform", {
-                        "rotate-180": sidebarToggle,
-                      })}
-                      onClick={() => setSidebarToggle((prev) => !prev)}
-                    />
-                  }
-                >
-                  {sidebarToggle ? "Contract Sidebar" : "Expand Sidebar"}
-                </CommonTooltip>
-              </li> */}
+              
               {defaultRoutes.map((route, i) => (
                 <li key={i + 1}>
                   <Link
@@ -203,122 +187,10 @@ export default function Layout({ children }) {
                     >
                       {route.name}
                     </CommonTooltip>
-                    <span
-                      className={cn("transition-all", {
-                        invisible: !sidebarToggle,
-                        visible: sidebarToggle,
-                      })}
-                    >
-                      {route.name}
-                    </span>
+                    
                   </Link>
                 </li>
               ))}
-              {/* <CommonAccordion
-								accordions={[
-									{
-										label: sidebarToggle ? ' Entries' : <Keyboard />,
-										content: (
-											<>
-												{routes.map((route, i) => (
-													<li key={i + 1}>
-														<Link
-															className={cn(
-																{
-																	'bg-gray-100':
-																		path === route.path,
-																},
-																'flex cursor-pointer items-center justify-start gap-2 rounded-md p-3 transition-colors  hover:bg-gray-100',
-															)}
-															href={route.path}>
-															<CommonTooltip
-																trigger={cloneElement(route.icon, {
-																	className: cn(
-																		'max-w-[24px] min-w-[24px] flex-1',
-																	),
-																})}>
-																{route.name}
-															</CommonTooltip>
-															<span
-																className={cn('transition-all', {
-																	invisible: !sidebarToggle,
-																	visible: sidebarToggle,
-																})}>
-																{route.name}
-															</span>
-														</Link>
-													</li>
-												))}
-											</>
-										),
-									},
-									{
-										label: sidebarToggle ? 'Data Sets' : <Database />,
-										content: (
-											<>
-												{datasets.map((route, i) => (
-													<li key={i + 1}>
-														<Link
-															className={cn(
-																{
-																	'bg-gray-100':
-																		path === route.path,
-																},
-																'flex cursor-pointer items-center justify-start gap-2 rounded-md p-3 transition-colors  hover:bg-gray-100',
-															)}
-															href={route.path}>
-															<CommonTooltip
-																trigger={cloneElement(route.icon, {
-																	className: cn(
-																		'max-w-[24px] min-w-[24px] flex-1',
-																	),
-																})}>
-																{route.name}
-															</CommonTooltip>
-															<span
-																className={cn('transition-all', {
-																	invisible: !sidebarToggle,
-																	visible: sidebarToggle,
-																})}>
-																{route.name}
-															</span>
-														</Link>
-													</li>
-												))}
-											</>
-										),
-									},
-								]}
-							/> */}
-
-              {/* <li
-								style={{
-									display: 'flex',
-									alignItems: 'center',
-									marginLeft: '12px',
-									marginTop: '32px',
-									gap: '12px',
-								}}>
-								<CommonTooltip
-									trigger={cloneElement(<Database />, {
-										className: cn('max-w-[24px] min-w-[24px] flex-1'),
-									})}>
-									Data Sets
-								</CommonTooltip>
-								<span
-									className={cn('transition-all', {
-										invisible: !sidebarToggle,
-										visible: sidebarToggle,
-									})}
-									style={{
-										fontSize: '18px',
-										fontWeight: 500,
-										letterSpacing: '0.025em',
-										lineHeight: '1.25rem',
-									}}>
-									Data Sets
-								</span>
-							</li> */}
             </ul>
           </nav>
           <main className="flex flex-1 border-l border-gray-300 p-4">

@@ -27,10 +27,10 @@ export const POST = async (request) => {
           let reqUser = await User.findById(req.userId);
           console.log(reqUser, "----------------------------", req.userId);
           if (
-            reqUser.hr == userId ||
-            reqUser.manager == userId ||
-            reqUser.accountant == userId ||
-            reqUser.md == userId
+            reqUser?.hr == userId ||
+            reqUser?.manager == userId ||
+            reqUser?.accountant == userId ||
+            reqUser?.md == userId
           ) {
             return req;
           } else {
