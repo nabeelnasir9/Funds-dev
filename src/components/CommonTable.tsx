@@ -683,7 +683,7 @@ console.log(props.data,"-------------------------------accepted data");
 	}, [columnVisibility, props.tableKey])
   return (
     <>
-      <div className="flex items-center justify-between py-4">
+      <div className="flex items-center justify-between py-4 w-[90vw]">
         {isOpen && (
           <div className="fixed z-10 inset-0 overflow-y-auto">
             <div className="flex items-center justify-center min-h-screen">
@@ -885,7 +885,7 @@ console.log(props.data,"-------------------------------accepted data");
           )}
         </div>
       </div>
-      <div className="rounded-md border">
+      <div className="rounded-md border w-[90vw] overflow-x-scroll">
         <Table>
           <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

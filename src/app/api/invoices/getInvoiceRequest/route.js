@@ -42,14 +42,14 @@ export const POST = async (request) => {
           }
         })
       );
-      passoutRequests = passoutRequests.filter((req) => req !== null); // Remove null entries
+      passoutRequests = passoutRequests?.filter((req) => req !== null); // Remove null entries
     }
     // Convert createdAt and updatedAt dates to local string format
-    passoutRequests = passoutRequests.map((passoutRequest) => ({
-      ...passoutRequest.toObject(), // Convert Mongoose document to plain JavaScript object
-      createdAt: new Date(passoutRequest.createdAt).toDateString(),
+    passoutRequests = passoutRequests?.map((passoutRequest) => ({
+      ...passoutRequest?.toObject(), // Convert Mongoose document to plain JavaScript object
+      createdAt: new Date(passoutRequest?.createdAt).toDateString(),
 
-      username: passoutRequest.userId.username, // Add username to cash request object
+      username: passoutRequest?.userId?.username, // Add username to cash request object
     }));
     return NextResponse.json({ message: "success", data: passoutRequests });
   } catch (error) {
